@@ -160,7 +160,10 @@
 
 <!-- Used apply-templates for all title output, to retain any child elements. Have to then specifically 
    output both text and child elements of title here -->
-<xsl:template match="title"><xsl:value-of select="title/text()"/><xsl:apply-templates/></xsl:template>
+<xsl:template match="title">
+  <xsl:value-of select="title/text()"/>
+  <xsl:apply-templates/>
+</xsl:template>
   
 <!-- Lists -->
 <xsl:template match="itemizedlist">
@@ -219,6 +222,38 @@
     </img>
   </figure>
 </xsl:template>
+  
+<!-- Tables -->
+<xsl:template match="table">
+  <table>
+    <!-- Question: How is table @id captured? -->
+    <xsl:if test="title">
+      <caption><xsl:apply-templates select="title"/></caption>
+    </xsl:if>
+    <!-- TODO: Add handling for colgroup -->
+    <!-- TODO: Add handling for entry attributes like align, etc. -->
+    <thead>
+      <xsl:apply-templates select="tgroup/thead"/>
+    </thead>
+    <tbody>
+      <xsl:apply-templates select="tgroup/tbody"/>
+    </tbody>
+  </table>
+</xsl:template>
+<xsl:template match="row">
+  <tr><xsl:apply-templates/></tr>
+</xsl:template>
+<xsl:template match="entry">
+  <xsl:choose>
+    <xsl:when test="ancestor::thead">
+      <th><xsl:value-of select="text()"/><xsl:apply-templates/></th>
+    </xsl:when>
+    <xsl:otherwise>
+      <td><xsl:value-of select="text()"/><xsl:apply-templates/></td>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+  
   
   
   <!-- ******************************* INLINES ******************************* -->
