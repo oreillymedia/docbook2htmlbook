@@ -50,7 +50,7 @@
   
 <!-- TODO: Partintro; What element should this convert to? -->
   
-<xsl:template match="chapter | preface | appendix | colophon">
+<xsl:template match="chapter | preface | appendix | colophon | dedication">
   <section>
     <xsl:choose>
       <xsl:when test="self::chapter"><xsl:attribute name="data-type">chapter</xsl:attribute></xsl:when>
@@ -64,6 +64,7 @@
       <xsl:when test="self::appendix"><xsl:attribute name="data-type">appendix</xsl:attribute></xsl:when>
       <!-- TODO: colophon not working -->
       <xsl:when test="self::colophon"><xsl:attribute name="data-type">colophon</xsl:attribute></xsl:when>
+      <xsl:when test="self::dedication"><xsl:attribute name="data-type">dedication</xsl:attribute></xsl:when>
     </xsl:choose>
     <h1>
       <xsl:call-template name="process-id"/>
@@ -142,7 +143,7 @@
     <xsl:apply-templates select="*[not(self::title)]"/>
   </aside>
 </xsl:template>
-  
+
 <xsl:template match="note | tip | warning | caution">
   <div>
     <xsl:attribute name="data-type">
@@ -159,6 +160,14 @@
     <xsl:if test="title"><h1><xsl:apply-templates select="title"/></h1></xsl:if>
     <xsl:apply-templates select="*[not(self::title)]"/>
   </div>
+</xsl:template>
+
+<xsl:template match="blockquote">
+  <!-- TODO: Test this. -->
+  <blockquote>
+    <xsl:attribute name="cite"><xsl:apply-templates select="attribution"/></xsl:attribute>
+    <xsl:apply-templates select="*[not(self::title)]"/>
+  </blockquote>
 </xsl:template>
 
 <!-- Used apply-templates for all title output, to retain any child elements. Have to then specifically 
@@ -216,7 +225,7 @@
   <figure>
     <figcaption><xsl:apply-templates select="title"/></figcaption>
     <img>
-      <xsl:attribute name="src"><xsl:value-of select="mediaobject/imagedata/@fileref"/></xsl:attribute>
+      <xsl:attribute name="src"><xsl:value-of select="mediaobject/imageobject/imagedata/@fileref"/></xsl:attribute>
       <!-- TODO: Test fig alt text -->
       <xsl:if test="mediaobject/textobject">
         <!-- Use value-of for alt text, so no child elements are output in alt attribute -->
@@ -269,6 +278,8 @@
 <xsl:template match="literal"><code><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="emphasis"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="emphasis[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
+<xsl:template match="superscript"><sup><xsl:apply-templates/></sup></xsl:template>
+<xsl:template match="subscript"><sub><xsl:apply-templates/></sub></xsl:template>
 <xsl:template match="emphasis[@role='strikethrough']">
   <span>
     <xsl:attribute name="data-type">strikethrough</xsl:attribute>
@@ -276,6 +287,7 @@
   </span>
 </xsl:template>
 <xsl:template match="ulink">
+  <!-- Is this right, or should it be <link>? -->
   <a>
     <xsl:attribute name="href"><xsl:value-of select="@url"/></xsl:attribute>
     <xsl:apply-templates/>
@@ -351,7 +363,6 @@
   
   <!-- ******************************* TO DO ******************************* -->
 
-<xsl:template match="dedication"/>
 <xsl:template match="index"/>
 <xsl:template match="indexterm"/>
 <xsl:template match="bibliography"/>
@@ -364,6 +375,7 @@
 <xsl:template match="xref"/>
 <xsl:template match="co"/>
 <xsl:template match="calloutlist"/>
+<xsl:template match="epigraph"/>
 <xsl:template match="phrase[@role='keep-together']"><xsl:apply-templates/></xsl:template>
   <!-- Spec for other PIs -->
 
