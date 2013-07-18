@@ -16,21 +16,35 @@
   <body>
     <xsl:attribute name="data-type">book</xsl:attribute>
     <h1><xsl:value-of select="title"/></h1>
-    <!--<xsl:call-template name="titlepage"/>
+    <xsl:call-template name="titlepage"/>
     <xsl:call-template name="copyrightpage"/>
-    <xsl:call-template name="toc"/>-->
+    <!-- Question: TOC needed in this type of conversion? -->
     <xsl:apply-templates/>
   </body>
 </html>
 </xsl:template>
   
+<xsl:template match="part">
+  <div>
+    <xsl:attribute name="data-type">part</xsl:attribute>
+    <h1>
+      <xsl:call-template name="process-id"/>
+      <xsl:value-of select="title"/>
+    </h1>
+    <xsl:apply-templates/>
+  </div>
+</xsl:template>
+  
+  <!-- TODO: Partintro; What element should this convert to? -->
+  
 <xsl:template match="chapter | preface | appendix">
   <section>
     <xsl:choose>
       <xsl:when test="self::chapter"><xsl:attribute name="data-type">chapter</xsl:attribute></xsl:when>
+      <xsl:when test="self::preface[contains(@id,'foreword')]">
+        <xsl:attribute name="data-type">foreword</xsl:attribute>
+      </xsl:when>
       <xsl:when test="self::preface"><xsl:attribute name="data-type">preface</xsl:attribute></xsl:when>
-      <!-- Foreword not working yet -->
-      <xsl:when test="self::preface[@id='_foreword']"><xsl:attribute name="data-type">foreword</xsl:attribute></xsl:when>
       <xsl:when test="self::appendix"><xsl:attribute name="data-type">appendix</xsl:attribute></xsl:when>
     </xsl:choose>
     <h1>
@@ -126,7 +140,17 @@
   <section>
     <xsl:attribute name="data-type">titlepage</xsl:attribute>
     <h1><xsl:value-of select="title"/></h1>
-    <h2><xsl:value-of select="bookinfo/publisher/publishername"/></h2>
+    <h2>
+      <xsl:attribute name="data-type">author</xsl:attribute>
+      <xsl:text>by </xsl:text>
+      <!-- TODO: Add logic to insert correct commas between multiple author names -->
+      <xsl:for-each select="bookinfo/author">
+        <xsl:value-of select="firstname"/>
+        <xsl:text> </xsl:text>
+        <xsl:if test="othername"><xsl:value-of select="othername"/><xsl:text> </xsl:text></xsl:if>
+        <xsl:value-of select="surname"/>
+      </xsl:for-each>
+    </h2>
   </section>
 </xsl:template>
   
@@ -134,20 +158,18 @@
   <section>
     <xsl:attribute name="data-type">copyright-page</xsl:attribute>
     <h1><xsl:value-of select="title"/></h1>
+    <!-- TODO: Add logic to insert correct commas between multiple author names -->
     <xsl:for-each select="bookinfo/author">
       <p>
         <xsl:attribute name="class">author</xsl:attribute>
-        <xsl:text>by </xsl:text><xsl:value-of select="bookinfo/author/firstname"/><xsl:if test="bookinfo/author/othername"><xsl:value-of select="bookinfo/author/othername"/></xsl:if><xsl:value-of select="bookinfo/author/surname"/>
+        <xsl:text>by </xsl:text>
+        <xsl:value-of select="firstname"/>
+        <xsl:text> </xsl:text>
+        <xsl:if test="othername"><xsl:value-of select="othername"/><xsl:text> </xsl:text></xsl:if>
+        <xsl:value-of select="surname"/>
       </p>
     </xsl:for-each>
   </section>
-</xsl:template>
-  
-<xsl:template name="toc">
-  <nav>
-    <xsl:attribute name="data-type">toc</xsl:attribute>
-    <h1><xsl:text>Table of Contents</xsl:text></h1>
-  </nav>
 </xsl:template>
 
   
