@@ -1,10 +1,15 @@
 <?xml version="1.0"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-  <xsl:output method="xml" indent="yes"/>
+<xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.w3.org/1999/xhtml ../schema/htmlbook.xsd"
+  xmlns="http://www.w3.org/1999/xhtml">
+<xsl:output method="xml" indent="yes"/>
 
 <!-- BLOCKS -->
 <xsl:template match="book">
 <html>
+  <xsl:copy-of select="document('')/*/@xsi:schemaLocation"/>
   <head>
     <title><xsl:value-of select="title"/></title>
   </head>
