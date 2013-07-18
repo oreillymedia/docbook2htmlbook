@@ -31,8 +31,8 @@
     <h1><xsl:apply-templates select="title"/></h1>
     <xsl:call-template name="titlepage"/>
     <xsl:call-template name="copyrightpage"/>
-    <!-- Question: TOC needed in this type of conversion? -->
-    <xsl:apply-templates/>
+    <!-- Question: TOC needed, or is it generated later? -->
+    <xsl:apply-templates select="*[not(self::title)]"/>
   </body>
 </html>
 </xsl:template>
@@ -44,7 +44,7 @@
       <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h1>
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="*[not(self::title)]"/>
   </div>
 </xsl:template>
   
@@ -69,10 +69,10 @@
       <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h1>
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="*[not(self::title)]"/>
   </section>
 </xsl:template>
-  
+ 
 <xsl:template match="para | simpara">
   <p>
     <xsl:call-template name="process-id"/>
@@ -87,7 +87,7 @@
       <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h1>
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="*[not(self::title)]"/>
   </section>
 </xsl:template>
   
@@ -98,7 +98,7 @@
       <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h2>
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="*[not(self::title)]"/>
   </section>
 </xsl:template>
 
@@ -109,7 +109,7 @@
       <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h3>
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="*[not(self::title)]"/>
   </section>
 </xsl:template>
 
@@ -120,7 +120,7 @@
       <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h4>
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="*[not(self::title)]"/>
   </section>
 </xsl:template>
 
@@ -136,7 +136,7 @@
       <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h5>
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="*[not(self::title)]"/>
   </section>
 </xsl:template>
   
@@ -154,7 +154,7 @@
       <xsl:attribute name="class">safarienabled</xsl:attribute>
     </xsl:if>
     <xsl:if test="title"><h1><xsl:apply-templates select="title"/></h1></xsl:if>
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="*[not(self::title)]"/>
   </div>
 </xsl:template>
 
@@ -254,13 +254,15 @@
   </xsl:choose>
 </xsl:template>
   
+<!-- Remarks -->
+<xsl:template match="remark">
+  <xsl:comment><xsl:apply-templates/></xsl:comment>
+</xsl:template>
   
   
   <!-- ******************************* INLINES ******************************* -->
 
 <!-- Question: Inlines within inlines okay? For example, constant width bold is <strong><code>?  -->
-<!-- TODO: email, ulink, footnote -->
-<!-- PIs, phrase keep-togethers -->
 <xsl:template match="literal"><code><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="emphasis"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="emphasis[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
@@ -284,8 +286,14 @@
   
 <xsl:template name="meta">
   <xsl:if test="bookinfo/isbn">
-    <meta><xsl:attribute name="name">isbn13</xsl:attribute><xsl:value-of select="bookinfo/isbn"/></meta>
-    <meta><xsl:attribute name="name">edition</xsl:attribute><xsl:value-of select="bookinfo/edition"/></meta>
+    <meta>
+      <xsl:attribute name="name">isbn13</xsl:attribute>
+      <xsl:attribute name="content"><xsl:value-of select="bookinfo/isbn"/></xsl:attribute>
+    </meta>
+    <meta>
+      <xsl:attribute name="name">edition</xsl:attribute>
+      <xsl:attribute name="content"><xsl:value-of select="bookinfo/edition"/></xsl:attribute>
+    </meta>
     <!-- Question: What other meta elements do we want to pull in from the Docbook? -->
   </xsl:if>
 </xsl:template>
@@ -293,7 +301,7 @@
 <xsl:template name="titlepage">
   <section>
     <xsl:attribute name="data-type">titlepage</xsl:attribute>
-    <h1><xsl:value-of select="title"/></h1>
+    <h1><xsl:apply-templates select="title"/></h1>
     <h2>
       <xsl:attribute name="data-type">author</xsl:attribute>
       <xsl:text>by </xsl:text>
@@ -338,16 +346,28 @@
 <!-- Don't output --> 
 <xsl:template match="bookinfo"/>
   
-<!-- To do -->
-<xsl:template match="prefacinfo"/>
+  <!-- ******************************* TO DO ******************************* -->
+
 <xsl:template match="dedication"/>
 <xsl:template match="index"/>
 <xsl:template match="indexterm"/>
 <xsl:template match="bibliography"/>
 <xsl:template match="glossary"/>
+  
+  <!-- don't know spec -->
+<xsl:template match="prefaceinfo"/>
+<xsl:template match="simplelist"/>
 <xsl:template match="footnote"/>
 <xsl:template match="xref"/>
-<!-- Question: Can we retain keep-togethers somehow? -->
+<xsl:template match="co"/>
+<xsl:template match="calloutlist"/>
 <xsl:template match="phrase[@role='keep-together']"><xsl:apply-templates/></xsl:template>
+  <!-- Spec for other PIs -->
 
+<!-- inlines -->
+<xsl:template match="email"><xsl:apply-templates/></xsl:template>
+<xsl:template match="application"><xsl:apply-templates/></xsl:template>
+<xsl:template match="filename"><xsl:apply-templates/></xsl:template>
+
+  
 </xsl:stylesheet>
