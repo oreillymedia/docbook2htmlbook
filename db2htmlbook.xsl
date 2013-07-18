@@ -124,20 +124,23 @@
   </section>
 </xsl:template>
 
-<xsl:template match="sect5 | sidebar">
+<xsl:template match="sect5">
   <section>
-    <xsl:attribute name="data-type">
-      <xsl:choose>
-        <xsl:when test="self::sect5">sect5</xsl:when>
-        <xsl:when test="self::sidebar">sidebar</xsl:when>
-      </xsl:choose>
-    </xsl:attribute>
+    <xsl:attribute name="data-type">sect5</xsl:attribute>
     <h5>
       <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h5>
     <xsl:apply-templates select="*[not(self::title)]"/>
   </section>
+</xsl:template>
+  
+<xsl:template match="sidebar">
+  <aside>
+    <xsl:attribute name="data-type">sidebar</xsl:attribute>
+    <h5><xsl:apply-templates select="title"/></h5>
+    <xsl:apply-templates select="*[not(self::title)]"/>
+  </aside>
 </xsl:template>
   
 <xsl:template match="note | tip | warning | caution">
