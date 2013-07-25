@@ -274,26 +274,37 @@
   
   <!-- ******************************* INLINES ******************************* -->
 
-<!-- Question: Inlines within inlines okay? For example, constant width bold is <strong><code>?  -->
+<!-- ToDo: Test inlines within inlines okay (e.g., constant width bold <strong><code>).  -->
 <xsl:template match="literal"><code><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="emphasis"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="emphasis[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
 <xsl:template match="superscript"><sup><xsl:apply-templates/></sup></xsl:template>
 <xsl:template match="subscript"><sub><xsl:apply-templates/></sub></xsl:template>
+  
 <xsl:template match="emphasis[@role='strikethrough']">
   <span>
     <xsl:attribute name="data-type">strikethrough</xsl:attribute>
     <xsl:apply-templates/>
   </span>
 </xsl:template>
+  
 <xsl:template match="ulink">
   <!-- Is this right, or should it be <link>? -->
-  <a>
-    <xsl:attribute name="href"><xsl:value-of select="@url"/></xsl:attribute>
+  <a href="#{@url}">
     <xsl:apply-templates/>
   </a>
 </xsl:template>
   
+<xsl:template match="xref">
+  <a href="#{@linkend}">
+    <xsl:choose>
+      <xsl:when test="id(@linkend/figure)">
+        <xsl:text>Figure</xsl:text>
+      </xsl:when>
+    </xsl:choose>
+    <xsl:value-of select="id(@linkend)"/>
+  </a>
+</xsl:template>
 
   
   
@@ -320,13 +331,51 @@
     <h2>
       <xsl:attribute name="data-type">author</xsl:attribute>
       <xsl:text>by </xsl:text>
-      <!-- TODO: Add logic to insert correct commas between multiple author names -->
-      <xsl:for-each select="bookinfo/author">
-        <xsl:value-of select="firstname"/>
-        <xsl:text> </xsl:text>
-        <xsl:if test="othername"><xsl:value-of select="othername"/><xsl:text> </xsl:text></xsl:if>
-        <xsl:value-of select="surname"/>
-      </xsl:for-each>
+      <xsl:choose>
+        <xsl:when test="bookinfo/authorgroup">
+          <xsl:for-each select="bookinfo/authorgroup/author">
+            <xsl:if test="position()=last() and count(../author) > 2">
+              <xsl:text>and </xsl:text>
+            </xsl:if>
+            <xsl:value-of select="firstname"/>
+            <xsl:text> </xsl:text>
+            <xsl:if test="othername"><xsl:value-of select="othername"/><xsl:text> </xsl:text></xsl:if>
+            <xsl:value-of select="surname"/>
+            <xsl:choose>
+              <!-- Only 2 authors -->
+              <xsl:when test="position() = 1 and count(../author) = 2">
+                <xsl:text> and </xsl:text>
+              </xsl:when>
+              <!-- More than 2 authors -->
+              <xsl:when test="not(position()=last()) and count(../author) > 2">
+                <xsl:text>, </xsl:text>
+              </xsl:when>
+            </xsl:choose>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:for-each select="bookinfo/author">
+            <xsl:if test="position()=last() and count(../author) > 2">
+              <xsl:text>and </xsl:text>
+            </xsl:if>
+            <xsl:value-of select="firstname"/>
+            <xsl:text> </xsl:text>
+            <xsl:if test="othername"><xsl:value-of select="othername"/><xsl:text> </xsl:text></xsl:if>
+            <xsl:value-of select="surname"/>
+            <xsl:choose>
+              <!-- Only 2 authors -->
+              <xsl:when test="position() = 1 and count(../author) = 2">
+                <xsl:text> and </xsl:text>
+              </xsl:when>
+              <!-- More than 2 authors -->
+              <xsl:when test="not(position()=last()) and count(../author) > 2">
+                <xsl:text>, </xsl:text>
+              </xsl:when>
+            </xsl:choose>
+          </xsl:for-each>
+        </xsl:otherwise>
+      </xsl:choose>
+      
     </h2>
   </section>
 </xsl:template>
@@ -335,17 +384,54 @@
   <section>
     <xsl:attribute name="data-type">copyright-page</xsl:attribute>
     <h1><xsl:value-of select="title"/></h1>
-    <!-- TODO: Add logic to insert correct commas between multiple author names -->
-    <xsl:for-each select="bookinfo/author">
       <p>
         <xsl:attribute name="class">author</xsl:attribute>
         <xsl:text>by </xsl:text>
-        <xsl:value-of select="firstname"/>
-        <xsl:text> </xsl:text>
-        <xsl:if test="othername"><xsl:value-of select="othername"/><xsl:text> </xsl:text></xsl:if>
-        <xsl:value-of select="surname"/>
+        <xsl:choose>
+          <xsl:when test="bookinfo/authorgroup">
+            <xsl:for-each select="bookinfo/authorgroup/author">
+              <xsl:if test="position()=last() and count(../author) > 2">
+                <xsl:text>and </xsl:text>
+              </xsl:if>
+              <xsl:value-of select="firstname"/>
+              <xsl:text> </xsl:text>
+              <xsl:if test="othername"><xsl:value-of select="othername"/><xsl:text> </xsl:text></xsl:if>
+              <xsl:value-of select="surname"/>
+              <xsl:choose>
+                <!-- Only 2 authors -->
+                <xsl:when test="position() = 1 and count(../author) = 2">
+                  <xsl:text> and </xsl:text>
+                </xsl:when>
+                <!-- More than 2 authors -->
+                <xsl:when test="not(position()=last()) and count(../author) > 2">
+                  <xsl:text>, </xsl:text>
+                </xsl:when>
+              </xsl:choose>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:for-each select="bookinfo/author">
+              <xsl:if test="position()=last() and count(../author) > 2">
+                <xsl:text>and </xsl:text>
+              </xsl:if>
+              <xsl:value-of select="firstname"/>
+              <xsl:text> </xsl:text>
+              <xsl:if test="othername"><xsl:value-of select="othername"/><xsl:text> </xsl:text></xsl:if>
+              <xsl:value-of select="surname"/>
+              <xsl:choose>
+                <!-- Only 2 authors -->
+                <xsl:when test="position() = 1 and count(../author) = 2">
+                  <xsl:text> and </xsl:text>
+                </xsl:when>
+                <!-- More than 2 authors -->
+                <xsl:when test="not(position()=last()) and count(../author) > 2">
+                  <xsl:text>, </xsl:text>
+                </xsl:when>
+              </xsl:choose>
+            </xsl:for-each>
+          </xsl:otherwise>
+        </xsl:choose>
       </p>
-    </xsl:for-each>
   </section>
 </xsl:template>
 
@@ -372,7 +458,7 @@
 <xsl:template match="prefaceinfo"/>
 <xsl:template match="simplelist"/>
 <xsl:template match="footnote"/>
-<xsl:template match="xref"/>
+<xsl:template match="link"/>
 <xsl:template match="co"/>
 <xsl:template match="calloutlist"/>
 <xsl:template match="epigraph"/>
@@ -383,6 +469,6 @@
 <xsl:template match="email"><xsl:apply-templates/></xsl:template>
 <xsl:template match="application"><xsl:apply-templates/></xsl:template>
 <xsl:template match="filename"><xsl:apply-templates/></xsl:template>
-
+<xsl:template match="citetitle"><xsl:apply-templates/></xsl:template>
   
 </xsl:stylesheet>
