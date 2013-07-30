@@ -223,9 +223,20 @@
 <!-- Figures -->
 <xsl:template match="figure">
   <figure>
+    <xsl:if test="@id">
+      <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+    </xsl:if>
+    <!-- Output float attribute? -->
     <figcaption><xsl:apply-templates select="title"/></figcaption>
     <img>
-      <xsl:attribute name="src"><xsl:value-of select="mediaobject/imageobject/imagedata/@fileref"/></xsl:attribute>
+      <xsl:attribute name="src">
+        <xsl:choose>
+          <xsl:when test="mediaobject/imageobject[@role='web']">
+            <xsl:value-of select="mediaobject/imageobject[@role='web']/imagedata/@fileref"/>
+          </xsl:when>
+          <xsl:otherwise><xsl:value-of select="mediaobject/imageobject/imagedata/@fileref"/></xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
       <!-- TODO: Test fig alt text -->
       <xsl:if test="mediaobject/textobject">
         <!-- Use value-of for alt text, so no child elements are output in alt attribute -->
@@ -236,7 +247,7 @@
 </xsl:template>
   
 <!-- Tables -->
-<xsl:template match="table">
+<xsl:template match="table | informaltable">
   <table>
     <!-- Question: How is table @id captured? -->
     <xsl:if test="title">
@@ -258,13 +269,16 @@
 <xsl:template match="entry">
   <xsl:choose>
     <xsl:when test="ancestor::thead">
-      <th><xsl:value-of select="text()"/><xsl:apply-templates/></th>
+      <th><xsl:value-of select="para/text()"/><xsl:apply-templates/></th>
     </xsl:when>
     <xsl:otherwise>
       <td><xsl:value-of select="text()"/><xsl:apply-templates/></td>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
+  <!-- thead cannot contain p elements -->
+  <!-- Find a better way to handle this. -->
+  <xsl:template match="thead/row/entry/para"/>
   
 <!-- Remarks -->
 <xsl:template match="remark">
@@ -290,23 +304,51 @@
   
 <xsl:template match="ulink">
   <!-- Is this right, or should it be <link>? -->
-  <a href="#{@url}">
+  <!-- URLs will render correctly as is below. But if there are any internal links, they'll need a hash before them. Check this. -->
+  <a href="{@url}">
     <xsl:apply-templates/>
   </a>
 </xsl:template>
   
-<xsl:template match="xref">
-  <a href="#{@linkend}">
+<!--<xsl:template match="xref">
+  <!-\- TO DO: Correct labels for each type of xref -\->
+  <!-\- This method would use a ton of 'ifs' for figures, tables, etc; counts would have to take into acount each type
+          of section it could appear in.
+          try this to select label: local-name(id(@linkend)) -\->
+  <xsl:variable name="label">
     <xsl:choose>
-      <xsl:when test="id(@linkend/figure)">
-        <xsl:text>Figure</xsl:text>
-      </xsl:when>
+      <xsl:when test="id(@linkend)[self::part]"><xsl:text>Part </xsl:text></xsl:when>
+      <xsl:when test="id(@linkend)[self::chapter]"><xsl:text>Chapter </xsl:text></xsl:when>
+      <xsl:when test="id(@linkend)[self::preface]"><xsl:text>Preface </xsl:text></xsl:when>
+      <xsl:when test="id(@linkend)[self::appendix]"><xsl:text>Appendix </xsl:text></xsl:when>
+      <xsl:when test="id(@linkend)[self::figure]"><xsl:text>Figure </xsl:text></xsl:when>
+      <xsl:when test="id(@linkend)[self::table]"><xsl:text>Table </xsl:text></xsl:when>
+      <xsl:when test="id(@linkend)[self::sidebar]"><xsl:text>Sidebar </xsl:text></xsl:when>
+      <xsl:when test="id(@linkend)[self::example]"><xsl:text>Example </xsl:text></xsl:when>
+      <xsl:when test="id(@linkend)[self::sect1 | self::sect2 | self::sect3 | self::sect4 | self::sect5 | self::sect6 | self::section]"><xsl:text> "</xsl:text><xsl:value-of select="id(@linkend)/title"/><xsl:text>"</xsl:text></xsl:when>
+      <xsl:otherwise/>
     </xsl:choose>
-    <xsl:value-of select="id(@linkend)"/>
+  </xsl:variable>
+  <!-\- TO DO: Set up counts for fig, table, chap, etc. numbers -\->
+  <!-\- Not all need counts. Like sections, which need section title -\->
+  <xsl:variable name="count">
+    <!-\- Gah! Can't use id() function in xsl:number count below. -\->
+    <xsl:if test="id(@linkend)[self::chapter]"><xsl:number count="id(@linkend)/chapter" level="any" format="1"/></xsl:if>
+    
+    <xsl:if test="id(@linkend)[self::part]"><xsl:number count="part" level="any" format="1"/></xsl:if>
+    <xsl:if test="id(@linkend)[self::preface]"/> <!-\- No count for preface (as seen in csspdf and dbtopdf) -\->
+    <xsl:if test="id(@linkend)[self::chapter]"><xsl:number count="appendix" level="any" format="a"/></xsl:if>
+    <xsl:if test="id(@linkend)[self::figure]"><xsl:number count="chapter" level="any" format="01"/><xsl:text>-</xsl:text><xsl:number count="figure" level="multiple" format="01"/></xsl:if>
+  </xsl:variable>
+  
+  <a href="#{@linkend}">
+    <xsl:value-of select="$label"/><xsl:value-of select="$count"/>
   </a>
 </xsl:template>
 
+<xsl:template match="xref[id(@linkend)[self::chapter]]">
   
+</xsl:template>-->
   
   <!-- ******************************* NAMED TEMPLATES ******************************* -->
   
