@@ -315,35 +315,96 @@
   </a>
 </xsl:template>
   
-<!--<xsl:template match="xref">
-  <!-\- TO DO: Correct labels for each type of xref -\->
-  <!-\- This method would use a ton of 'ifs' for figures, tables, etc; counts would have to take into acount each type
-          of section it could appear in.
-          try this to select label: local-name(id(@linkend)) -\->
+<!--<xsl:template match="footnote">
+  <a>
+    <xsl:attribute name="href"></xsl:attribute>
+    <xsl:attribute name="data-type">noteref</xsl:attribute>
+  </a>
+</xsl:template>-->
+  <xsl:template match="footnote"></xsl:template>
+  
+<xsl:template match="xref">
   <xsl:variable name="label">
     <xsl:choose>
+      <!-- To Do: Test part rendering -->
       <xsl:when test="id(@linkend)[self::part]"><xsl:text>Part </xsl:text></xsl:when>
       <xsl:when test="id(@linkend)[self::chapter]"><xsl:text>Chapter </xsl:text></xsl:when>
-      <xsl:when test="id(@linkend)[self::preface]"><xsl:text>Preface </xsl:text></xsl:when>
+      <xsl:when test="id(@linkend)[self::preface]"><xsl:text>Preface</xsl:text></xsl:when>
       <xsl:when test="id(@linkend)[self::appendix]"><xsl:text>Appendix </xsl:text></xsl:when>
       <xsl:when test="id(@linkend)[self::figure]"><xsl:text>Figure </xsl:text></xsl:when>
       <xsl:when test="id(@linkend)[self::table]"><xsl:text>Table </xsl:text></xsl:when>
-      <xsl:when test="id(@linkend)[self::sidebar]"><xsl:text>Sidebar </xsl:text></xsl:when>
       <xsl:when test="id(@linkend)[self::example]"><xsl:text>Example </xsl:text></xsl:when>
-      <xsl:when test="id(@linkend)[self::sect1 | self::sect2 | self::sect3 | self::sect4 | self::sect5 | self::sect6 | self::section]"><xsl:text> "</xsl:text><xsl:value-of select="id(@linkend)/title"/><xsl:text>"</xsl:text></xsl:when>
+      <!-- Note: Can't output page number as part of sidebar reference text (as in csspdf) -->
+      <xsl:when test="id(@linkend)[self::sidebar]"><xsl:text> "</xsl:text><xsl:value-of select="id(@linkend)/title"/><xsl:text>"</xsl:text></xsl:when>
+      <xsl:when test="id(@linkend)[self::sidebar | self::sect1 | self::sect2 | self::sect3 | self::sect4 | self::sect5 | self::sect6 | self::section]">
+        <xsl:text> "</xsl:text><xsl:value-of select="id(@linkend)/title"/><xsl:text>"</xsl:text></xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
   </xsl:variable>
-  <!-\- TO DO: Set up counts for fig, table, chap, etc. numbers -\->
-  <!-\- Not all need counts. Like sections, which need section title -\->
+  
   <xsl:variable name="count">
-    <!-\- Gah! Can't use id() function in xsl:number count below. -\->
-    <xsl:if test="id(@linkend)[self::chapter]"><xsl:number count="id(@linkend)/chapter" level="any" format="1"/></xsl:if>
-    
-    <xsl:if test="id(@linkend)[self::part]"><xsl:number count="part" level="any" format="1"/></xsl:if>
-    <xsl:if test="id(@linkend)[self::preface]"/> <!-\- No count for preface (as seen in csspdf and dbtopdf) -\->
-    <xsl:if test="id(@linkend)[self::chapter]"><xsl:number count="appendix" level="any" format="a"/></xsl:if>
-    <xsl:if test="id(@linkend)[self::figure]"><xsl:number count="chapter" level="any" format="01"/><xsl:text>-</xsl:text><xsl:number count="figure" level="multiple" format="01"/></xsl:if>
+    <xsl:for-each select="id(@linkend)">
+      <xsl:if test="self::part"><xsl:number count="part" level="any" format="1"/></xsl:if>
+      <xsl:if test="self::chapter"><xsl:number count="chapter" level="any" format="1"/></xsl:if>
+      <xsl:if test="self::appendix"><xsl:number count="appendix" level="any" format="A"/></xsl:if>
+      <xsl:if test="self::figure">
+        <xsl:choose>
+          <xsl:when test="ancestor::chapter">
+            <xsl:number count="chapter" level="any" format="1"/>
+            <xsl:text>-</xsl:text>
+            <xsl:number count="figure" level="any" from="chapter" format="1"/>
+          </xsl:when>
+          <xsl:when test="ancestor::preface">
+            <xsl:text>P-</xsl:text>
+            <xsl:number count="figure" level="any" from="preface" format="1"/>
+          </xsl:when>
+          <xsl:when test="ancestor::appendix">
+            <xsl:number count="appendix" level="any" format="A"/>
+            <xsl:text>-</xsl:text>
+            <xsl:number count="figure" level="any" from="appendix" format="1"/>
+          </xsl:when>
+          <xsl:otherwise><xsl:text>???</xsl:text></xsl:otherwise>
+        </xsl:choose>
+      </xsl:if>
+      <xsl:if test="self::table">
+        <xsl:choose>
+          <xsl:when test="ancestor::chapter">
+            <xsl:number count="chapter" level="any" format="1"/>
+            <xsl:text>-</xsl:text>
+            <xsl:number count="table" level="any" from="chapter" format="1"/>
+          </xsl:when>
+          <xsl:when test="ancestor::preface">
+            <xsl:text>P-</xsl:text>
+            <xsl:number count="table" level="any" from="preface" format="1"/>
+          </xsl:when>
+          <xsl:when test="ancestor::appendix">
+            <xsl:number count="appendix" level="any" format="A"/>
+            <xsl:text>-</xsl:text>
+            <xsl:number count="table" level="any" from="appendix" format="1"/>
+          </xsl:when>
+          <xsl:otherwise><xsl:text>???</xsl:text></xsl:otherwise>
+        </xsl:choose>
+      </xsl:if>
+      <xsl:if test="self::example">
+        <xsl:choose>
+          <xsl:when test="ancestor::chapter">
+            <xsl:number count="chapter" level="any" format="1"/>
+            <xsl:text>-</xsl:text>
+            <xsl:number count="example" level="any" from="chapter" format="1"/>
+          </xsl:when>
+          <xsl:when test="ancestor::preface">
+            <xsl:text>P-</xsl:text>
+            <xsl:number count="example" level="any" from="preface" format="1"/>
+          </xsl:when>
+          <xsl:when test="ancestor::appendix">
+            <xsl:number count="appendix" level="any" format="A"/>
+            <xsl:text>-</xsl:text>
+            <xsl:number count="example" level="any" from="appendix" format="1"/>
+          </xsl:when>
+          <xsl:otherwise><xsl:text>???</xsl:text></xsl:otherwise>
+        </xsl:choose>
+      </xsl:if>
+    </xsl:for-each>
   </xsl:variable>
   
   <a href="#{@linkend}">
@@ -351,9 +412,7 @@
   </a>
 </xsl:template>
 
-<xsl:template match="xref[id(@linkend)[self::chapter]]">
-  
-</xsl:template>-->
+<!--<xsl:template match="xref[id(@linkend)[self::chapter]]"></xsl:template>-->
   
   <!-- ******************************* NAMED TEMPLATES ******************************* -->
   
@@ -504,7 +563,6 @@
   <!-- don't know spec -->
 <xsl:template match="prefaceinfo"/>
 <xsl:template match="simplelist"/>
-<xsl:template match="footnote"/>
 <xsl:template match="link"/>
 <xsl:template match="co"/>
 <xsl:template match="calloutlist"/>
