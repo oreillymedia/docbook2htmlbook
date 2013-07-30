@@ -27,6 +27,7 @@
     <xsl:call-template name="meta"/>
   </head>
   <body>
+    <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">book</xsl:attribute>
     <h1><xsl:apply-templates select="title"/></h1>
     <xsl:call-template name="titlepage"/>
@@ -39,6 +40,7 @@
   
 <xsl:template match="part">
   <div>
+    <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">part</xsl:attribute>
     <h1>
       <xsl:call-template name="process-id"/>
@@ -52,6 +54,7 @@
   
 <xsl:template match="chapter | preface | appendix | colophon | dedication">
   <section>
+    <xsl:call-template name="process-id"/>
     <xsl:choose>
       <xsl:when test="self::chapter"><xsl:attribute name="data-type">chapter</xsl:attribute></xsl:when>
       <xsl:when test="self::preface[contains(@id,'foreword')]">
@@ -67,7 +70,6 @@
       <xsl:when test="self::dedication"><xsl:attribute name="data-type">dedication</xsl:attribute></xsl:when>
     </xsl:choose>
     <h1>
-      <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h1>
     <xsl:apply-templates select="*[not(self::title)]"/>
@@ -83,9 +85,9 @@
   
 <xsl:template match="sect1">
   <section>
+    <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect1</xsl:attribute>
     <h1>
-      <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h1>
     <xsl:apply-templates select="*[not(self::title)]"/>
@@ -94,9 +96,9 @@
   
 <xsl:template match="sect2">
   <section>
+    <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect2</xsl:attribute>
     <h2>
-      <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h2>
     <xsl:apply-templates select="*[not(self::title)]"/>
@@ -105,9 +107,9 @@
 
 <xsl:template match="sect3">
   <section>
+    <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect3</xsl:attribute>
     <h3>
-      <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h3>
     <xsl:apply-templates select="*[not(self::title)]"/>
@@ -116,9 +118,9 @@
 
 <xsl:template match="sect4">
   <section>
+    <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect4</xsl:attribute>
     <h4>
-      <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h4>
     <xsl:apply-templates select="*[not(self::title)]"/>
@@ -127,9 +129,9 @@
 
 <xsl:template match="sect5">
   <section>
+    <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect5</xsl:attribute>
     <h5>
-      <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h5>
     <xsl:apply-templates select="*[not(self::title)]"/>
@@ -138,6 +140,7 @@
   
 <xsl:template match="sidebar">
   <aside>
+    <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sidebar</xsl:attribute>
     <h5><xsl:apply-templates select="title"/></h5>
     <xsl:apply-templates select="*[not(self::title)]"/>
@@ -146,6 +149,7 @@
 
 <xsl:template match="note | tip | warning | caution">
   <div>
+    <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">
       <xsl:choose>
         <xsl:when test="self::note">note</xsl:when>
@@ -165,6 +169,7 @@
 <xsl:template match="blockquote">
   <!-- TODO: Test this. -->
   <blockquote>
+    <xsl:call-template name="process-id"/>
     <xsl:attribute name="cite"><xsl:apply-templates select="attribution"/></xsl:attribute>
     <xsl:apply-templates select="*[not(self::title)]"/>
   </blockquote>
@@ -208,12 +213,14 @@
 <!-- Code Blocks -->
 <xsl:template match="programlisting | screen">
   <pre>
+    <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">programlisting</xsl:attribute>
     <xsl:apply-templates/>
   </pre>
 </xsl:template>
 <xsl:template match="example">
   <div>
+    <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">example</xsl:attribute>
     <h5><xsl:apply-templates select="title"/></h5>
     <xsl:apply-templates select="programlisting"/>
@@ -223,9 +230,7 @@
 <!-- Figures -->
 <xsl:template match="figure">
   <figure>
-    <xsl:if test="@id">
-      <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-    </xsl:if>
+    <xsl:call-template name="process-id"/>
     <!-- Output float attribute? -->
     <figcaption><xsl:apply-templates select="title"/></figcaption>
     <img>
@@ -249,7 +254,7 @@
 <!-- Tables -->
 <xsl:template match="table | informaltable">
   <table>
-    <!-- Question: How is table @id captured? -->
+    <xsl:call-template name="process-id"/>
     <xsl:if test="title">
       <caption><xsl:apply-templates select="title"/></caption>
     </xsl:if>
