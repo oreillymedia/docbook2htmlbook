@@ -7,7 +7,13 @@
 <xsl:output method="xml" indent="yes"/>
 
 
-<!-- DEVELOPMENT: Output warning and all elements not handled by this stylesheet yet. -->
+<!-- 
+*******************************
+DEVELOPMENT:
+Output warning and all elements not handled by this stylesheet yet.
+******************************* 
+-->
+
 <xsl:template match="*">
   <xsl:message terminate="no">
     WARNING: Unmatched element: <xsl:value-of select="name()"/>
@@ -17,8 +23,12 @@
 </xsl:template>
   
   
-  <!-- ******************************* BLOCKS ******************************* -->
-
+<!-- 
+*******************************
+BLOCKS
+******************************* 
+-->
+  
 <xsl:template match="book">
 <html>
   <xsl:copy-of select="document('')/*/@xsi:schemaLocation"/>
@@ -73,8 +83,50 @@
       <xsl:apply-templates select="title"/>
     </h1>
     <xsl:apply-templates select="*[not(self::title)]"/>
+    
+    <!-- Footnote list at end of section -->
+    <!-- Eventually need to add param to specify outputting as footnotes or endnotes -->
+    <!-- See http://www.microhowto.info/howto/create_a_list_of_numbered_footnotes_using_xslt.html -->
+    <!--<xsl:if test="//footnote">
+      <div>
+       <xsl:attribute name="data-type">footnotes</xsl:attribute>
+        <xsl:apply-templates select="self::*//footnote" mode="footnote"/>
+      </div>
+    </xsl:if>-->
   </section>
 </xsl:template>
+  
+<!-- Footnote list items -->
+<!--<xsl:template match="footnote" mode="footnote">
+  <aside>
+      <xsl:attribute name="data-type">footnote</xsl:attribute>
+      <sup>
+        <a>
+          <xsl:attribute name="href">
+            <xsl:text>#</xsl:text><!-\- @id to matching footnote in text -\->
+          </xsl:attribute>
+          <!-\- Generate unique id -\->
+          <xsl:number level="any" count="footnote" format="1"/> <!-\- To Do: level should not be "any" -\->
+        </a>
+      </sup>
+      <xsl:apply-templates/>
+  </aside>
+</xsl:template>-->
+  
+<!-- Footnote links in text -->
+<!--<xsl:template match="footnote">
+  <a>
+    <xsl:attribute name="href">
+      <xsl:text>#</xsl:text><!-\- Add link to footnote list item id -\->
+    </xsl:attribute>
+    <xsl:attribute name="id">
+      <!-\- Generate unique id -\->
+    </xsl:attribute>
+    <xsl:attribute name="data-type">noteref</xsl:attribute>
+    <!-\- No superscript according to spec page. Okay? -\->
+    <xsl:number level="any" count="footnote" format="1"/>
+  </a>
+</xsl:template>-->
  
 <xsl:template match="para | simpara">
   <p>
@@ -166,14 +218,21 @@
   </div>
 </xsl:template>
 
-<xsl:template match="blockquote">
+<xsl:template match="blockquote | epigraph">
   <!-- TODO: Test this. -->
   <blockquote>
     <xsl:call-template name="process-id"/>
-    <xsl:attribute name="cite"><xsl:apply-templates select="attribution"/></xsl:attribute>
+    <xsl:if test="self::epigraph">
+      <xsl:attribute name="data-type">epigraph</xsl:attribute>
+    </xsl:if>
+    <xsl:if test="attribution">
+      <xsl:attribute name="cite"><xsl:apply-templates select="attribution"/></xsl:attribute>
+    </xsl:if>
     <xsl:apply-templates select="*[not(self::title)]"/>
   </blockquote>
 </xsl:template>
+  
+ 
 
 <!-- Used apply-templates for all title output, to retain any child elements. Have to then specifically 
    output both text and child elements of title here -->
@@ -291,7 +350,11 @@
 </xsl:template>
   
   
-  <!-- ******************************* INLINES ******************************* -->
+<!-- 
+*******************************
+INLINES
+******************************* 
+-->
 
 <!-- ToDo: Test inlines within inlines okay (e.g., constant width bold <strong><code>).  -->
 <xsl:template match="literal"><code><xsl:apply-templates/></code></xsl:template>
@@ -321,7 +384,7 @@
     <xsl:attribute name="data-type">noteref</xsl:attribute>
   </a>
 </xsl:template>-->
-  <xsl:template match="footnote"></xsl:template>
+  <xsl:template match="footnote"/>
   
 <xsl:template match="xref">
   <xsl:variable name="label">
@@ -341,7 +404,6 @@
       <xsl:otherwise/>
     </xsl:choose>
   </xsl:variable>
-  
   <xsl:variable name="count">
     <xsl:for-each select="id(@linkend)">
       <xsl:if test="self::part"><xsl:number count="part" level="any" format="1"/></xsl:if>
@@ -406,15 +468,17 @@
       </xsl:if>
     </xsl:for-each>
   </xsl:variable>
-  
   <a href="#{@linkend}">
     <xsl:value-of select="$label"/><xsl:value-of select="$count"/>
   </a>
 </xsl:template>
-
-<!--<xsl:template match="xref[id(@linkend)[self::chapter]]"></xsl:template>-->
   
-  <!-- ******************************* NAMED TEMPLATES ******************************* -->
+  
+<!-- 
+*******************************
+NAMED TEMPLATES
+******************************* 
+-->
   
 <xsl:template name="meta">
   <xsl:if test="bookinfo/isbn">
@@ -541,8 +605,12 @@
   </section>
 </xsl:template>
 
-  
-  <!-- ******************************* MISC ******************************* -->
+
+<!-- 
+*******************************
+MISC
+******************************* 
+-->
   
 <xsl:template name="process-id">
   <xsl:if test="@id">
@@ -553,8 +621,13 @@
 <!-- Don't output --> 
 <xsl:template match="bookinfo"/>
   
-  <!-- ******************************* TO DO ******************************* -->
-
+  
+<!-- 
+*******************************
+TO DO
+******************************* 
+-->
+  
 <xsl:template match="index"/>
 <xsl:template match="indexterm"/>
 <xsl:template match="bibliography"/>
