@@ -127,7 +127,6 @@ BLOCKS
       <!-\- Generate unique id -\->
     </xsl:attribute>
     <xsl:attribute name="data-type">noteref</xsl:attribute>
-    <!-\- No superscript according to spec page. Okay? -\->
     <xsl:number level="any" count="footnote" format="1"/>
   </a>
 </xsl:template>-->
@@ -321,32 +320,35 @@ BLOCKS
     <xsl:if test="title">
       <caption><xsl:apply-templates select="title"/></caption>
     </xsl:if>
-    <!-- TODO: Add handling for colgroup -->
-    <!-- TODO: Add handling for entry attributes like align, etc. -->
-    <thead>
-      <xsl:apply-templates select="tgroup/thead"/>
-    </thead>
-    <tbody>
-      <xsl:apply-templates select="tgroup/tbody"/>
-    </tbody>
+    <!-- TODO: Add handling for colspec -->
+    <xsl:apply-templates select="*[not(self::title)]"/> 
   </table>
 </xsl:template>
+<xsl:template match="table/tgroup/thead | informaltable/tgroup/thead">
+<thead>
+  <xsl:apply-templates/>
+</thead>
+</xsl:template>
+<xsl:template match="table/tgroup/tbody | informaltable/tgroup/tbody">
+<tbody>
+  <xsl:apply-templates/>
+</tbody>
+</xsl:template>
 <xsl:template match="row">
-  <tr><xsl:apply-templates/></tr>
+<tr><xsl:apply-templates/></tr>
 </xsl:template>
 <xsl:template match="entry">
-  <xsl:choose>
-    <xsl:when test="ancestor::thead">
-      <th><xsl:value-of select="para/text()"/><xsl:apply-templates/></th>
-    </xsl:when>
-    <xsl:otherwise>
-      <td><xsl:value-of select="text()"/><xsl:apply-templates/></td>
-    </xsl:otherwise>
-  </xsl:choose>
+<!-- TODO: Add handling for entry attributes like align, etc. -->
+<xsl:choose>
+  <xsl:when test="ancestor::thead">
+    <!-- No p elements inside table heads -->
+    <th><xsl:apply-templates select="para/text() | para/*"/></th>
+  </xsl:when>
+  <xsl:otherwise>
+    <td><xsl:apply-templates/></td>
+  </xsl:otherwise>
+</xsl:choose>
 </xsl:template>
-  <!-- thead cannot contain p elements -->
-  <!-- Find a better way to handle this. -->
-  <xsl:template match="thead/row/entry/para"/>
   
 <!-- Remarks -->
 <xsl:template match="remark">
