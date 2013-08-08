@@ -96,6 +96,10 @@ BLOCKS
   </section>
 </xsl:template>
   
+  <!-- Commenting out footnotes for now; further discussion is needed before proceeding. -->
+  <xsl:template match="footnote"/> 
+  <xsl:template match="footnoteref"/>
+  
 <!-- Footnote list items -->
 <!--<xsl:template match="footnote" mode="footnote">
   <aside>
@@ -123,7 +127,6 @@ BLOCKS
       <!-\- Generate unique id -\->
     </xsl:attribute>
     <xsl:attribute name="data-type">noteref</xsl:attribute>
-    <!-\- No superscript according to spec page. Okay? -\->
     <xsl:number level="any" count="footnote" format="1"/>
   </a>
 </xsl:template>-->
@@ -291,7 +294,7 @@ BLOCKS
   <figure>
     <xsl:call-template name="process-id"/>
     <!-- Output float attribute? -->
-    <figcaption><xsl:apply-templates select="title"/></figcaption>
+    <xsl:if test="title"><figcaption><xsl:apply-templates select="title"/></figcaption></xsl:if>
     <img>
       <xsl:attribute name="src">
         <xsl:choose>
@@ -309,6 +312,18 @@ BLOCKS
     </img>
   </figure>
 </xsl:template>
+  <xsl:template match="inlinemediaobject">
+    <img>
+      <xsl:attribute name="src">
+      <xsl:choose>
+        <xsl:when test="imageobject[@role='web']">
+          <xsl:value-of select="imageobject[@role='web']/imagedata/@fileref"/>
+        </xsl:when>
+        <xsl:otherwise><xsl:value-of select="imageobject/imagedata/@fileref"/></xsl:otherwise>
+      </xsl:choose>
+      </xsl:attribute>
+    </img>
+  </xsl:template>
   
 <!-- Tables -->
 <xsl:template match="table | informaltable">
@@ -317,32 +332,35 @@ BLOCKS
     <xsl:if test="title">
       <caption><xsl:apply-templates select="title"/></caption>
     </xsl:if>
-    <!-- TODO: Add handling for colgroup -->
-    <!-- TODO: Add handling for entry attributes like align, etc. -->
-    <thead>
-      <xsl:apply-templates select="tgroup/thead"/>
-    </thead>
-    <tbody>
-      <xsl:apply-templates select="tgroup/tbody"/>
-    </tbody>
+    <!-- TODO: Add handling for colspec -->
+    <xsl:apply-templates select="*[not(self::title)]"/> 
   </table>
 </xsl:template>
+<xsl:template match="table/tgroup/thead | informaltable/tgroup/thead">
+<thead>
+  <xsl:apply-templates/>
+</thead>
+</xsl:template>
+<xsl:template match="table/tgroup/tbody | informaltable/tgroup/tbody">
+<tbody>
+  <xsl:apply-templates/>
+</tbody>
+</xsl:template>
 <xsl:template match="row">
-  <tr><xsl:apply-templates/></tr>
+<tr><xsl:apply-templates/></tr>
 </xsl:template>
 <xsl:template match="entry">
-  <xsl:choose>
-    <xsl:when test="ancestor::thead">
-      <th><xsl:value-of select="para/text()"/><xsl:apply-templates/></th>
-    </xsl:when>
-    <xsl:otherwise>
-      <td><xsl:value-of select="text()"/><xsl:apply-templates/></td>
-    </xsl:otherwise>
-  </xsl:choose>
+<!-- TODO: Add handling for entry attributes like align, etc. -->
+<xsl:choose>
+  <xsl:when test="ancestor::thead">
+    <!-- No p elements inside table heads -->
+    <th><xsl:apply-templates select="para/text() | para/*"/></th>
+  </xsl:when>
+  <xsl:otherwise>
+    <td><xsl:apply-templates/></td>
+  </xsl:otherwise>
+</xsl:choose>
 </xsl:template>
-  <!-- thead cannot contain p elements -->
-  <!-- Find a better way to handle this. -->
-  <xsl:template match="thead/row/entry/para"/>
   
 <!-- Remarks -->
 <xsl:template match="remark">
@@ -356,14 +374,15 @@ INLINES
 ******************************* 
 -->
 
-<!-- ToDo: Test inlines within inlines okay (e.g., constant width bold <strong><code>).  -->
 <xsl:template match="literal"><code><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="emphasis"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="emphasis[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
 <xsl:template match="superscript"><sup><xsl:apply-templates/></sup></xsl:template>
 <xsl:template match="subscript"><sub><xsl:apply-templates/></sub></xsl:template>
+<xsl:template match="replaceable"><em><code><xsl:apply-templates/></code></em></xsl:template>
+<xsl:template match="userinput"><strong><code><xsl:apply-templates/></code></strong></xsl:template>
   
-<xsl:template match="emphasis[@role='strikethrough']">
+<xsl:template match="emphasis[@role='strikethrough'] | phrase[@role='strikethrough']">
   <span>
     <xsl:attribute name="data-type">strikethrough</xsl:attribute>
     <xsl:apply-templates/>
@@ -377,14 +396,6 @@ INLINES
     <xsl:apply-templates/>
   </a>
 </xsl:template>
-  
-<!--<xsl:template match="footnote">
-  <a>
-    <xsl:attribute name="href"></xsl:attribute>
-    <xsl:attribute name="data-type">noteref</xsl:attribute>
-  </a>
-</xsl:template>-->
-  <xsl:template match="footnote"/>
   
 <xsl:template match="xref">
   <xsl:variable name="label">
@@ -628,22 +639,29 @@ TO DO
 ******************************* 
 -->
   
+<xsl:template match="part"/>
 <xsl:template match="index"/>
 <xsl:template match="indexterm"/>
 <xsl:template match="bibliography"/>
 <xsl:template match="glossary"/>
+<xsl:template match="equation"/>
+<xsl:template match="inlineequation"/>
   
   <!-- don't know spec -->
+<xsl:template match="informalfigure"/> <!-- figcaption is required for figure element -->
 <xsl:template match="prefaceinfo"/>
+<xsl:template match="partintro"/>
 <xsl:template match="simplelist"/>
 <xsl:template match="link"/>
 <xsl:template match="co"/>
 <xsl:template match="calloutlist"/>
 <xsl:template match="epigraph"/>
+<xsl:template match="refentry"/>
 <xsl:template match="phrase[@role='keep-together']"><xsl:apply-templates/></xsl:template>
   <!-- Spec for other PIs -->
 
 <!-- inlines -->
+<!-- Should these use something like <span data-type="email">? -->
 <xsl:template match="email"><xsl:apply-templates/></xsl:template>
 <xsl:template match="application"><xsl:apply-templates/></xsl:template>
 <xsl:template match="filename"><xsl:apply-templates/></xsl:template>
