@@ -96,6 +96,10 @@ BLOCKS
   </section>
 </xsl:template>
   
+  <!-- Commenting out footnotes for now; further discussion is needed before proceeding. -->
+  <xsl:template match="footnote"/> 
+  <xsl:template match="footnoteref"/>
+  
 <!-- Footnote list items -->
 <!--<xsl:template match="footnote" mode="footnote">
   <aside>
@@ -377,14 +381,6 @@ INLINES
     <xsl:apply-templates/>
   </a>
 </xsl:template>
-  
-<!--<xsl:template match="footnote">
-  <a>
-    <xsl:attribute name="href"></xsl:attribute>
-    <xsl:attribute name="data-type">noteref</xsl:attribute>
-  </a>
-</xsl:template>-->
-  <xsl:template match="footnote"/>
   
 <xsl:template match="xref">
   <xsl:variable name="label">
