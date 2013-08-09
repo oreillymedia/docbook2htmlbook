@@ -235,6 +235,42 @@ BLOCKS
   </blockquote>
 </xsl:template>
 
+<!-- Glossary -->
+<xsl:template match="glossary">
+  <section>
+    <xsl:call-template name="process-id"/>
+    <xsl:attribute name="data-type">glossary</xsl:attribute>
+    <h1><xsl:apply-templates select="title"/></h1>
+    <xsl:apply-templates select="*[not(self::title)]"/>
+  </section>
+</xsl:template>
+  <!-- No glossdiv info on spec page; check this handling is okay with toolchain -->
+<xsl:template match="glossdiv">
+  <div>
+    <xsl:attribute name="data-type">glossdiv</xsl:attribute>
+    <h2><xsl:apply-templates select="title"/></h2>
+    <xsl:apply-templates select="*[not(self::title)]"/>
+  </div>
+</xsl:template>
+<xsl:template match="glossentry">
+  <dl>
+    <xsl:attribute name="data-type">glossary</xsl:attribute>
+    <xsl:apply-templates/>
+  </dl>
+</xsl:template>
+<xsl:template match="glossterm">
+  <dt>
+    <xsl:attribute name="data-type">glossterm</xsl:attribute>
+    <dfn><xsl:apply-templates/></dfn>
+  </dt>
+</xsl:template>
+<xsl:template match="glossdef">
+  <dd>
+    <xsl:attribute name="data-type">glossdef</xsl:attribute>
+    <xsl:apply-templates/>
+  </dd>
+</xsl:template>
+
 <!-- Titles -->
 <xsl:template match="title">
   <xsl:apply-templates select="./text()|./*"/>
@@ -335,7 +371,7 @@ BLOCKS
     <xsl:if test="title">
       <caption><xsl:apply-templates select="title"/></caption>
     </xsl:if>
-    <!-- TODO: Add handling for colspec -->
+    <!-- TODO: Add handling for colspec? -->
     <xsl:apply-templates select="*[not(self::title)]"/> 
   </table>
 </xsl:template>
@@ -368,6 +404,39 @@ BLOCKS
 </xsl:choose>
 </xsl:template>
   
+<!-- Indexterms -->
+<xsl:template match="indexterm">
+  <a>
+    <xsl:attribute name="data-type">indexterm</xsl:attribute>
+    <!-- Question: output @id? -->
+    <!-- To Do: startofrange and endofrange -->
+    <xsl:if test="primary">
+      <xsl:attribute name="data-primary"><xsl:value-of select="primary"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="secondary">
+      <xsl:attribute name="data-secondary"><xsl:value-of select="secondary"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="tertiary">
+      <xsl:attribute name="data-tertiary"><xsl:value-of select="secondary"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="primary/@sortas">
+      <xsl:attribute name="data-primary-sortas"><xsl:value-of select="primary/@sortas"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="seondary/@sortas">
+      <xsl:attribute name="data-secondary-sortas"><xsl:value-of select="secondary/@sortas"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="tertiary/@sortas">
+      <xsl:attribute name="data-tertiary-sortas"><xsl:value-of select="tertiary/@sortas"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="see">
+      <xsl:attribute name="data-see"><xsl:value-of select="see"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="seealso">
+      <xsl:attribute name="data-seealso"><xsl:value-of select="seealso"/></xsl:attribute>
+    </xsl:if>
+  </a>
+</xsl:template>
+  
 <!-- Remarks -->
 <xsl:template match="remark">
   <xsl:comment><xsl:apply-templates/></xsl:comment>
@@ -387,12 +456,15 @@ INLINES
 <xsl:template match="subscript"><sub><xsl:apply-templates/></sub></xsl:template>
 <xsl:template match="replaceable"><em><code><xsl:apply-templates/></code></em></xsl:template>
 <xsl:template match="userinput"><strong><code><xsl:apply-templates/></code></strong></xsl:template>
+<xsl:template match="firstterm"><span data-type="firstterm"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="email"><em><xsl:apply-templates/></em></xsl:template>
+<xsl:template match="filename"><em><xsl:apply-templates/></em></xsl:template>
+<xsl:template match="citetitle"><em><xsl:apply-templates/></em></xsl:template>
+<xsl:template match="acronym"><span data-type="acronym"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="function"><code><xsl:apply-templates/></code></xsl:template>
   
 <xsl:template match="emphasis[@role='strikethrough'] | phrase[@role='strikethrough']">
-  <span>
-    <xsl:attribute name="data-type">strikethrough</xsl:attribute>
-    <xsl:apply-templates/>
-  </span>
+  <span data-type="strikethrough"><xsl:apply-templates/></span>
 </xsl:template>
   
 <xsl:template match="ulink | link">
@@ -653,16 +725,13 @@ TO DO
 ******************************* 
 -->
 
-<!-- Question: Should this script generate the full index, or is that done later in the toolchain? -->
-<xsl:template match="index"/>  
-<xsl:template match="indexterm"/>
-<xsl:template match="bibliography"/>
-<xsl:template match="glossary"/>
-<!-- Question: Does HTMLBook have handling for latex equations? -->
-<xsl:template match="equation"/>  
+  <xsl:template match="index"/>  <!-- Question: Should this script generate the full index, or is that done later in the toolchain? -->
+<!--<xsl:template match="bibliography"/>
+<xsl:template match="equation"/>  <!-\- Question: Does HTMLBook have handling for latex equations? -\->
 <xsl:template match="inlineequation"/>
-  <xsl:template match="literallayout"/>
-  <xsl:template match="formalpara"/>
+<xsl:template match="literallayout"/>
+<xsl:template match="formalpara"/>-->
+<xsl:template match="application"><xsl:apply-templates/></xsl:template>
   
   <!-- don't know spec -->
   
@@ -673,14 +742,8 @@ TO DO
 <xsl:template match="co"/>
 <xsl:template match="calloutlist"/>
 <xsl:template match="refentry"/>
+<xsl:template match="lineannotation"/> <!-- Comments in code -->
 <xsl:template match="phrase[@role='keep-together']"><xsl:apply-templates/></xsl:template>
   <!-- Spec for other PIs -->
-
-<!-- inlines -->
-<!-- Should these use something like <span data-type="email">? -->
-<xsl:template match="email"><xsl:apply-templates/></xsl:template>
-<xsl:template match="application"><xsl:apply-templates/></xsl:template>
-<xsl:template match="filename"><xsl:apply-templates/></xsl:template>
-<xsl:template match="citetitle"><xsl:apply-templates/></xsl:template>
   
 </xsl:stylesheet>
