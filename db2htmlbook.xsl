@@ -22,6 +22,8 @@ Output warning and all elements not handled by this stylesheet yet.
   <xsl:apply-templates/>
 </xsl:template>
   
+<!-- To Do: Enable file chunking -->
+  
   
 <!-- 
 *******************************
@@ -303,6 +305,9 @@ BLOCKS
       <xsl:if test="mediaobject/imageobject/imagedata[@width]">
         <xsl:attribute name="width"><xsl:value-of select="mediaobject/imageobject/imagedata/@width"/></xsl:attribute>
       </xsl:if>
+      <xsl:if test="mediaobject/imageobject/imagedata[@height]">
+        <xsl:attribute name="height"><xsl:value-of select="mediaobject/imageobject/imagedata/@height"/></xsl:attribute>
+      </xsl:if>
       <xsl:if test="mediaobject/textobject">
         <!-- Use value-of for alt text, so no child elements are output in alt attribute -->
         <xsl:attribute name="alt"><xsl:value-of select="mediaobject/textobject/phrase"/></xsl:attribute>
@@ -333,6 +338,9 @@ BLOCKS
     <!-- TODO: Add handling for colspec -->
     <xsl:apply-templates select="*[not(self::title)]"/> 
   </table>
+</xsl:template>
+<xsl:template match="tgroup">
+  <xsl:apply-templates/>
 </xsl:template>
 <xsl:template match="table/tgroup/thead | informaltable/tgroup/thead">
 <thead>
@@ -418,7 +426,7 @@ INLINES
       <xsl:when test="id(@linkend)[self::sidebar]"><xsl:text> "</xsl:text><xsl:value-of select="id(@linkend)/title"/><xsl:text>"</xsl:text></xsl:when>
       <xsl:when test="id(@linkend)[self::sidebar | self::sect1 | self::sect2 | self::sect3 | self::sect4 | self::sect5 | self::sect6 | self::section]">
         <xsl:text> "</xsl:text><xsl:value-of select="id(@linkend)/title"/><xsl:text>"</xsl:text></xsl:when>
-      <xsl:otherwise/>
+      <xsl:otherwise><xsl:text>???</xsl:text></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   <xsl:variable name="count">
@@ -645,14 +653,19 @@ TO DO
 ******************************* 
 -->
 
-<xsl:template match="index"/>
+<!-- Question: Should this script generate the full index, or is that done later in the toolchain? -->
+<xsl:template match="index"/>  
 <xsl:template match="indexterm"/>
 <xsl:template match="bibliography"/>
 <xsl:template match="glossary"/>
-<xsl:template match="equation"/>
+<!-- Question: Does HTMLBook have handling for latex equations? -->
+<xsl:template match="equation"/>  
 <xsl:template match="inlineequation"/>
+  <xsl:template match="literallayout"/>
+  <xsl:template match="formalpara"/>
   
   <!-- don't know spec -->
+  
 <xsl:template match="informalfigure"/> <!-- figcaption is required for figure element -->
 <xsl:template match="prefaceinfo"/>
 <xsl:template match="partintro"/>
