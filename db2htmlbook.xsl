@@ -408,8 +408,10 @@ BLOCKS
 <xsl:template match="indexterm">
   <a>
     <xsl:attribute name="data-type">indexterm</xsl:attribute>
+    <xsl:if test="@id"><xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute></xsl:if>
     <!-- Question: output @id? -->
-    <!-- To Do: startofrange and endofrange -->
+    <!-- Question: any startofrange output necessary, or just data-startrefref for endofrange (as is below)? -->
+    <!-- Question: How to handle indexterms that occur outside of paras or other containing elements. They are invalid according to xsd file -->
     <xsl:if test="primary">
       <xsl:attribute name="data-primary"><xsl:value-of select="primary"/></xsl:attribute>
     </xsl:if>
@@ -433,6 +435,9 @@ BLOCKS
     </xsl:if>
     <xsl:if test="seealso">
       <xsl:attribute name="data-seealso"><xsl:value-of select="seealso"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="@class='endofrange'">
+      <xsl:attribute name="data-startref"><xsl:value-of select="@startref"/></xsl:attribute>
     </xsl:if>
   </a>
 </xsl:template>
