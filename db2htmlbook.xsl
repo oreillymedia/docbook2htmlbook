@@ -53,7 +53,6 @@ BLOCKS
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">part</xsl:attribute>
     <h1>
-      <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h1>
     <xsl:apply-templates select="*[not(self::title)]"/>
@@ -645,8 +644,7 @@ MISC
 TO DO
 ******************************* 
 -->
-  
-<xsl:template match="part"/>
+
 <xsl:template match="index"/>
 <xsl:template match="indexterm"/>
 <xsl:template match="bibliography"/>
@@ -661,7 +659,6 @@ TO DO
 <xsl:template match="simplelist"/>
 <xsl:template match="co"/>
 <xsl:template match="calloutlist"/>
-<xsl:template match="epigraph"/>
 <xsl:template match="refentry"/>
 <xsl:template match="phrase[@role='keep-together']"><xsl:apply-templates/></xsl:template>
   <!-- Spec for other PIs -->
