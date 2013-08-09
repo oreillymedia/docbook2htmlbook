@@ -22,6 +22,8 @@ Output warning and all elements not handled by this stylesheet yet.
   <xsl:apply-templates/>
 </xsl:template>
   
+<!-- To Do: Enable file chunking -->
+  
   
 <!-- 
 *******************************
@@ -53,7 +55,6 @@ BLOCKS
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">part</xsl:attribute>
     <h1>
-      <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="title"/>
     </h1>
     <xsl:apply-templates select="*[not(self::title)]"/>
@@ -222,7 +223,6 @@ BLOCKS
 </xsl:template>
 
 <xsl:template match="blockquote | epigraph">
-  <!-- TODO: Test this. -->
   <blockquote>
     <xsl:call-template name="process-id"/>
     <xsl:if test="self::epigraph">
@@ -234,14 +234,46 @@ BLOCKS
     <xsl:apply-templates select="*[not(self::title)]"/>
   </blockquote>
 </xsl:template>
-  
- 
 
-<!-- Used apply-templates for all title output, to retain any child elements. Have to then specifically 
-   output both text and child elements of title here -->
+<!-- Glossary -->
+<xsl:template match="glossary">
+  <section>
+    <xsl:call-template name="process-id"/>
+    <xsl:attribute name="data-type">glossary</xsl:attribute>
+    <h1><xsl:apply-templates select="title"/></h1>
+    <xsl:apply-templates select="*[not(self::title)]"/>
+  </section>
+</xsl:template>
+  <!-- No glossdiv info on spec page; check this handling is okay with toolchain -->
+<xsl:template match="glossdiv">
+  <div>
+    <xsl:attribute name="data-type">glossdiv</xsl:attribute>
+    <h2><xsl:apply-templates select="title"/></h2>
+    <xsl:apply-templates select="*[not(self::title)]"/>
+  </div>
+</xsl:template>
+<xsl:template match="glossentry">
+  <dl>
+    <xsl:attribute name="data-type">glossary</xsl:attribute>
+    <xsl:apply-templates/>
+  </dl>
+</xsl:template>
+<xsl:template match="glossterm">
+  <dt>
+    <xsl:attribute name="data-type">glossterm</xsl:attribute>
+    <dfn><xsl:apply-templates/></dfn>
+  </dt>
+</xsl:template>
+<xsl:template match="glossdef">
+  <dd>
+    <xsl:attribute name="data-type">glossdef</xsl:attribute>
+    <xsl:apply-templates/>
+  </dd>
+</xsl:template>
+
+<!-- Titles -->
 <xsl:template match="title">
-  <xsl:value-of select="title/text()"/>
-  <xsl:apply-templates/>
+  <xsl:apply-templates select="./text()|./*"/>
 </xsl:template>
   
 <!-- Lists -->
@@ -293,7 +325,9 @@ BLOCKS
 <xsl:template match="figure">
   <figure>
     <xsl:call-template name="process-id"/>
-    <!-- Output float attribute? -->
+    <xsl:if test="@float">
+      <xsl:attribute name="float"><xsl:value-of select="@float"/></xsl:attribute>
+    </xsl:if>
     <xsl:if test="title"><figcaption><xsl:apply-templates select="title"/></figcaption></xsl:if>
     <img>
       <xsl:attribute name="src">
@@ -304,7 +338,12 @@ BLOCKS
           <xsl:otherwise><xsl:value-of select="mediaobject/imageobject/imagedata/@fileref"/></xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
-      <!-- TODO: Test fig alt text -->
+      <xsl:if test="mediaobject/imageobject/imagedata[@width]">
+        <xsl:attribute name="width"><xsl:value-of select="mediaobject/imageobject/imagedata/@width"/></xsl:attribute>
+      </xsl:if>
+      <xsl:if test="mediaobject/imageobject/imagedata[@height]">
+        <xsl:attribute name="height"><xsl:value-of select="mediaobject/imageobject/imagedata/@height"/></xsl:attribute>
+      </xsl:if>
       <xsl:if test="mediaobject/textobject">
         <!-- Use value-of for alt text, so no child elements are output in alt attribute -->
         <xsl:attribute name="alt"><xsl:value-of select="mediaobject/textobject/phrase"/></xsl:attribute>
@@ -332,9 +371,12 @@ BLOCKS
     <xsl:if test="title">
       <caption><xsl:apply-templates select="title"/></caption>
     </xsl:if>
-    <!-- TODO: Add handling for colspec -->
+    <!-- TODO: Add handling for colspec? -->
     <xsl:apply-templates select="*[not(self::title)]"/> 
   </table>
+</xsl:template>
+<xsl:template match="tgroup">
+  <xsl:apply-templates/>
 </xsl:template>
 <xsl:template match="table/tgroup/thead | informaltable/tgroup/thead">
 <thead>
@@ -362,6 +404,44 @@ BLOCKS
 </xsl:choose>
 </xsl:template>
   
+<!-- Indexterms -->
+<xsl:template match="indexterm">
+  <a>
+    <xsl:attribute name="data-type">indexterm</xsl:attribute>
+    <xsl:if test="@id"><xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute></xsl:if>
+    <!-- Question: output @id? -->
+    <!-- Question: any startofrange output necessary, or just data-startrefref for endofrange (as is below)? -->
+    <!-- Question: How to handle indexterms that occur outside of paras or other containing elements. They are invalid according to xsd file -->
+    <xsl:if test="primary">
+      <xsl:attribute name="data-primary"><xsl:value-of select="primary"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="secondary">
+      <xsl:attribute name="data-secondary"><xsl:value-of select="secondary"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="tertiary">
+      <xsl:attribute name="data-tertiary"><xsl:value-of select="secondary"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="primary/@sortas">
+      <xsl:attribute name="data-primary-sortas"><xsl:value-of select="primary/@sortas"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="seondary/@sortas">
+      <xsl:attribute name="data-secondary-sortas"><xsl:value-of select="secondary/@sortas"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="tertiary/@sortas">
+      <xsl:attribute name="data-tertiary-sortas"><xsl:value-of select="tertiary/@sortas"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="see">
+      <xsl:attribute name="data-see"><xsl:value-of select="see"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="seealso">
+      <xsl:attribute name="data-seealso"><xsl:value-of select="seealso"/></xsl:attribute>
+    </xsl:if>
+    <xsl:if test="@class='endofrange'">
+      <xsl:attribute name="data-startref"><xsl:value-of select="@startref"/></xsl:attribute>
+    </xsl:if>
+  </a>
+</xsl:template>
+  
 <!-- Remarks -->
 <xsl:template match="remark">
   <xsl:comment><xsl:apply-templates/></xsl:comment>
@@ -381,20 +461,31 @@ INLINES
 <xsl:template match="subscript"><sub><xsl:apply-templates/></sub></xsl:template>
 <xsl:template match="replaceable"><em><code><xsl:apply-templates/></code></em></xsl:template>
 <xsl:template match="userinput"><strong><code><xsl:apply-templates/></code></strong></xsl:template>
+<xsl:template match="firstterm"><span data-type="firstterm"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="email"><em><xsl:apply-templates/></em></xsl:template>
+<xsl:template match="filename"><em><xsl:apply-templates/></em></xsl:template>
+<xsl:template match="citetitle"><em><xsl:apply-templates/></em></xsl:template>
+<xsl:template match="acronym"><span data-type="acronym"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="function"><code><xsl:apply-templates/></code></xsl:template>
   
 <xsl:template match="emphasis[@role='strikethrough'] | phrase[@role='strikethrough']">
-  <span>
-    <xsl:attribute name="data-type">strikethrough</xsl:attribute>
-    <xsl:apply-templates/>
-  </span>
+  <span data-type="strikethrough"><xsl:apply-templates/></span>
 </xsl:template>
   
-<xsl:template match="ulink">
-  <!-- Is this right, or should it be <link>? -->
-  <!-- URLs will render correctly as is below. But if there are any internal links, they'll need a hash before them. Check this. -->
-  <a href="{@url}">
-    <xsl:apply-templates/>
-  </a>
+<xsl:template match="ulink | link">
+  <!-- Is this right, or should they use the <link> element? -->
+  <xsl:choose>
+    <xsl:when test="self::link">
+      <a href="#{@linkend}">
+        <xsl:apply-templates/>
+      </a>
+    </xsl:when>
+    <xsl:otherwise>
+      <a href="{@url}">
+        <xsl:apply-templates/>
+      </a>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
   
 <xsl:template match="xref">
@@ -412,7 +503,7 @@ INLINES
       <xsl:when test="id(@linkend)[self::sidebar]"><xsl:text> "</xsl:text><xsl:value-of select="id(@linkend)/title"/><xsl:text>"</xsl:text></xsl:when>
       <xsl:when test="id(@linkend)[self::sidebar | self::sect1 | self::sect2 | self::sect3 | self::sect4 | self::sect5 | self::sect6 | self::section]">
         <xsl:text> "</xsl:text><xsl:value-of select="id(@linkend)/title"/><xsl:text>"</xsl:text></xsl:when>
-      <xsl:otherwise/>
+      <xsl:otherwise><xsl:text>???</xsl:text></xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
   <xsl:variable name="count">
@@ -638,33 +729,26 @@ MISC
 TO DO
 ******************************* 
 -->
-  
-<xsl:template match="part"/>
-<xsl:template match="index"/>
-<xsl:template match="indexterm"/>
-<xsl:template match="bibliography"/>
-<xsl:template match="glossary"/>
-<xsl:template match="equation"/>
+
+  <xsl:template match="index"/>  <!-- Question: Should this script generate the full index, or is that done later in the toolchain? -->
+<!--<xsl:template match="bibliography"/>
+<xsl:template match="equation"/>  <!-\- Question: Does HTMLBook have handling for latex equations? -\->
 <xsl:template match="inlineequation"/>
+<xsl:template match="literallayout"/>
+<xsl:template match="formalpara"/>-->
+<xsl:template match="application"><xsl:apply-templates/></xsl:template>
   
   <!-- don't know spec -->
+  
 <xsl:template match="informalfigure"/> <!-- figcaption is required for figure element -->
 <xsl:template match="prefaceinfo"/>
 <xsl:template match="partintro"/>
 <xsl:template match="simplelist"/>
-<xsl:template match="link"/>
 <xsl:template match="co"/>
 <xsl:template match="calloutlist"/>
-<xsl:template match="epigraph"/>
 <xsl:template match="refentry"/>
+<xsl:template match="lineannotation"/> <!-- Comments in code -->
 <xsl:template match="phrase[@role='keep-together']"><xsl:apply-templates/></xsl:template>
   <!-- Spec for other PIs -->
-
-<!-- inlines -->
-<!-- Should these use something like <span data-type="email">? -->
-<xsl:template match="email"><xsl:apply-templates/></xsl:template>
-<xsl:template match="application"><xsl:apply-templates/></xsl:template>
-<xsl:template match="filename"><xsl:apply-templates/></xsl:template>
-<xsl:template match="citetitle"><xsl:apply-templates/></xsl:template>
   
 </xsl:stylesheet>
