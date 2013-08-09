@@ -222,7 +222,6 @@ BLOCKS
 </xsl:template>
 
 <xsl:template match="blockquote | epigraph">
-  <!-- TODO: Test this. -->
   <blockquote>
     <xsl:call-template name="process-id"/>
     <xsl:if test="self::epigraph">
@@ -234,14 +233,10 @@ BLOCKS
     <xsl:apply-templates select="*[not(self::title)]"/>
   </blockquote>
 </xsl:template>
-  
- 
 
-<!-- Used apply-templates for all title output, to retain any child elements. Have to then specifically 
-   output both text and child elements of title here -->
+<!-- Titles -->
 <xsl:template match="title">
-  <xsl:value-of select="title/text()"/>
-  <xsl:apply-templates/>
+  <xsl:apply-templates select="./text()|./*"/>
 </xsl:template>
   
 <!-- Lists -->
@@ -293,7 +288,9 @@ BLOCKS
 <xsl:template match="figure">
   <figure>
     <xsl:call-template name="process-id"/>
-    <!-- Output float attribute? -->
+    <xsl:if test="@float">
+      <xsl:attribute name="float"><xsl:value-of select="@float"/></xsl:attribute>
+    </xsl:if>
     <xsl:if test="title"><figcaption><xsl:apply-templates select="title"/></figcaption></xsl:if>
     <img>
       <xsl:attribute name="src">
@@ -304,7 +301,9 @@ BLOCKS
           <xsl:otherwise><xsl:value-of select="mediaobject/imageobject/imagedata/@fileref"/></xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
-      <!-- TODO: Test fig alt text -->
+      <xsl:if test="mediaobject/imageobject/imagedata[@width]">
+        <xsl:attribute name="width"><xsl:value-of select="mediaobject/imageobject/imagedata/@width"/></xsl:attribute>
+      </xsl:if>
       <xsl:if test="mediaobject/textobject">
         <!-- Use value-of for alt text, so no child elements are output in alt attribute -->
         <xsl:attribute name="alt"><xsl:value-of select="mediaobject/textobject/phrase"/></xsl:attribute>
@@ -389,12 +388,20 @@ INLINES
   </span>
 </xsl:template>
   
-<xsl:template match="ulink">
-  <!-- Is this right, or should it be <link>? -->
-  <!-- URLs will render correctly as is below. But if there are any internal links, they'll need a hash before them. Check this. -->
-  <a href="{@url}">
-    <xsl:apply-templates/>
-  </a>
+<xsl:template match="ulink | link">
+  <!-- Is this right, or should they use the <link> element? -->
+  <xsl:choose>
+    <xsl:when test="self::link">
+      <a href="#{@linkend}">
+        <xsl:apply-templates/>
+      </a>
+    </xsl:when>
+    <xsl:otherwise>
+      <a href="{@url}">
+        <xsl:apply-templates/>
+      </a>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
   
 <xsl:template match="xref">
@@ -652,7 +659,6 @@ TO DO
 <xsl:template match="prefaceinfo"/>
 <xsl:template match="partintro"/>
 <xsl:template match="simplelist"/>
-<xsl:template match="link"/>
 <xsl:template match="co"/>
 <xsl:template match="calloutlist"/>
 <xsl:template match="epigraph"/>
