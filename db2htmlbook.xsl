@@ -35,7 +35,7 @@ BLOCKS
 <html>
   <xsl:copy-of select="document('')/*/@xsi:schemaLocation"/>
   <head>
-    <title><xsl:value-of select="title"/></title>  <!-- TO DO: Apply templates here? -->
+    <title><xsl:apply-templates select="title"/></title>
     <xsl:call-template name="meta"/>
   </head>
   <body>
