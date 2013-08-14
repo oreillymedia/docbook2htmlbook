@@ -35,7 +35,7 @@ BLOCKS
 <html>
   <xsl:copy-of select="document('')/*/@xsi:schemaLocation"/>
   <head>
-    <title><xsl:value-of select="title"/></title>
+    <title><xsl:apply-templates select="title"/></title>
     <xsl:call-template name="meta"/>
   </head>
   <body>
@@ -44,7 +44,7 @@ BLOCKS
     <h1><xsl:apply-templates select="title"/></h1>
     <xsl:call-template name="titlepage"/>
     <xsl:call-template name="copyrightpage"/>
-    <!-- Question: TOC needed, or is it generated later? -->
+    <!-- TO DO: Add parametrized TOC for optional output -->
     <xsl:apply-templates select="*[not(self::title)]"/>
   </body>
 </html>
@@ -84,53 +84,19 @@ BLOCKS
       <xsl:apply-templates select="title"/>
     </h1>
     <xsl:apply-templates select="*[not(self::title)]"/>
-    
-    <!-- Footnote list at end of section -->
-    <!-- Eventually need to add param to specify outputting as footnotes or endnotes -->
-    <!-- See http://www.microhowto.info/howto/create_a_list_of_numbered_footnotes_using_xslt.html -->
-    <!--<xsl:if test="//footnote">
-      <div>
-       <xsl:attribute name="data-type">footnotes</xsl:attribute>
-        <xsl:apply-templates select="self::*//footnote" mode="footnote"/>
-      </div>
-    </xsl:if>-->
   </section>
 </xsl:template>
   
-  <!-- Commenting out footnotes for now; further discussion is needed before proceeding. -->
-  <xsl:template match="footnote"/> 
-  <xsl:template match="footnoteref"/>
-  
-<!-- Footnote list items -->
-<!--<xsl:template match="footnote" mode="footnote">
-  <aside>
-      <xsl:attribute name="data-type">footnote</xsl:attribute>
-      <sup>
-        <a>
-          <xsl:attribute name="href">
-            <xsl:text>#</xsl:text><!-\- @id to matching footnote in text -\->
-          </xsl:attribute>
-          <!-\- Generate unique id -\->
-          <xsl:number level="any" count="footnote" format="1"/> <!-\- To Do: level should not be "any" -\->
-        </a>
-      </sup>
-      <xsl:apply-templates/>
-  </aside>
-</xsl:template>-->
-  
-<!-- Footnote links in text -->
-<!--<xsl:template match="footnote">
-  <a>
-    <xsl:attribute name="href">
-      <xsl:text>#</xsl:text><!-\- Add link to footnote list item id -\->
-    </xsl:attribute>
-    <xsl:attribute name="id">
-      <!-\- Generate unique id -\->
-    </xsl:attribute>
-    <xsl:attribute name="data-type">noteref</xsl:attribute>
-    <xsl:number level="any" count="footnote" format="1"/>
-  </a>
-</xsl:template>-->
+<xsl:template match="footnote">
+  <span>
+    <xsl:attribute name="data-type">footnote</xsl:attribute>
+    <xsl:call-template name="process-id"/>
+    <xsl:for-each select="para">
+      <xsl:if test="not(position() = 1 )"><br/></xsl:if>
+      <xsl:apply-templates select="text() | *"/>
+    </xsl:for-each>
+  </span>
+</xsl:template> 
  
 <xsl:template match="para | simpara">
   <p>
@@ -408,10 +374,7 @@ BLOCKS
 <xsl:template match="indexterm">
   <a>
     <xsl:attribute name="data-type">indexterm</xsl:attribute>
-    <xsl:if test="@id"><xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute></xsl:if>
-    <!-- Question: output @id? -->
-    <!-- Question: any startofrange output necessary, or just data-startrefref for endofrange (as is below)? -->
-    <!-- Question: How to handle indexterms that occur outside of paras or other containing elements. They are invalid according to xsd file -->
+    <xsl:call-template name="process-id"/>
     <xsl:if test="primary">
       <xsl:attribute name="data-primary"><xsl:value-of select="primary"/></xsl:attribute>
     </xsl:if>
@@ -473,7 +436,6 @@ INLINES
 </xsl:template>
   
 <xsl:template match="ulink | link">
-  <!-- Is this right, or should they use the <link> element? -->
   <xsl:choose>
     <xsl:when test="self::link">
       <a href="#{@linkend}">
@@ -499,7 +461,7 @@ INLINES
       <xsl:when test="id(@linkend)[self::figure]"><xsl:text>Figure </xsl:text></xsl:when>
       <xsl:when test="id(@linkend)[self::table]"><xsl:text>Table </xsl:text></xsl:when>
       <xsl:when test="id(@linkend)[self::example]"><xsl:text>Example </xsl:text></xsl:when>
-      <!-- Note: Can't output page number as part of sidebar reference text (as in csspdf) -->
+      <!-- Note: Outputs only the sidebar title; Can't output page number as well (as in csspdf) -->
       <xsl:when test="id(@linkend)[self::sidebar]"><xsl:text> "</xsl:text><xsl:value-of select="id(@linkend)/title"/><xsl:text>"</xsl:text></xsl:when>
       <xsl:when test="id(@linkend)[self::sidebar | self::sect1 | self::sect2 | self::sect3 | self::sect4 | self::sect5 | self::sect6 | self::section]">
         <xsl:text> "</xsl:text><xsl:value-of select="id(@linkend)/title"/><xsl:text>"</xsl:text></xsl:when>
@@ -730,25 +692,16 @@ TO DO
 ******************************* 
 -->
 
-  <xsl:template match="index"/>  <!-- Question: Should this script generate the full index, or is that done later in the toolchain? -->
-<!--<xsl:template match="bibliography"/>
-<xsl:template match="equation"/>  <!-\- Question: Does HTMLBook have handling for latex equations? -\->
-<xsl:template match="inlineequation"/>
-<xsl:template match="literallayout"/>
-<xsl:template match="formalpara"/>-->
-<xsl:template match="application"><xsl:apply-templates/></xsl:template>
-  
-  <!-- don't know spec -->
-  
-<xsl:template match="informalfigure"/> <!-- figcaption is required for figure element -->
-<xsl:template match="prefaceinfo"/>
-<xsl:template match="partintro"/>
+<xsl:template match="footnoteref"/>
+<xsl:template match="index"/>  
 <xsl:template match="simplelist"/>
+<xsl:template match="formalpara"/>
 <xsl:template match="co"/>
 <xsl:template match="calloutlist"/>
 <xsl:template match="refentry"/>
-<xsl:template match="lineannotation"/> <!-- Comments in code -->
+<xsl:template match="equation | inlineequation | informalequation"/>
+<xsl:template match="lineannotation"/> <!-- Comments in code; Convert to co and calloutlist? -->
 <xsl:template match="phrase[@role='keep-together']"><xsl:apply-templates/></xsl:template>
-  <!-- Spec for other PIs -->
+<!-- Spec for other PIs -->
   
 </xsl:stylesheet>
