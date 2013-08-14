@@ -44,7 +44,7 @@ BLOCKS
     <h1><xsl:apply-templates select="title"/></h1>
     <xsl:call-template name="titlepage"/>
     <xsl:call-template name="copyrightpage"/>
-    <!-- Question: TOC needed, or is it generated later? -->
+    <!-- TO DO: Add parametrized TOC for optional output -->
     <xsl:apply-templates select="*[not(self::title)]"/>
   </body>
 </html>
@@ -97,9 +97,6 @@ BLOCKS
     </xsl:for-each>
   </span>
 </xsl:template> 
-  
-<!-- TO DO: Add handling for footnoteref -->
-<xsl:template match="footnoteref"/>
  
 <xsl:template match="para | simpara">
   <p>
@@ -695,14 +692,16 @@ TO DO
 ******************************* 
 -->
 
+<xsl:template match="footnoteref"/>
 <xsl:template match="index"/>  
-  
 <xsl:template match="simplelist"/>
+<xsl:template match="formalpara"/>
 <xsl:template match="co"/>
 <xsl:template match="calloutlist"/>
 <xsl:template match="refentry"/>
-<xsl:template match="lineannotation"/> <!-- Comments in code -->
+<xsl:template match="equation | inlineequation | informalequation"/>
+<xsl:template match="lineannotation"/> <!-- Comments in code; Convert to co and calloutlist? -->
 <xsl:template match="phrase[@role='keep-together']"><xsl:apply-templates/></xsl:template>
-  <!-- Spec for other PIs -->
+<!-- Spec for other PIs -->
   
 </xsl:stylesheet>
