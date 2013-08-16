@@ -195,9 +195,12 @@ BLOCKS
       <xsl:attribute name="data-type">epigraph</xsl:attribute>
     </xsl:if>
     <xsl:if test="attribution">
-      <xsl:attribute name="cite"><xsl:apply-templates select="attribution"/></xsl:attribute>
+      <p>
+        <xsl:attribute name="data-type">attribution</xsl:attribute>
+        <xsl:apply-templates select="attribution"/>
+      </p>
     </xsl:if>
-    <xsl:apply-templates select="*[not(self::title)]"/>
+    <xsl:apply-templates select="*[not(self::attribution)]"/>
   </blockquote>
 </xsl:template>
 
