@@ -291,7 +291,7 @@ BLOCKS
 </xsl:template>
   
 <!-- Figures -->
-<xsl:template match="figure">
+<xsl:template match="figure | informalfigure">
   <figure>
     <xsl:call-template name="process-id"/>
     <xsl:if test="@float">
