@@ -94,6 +94,61 @@ BLOCKS
     <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
   </section>
 </xsl:template>
+
+<!-- TO DO: Adjust prefacinfo byline output to match whatever we decide on for spec and internal convention -->
+<!-- TO DO: Test this more extensively on varied prefaceinfo markup structures -->
+<xsl:template match="prefaceinfo">
+  <div>
+    <xsl:attribute name="data-class">byline</xsl:attribute>
+    <p>
+      <xsl:attribute name="data-class">author</xsl:attribute>
+      <xsl:text>— </xsl:text>
+    <xsl:choose>
+      <xsl:when test="author">
+        <xsl:for-each select="author">
+          <xsl:if test="position()=last() and count(../author) > 2">
+            <xsl:text>and </xsl:text>
+          </xsl:if>
+          <xsl:if test="firstname"><xsl:value-of select="firstname"/><xsl:text> </xsl:text></xsl:if>
+          <xsl:if test="othername"><xsl:value-of select="othername"/><xsl:text> </xsl:text></xsl:if>
+          <xsl:if test="surname"><xsl:value-of select="surname"/></xsl:if>
+          <xsl:choose>
+            <!-- Only 2 authors -->
+            <xsl:when test="position() = 1 and count(../author) = 2">
+              <xsl:text> and </xsl:text>
+            </xsl:when>
+            <!-- More than 2 authors -->
+            <xsl:when test="not(position()=last()) and count(../author) > 2">
+              <xsl:text>, </xsl:text>
+            </xsl:when>
+          </xsl:choose>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:message>WARNING: Prefacinfo element without author element. Check rendering.</xsl:message>
+      </xsl:otherwise>
+    </xsl:choose>
+    </p>
+    <xsl:if test="author/affiliation">
+      <xsl:for-each select="author/affiliation">
+        <p>
+          <xsl:attribute name="data-class">affiliation</xsl:attribute>
+          <xsl:apply-templates select="jobtitle"/>
+        </p>
+      </xsl:for-each>
+    </xsl:if>
+    <xsl:if test="affiliation">
+      <xsl:for-each select="affiliation">
+        <p>
+          <xsl:attribute name="data-class">affiliation</xsl:attribute>
+          <xsl:apply-templates select="jobtitle"/>
+        </p>
+      </xsl:for-each>
+    </xsl:if>
+  </div>
+</xsl:template>
+  
+
   
 <!-- Titles -->
 <xsl:template match="title">
@@ -131,6 +186,7 @@ BLOCKS
   </span>
 </xsl:template> 
   
+<!-- TO DO: Check this after spec is decided upon -->
 <xsl:template match="footnoteref">
   <a href="{@linkend}">
     <xsl:attribute name="data-type">footnoteref</xsl:attribute>
@@ -471,6 +527,7 @@ INLINES
   <br />
 </xsl:template>
   
+<!-- TO DO: Check after spec is discussed -->
 <xsl:template match="lineannotation">
   <code>
     <xsl:attribute name="data-type">lineannotation</xsl:attribute>
@@ -484,6 +541,7 @@ INLINES
   </a>
 </xsl:template>
   
+<!-- TO DO: Check link after spec is discussed -->
 <xsl:template match="xref | link">
   <xsl:variable name="label">
     <xsl:choose>
