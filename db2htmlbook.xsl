@@ -446,6 +446,13 @@ INLINES
   <span data-type="strikethrough"><xsl:apply-templates/></span>
 </xsl:template>
   
+<xsl:template match="phrase[@role='keep-together']">
+  <span>
+    <xsl:attribute name="class">keep-together</xsl:attribute>
+    <xsl:apply-templates/>
+  </span>
+</xsl:template>
+  
 <xsl:template match="lineannotation">
   <code>
     <xsl:attribute name="data-type">lineannotation</xsl:attribute>
@@ -725,7 +732,6 @@ TO DO
 <xsl:template match="calloutlist"/>
 <xsl:template match="refentry"/>
 <xsl:template match="equation | inlineequation | informalequation"/>
-<xsl:template match="phrase[@role='keep-together']"><xsl:apply-templates/></xsl:template>
 <!-- Spec for other PIs -->
   
 </xsl:stylesheet>
