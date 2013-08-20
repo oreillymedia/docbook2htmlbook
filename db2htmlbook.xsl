@@ -446,6 +446,13 @@ INLINES
   <span data-type="strikethrough"><xsl:apply-templates/></span>
 </xsl:template>
   
+<xsl:template match="lineannotation">
+  <code>
+    <xsl:attribute name="data-type">lineannotation</xsl:attribute>
+    <xsl:apply-templates/>
+  </code>
+</xsl:template>
+  
 <xsl:template match="ulink">
   <a href="{@url}">
     <xsl:apply-templates/>
@@ -555,7 +562,7 @@ INLINES
   </a>
 </xsl:template>
   
-  
+
 <!-- 
 *******************************
 NAMED TEMPLATES
@@ -718,7 +725,6 @@ TO DO
 <xsl:template match="calloutlist"/>
 <xsl:template match="refentry"/>
 <xsl:template match="equation | inlineequation | informalequation"/>
-<xsl:template match="lineannotation"/> <!-- Comments in code; Convert to co and calloutlist? -->
 <xsl:template match="phrase[@role='keep-together']"><xsl:apply-templates/></xsl:template>
 <!-- Spec for other PIs -->
   
