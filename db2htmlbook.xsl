@@ -130,6 +130,12 @@ BLOCKS
     </xsl:for-each>
   </span>
 </xsl:template> 
+  
+<xsl:template match="footnoteref">
+  <a href="{@linkend}">
+    <xsl:attribute name="data-type">footnoteref</xsl:attribute>
+  </a>
+</xsl:template>
  
 <xsl:template match="para | simpara">
   <p>
@@ -735,8 +741,7 @@ MISC
 TO DO
 ******************************* 
 -->
-
-<xsl:template match="footnoteref"/>
+  
 <xsl:template match="index"/>  
 <xsl:template match="simplelist"/>
 <xsl:template match="formalpara"/>
