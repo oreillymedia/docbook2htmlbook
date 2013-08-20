@@ -461,6 +461,10 @@ INLINES
   <xsl:copy/>
 </xsl:template>
   
+<xsl:template match="processing-instruction('lb')">
+  <br />
+</xsl:template>
+  
 <xsl:template match="lineannotation">
   <code>
     <xsl:attribute name="data-type">lineannotation</xsl:attribute>
