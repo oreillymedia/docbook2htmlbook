@@ -53,7 +53,7 @@ BLOCKS
     <xsl:call-template name="titlepage"/>
     <xsl:call-template name="copyrightpage"/>
     <!-- TO DO: Add parametrized TOC for optional output -->
-    <xsl:apply-templates select="*[not(self::title)]"/>
+    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
   </body>
 </html>
 </xsl:template>
@@ -65,7 +65,7 @@ BLOCKS
     <h1>
       <xsl:apply-templates select="title"/>
     </h1>
-    <xsl:apply-templates select="*[not(self::title)]"/>
+    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
   </div>
 </xsl:template>
   
@@ -91,7 +91,7 @@ BLOCKS
     <h1>
       <xsl:apply-templates select="title"/>
     </h1>
-    <xsl:apply-templates select="*[not(self::title)]"/>
+    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
   </section>
 </xsl:template>
   
@@ -120,7 +120,7 @@ BLOCKS
     <h1>
       <xsl:apply-templates select="title"/>
     </h1>
-    <xsl:apply-templates select="*[not(self::title)]"/>
+    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
   </section>
 </xsl:template>
   
@@ -131,7 +131,7 @@ BLOCKS
     <h2>
       <xsl:apply-templates select="title"/>
     </h2>
-    <xsl:apply-templates select="*[not(self::title)]"/>
+    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
   </section>
 </xsl:template>
 
@@ -142,7 +142,7 @@ BLOCKS
     <h3>
       <xsl:apply-templates select="title"/>
     </h3>
-    <xsl:apply-templates select="*[not(self::title)]"/>
+    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
   </section>
 </xsl:template>
 
@@ -153,7 +153,7 @@ BLOCKS
     <h4>
       <xsl:apply-templates select="title"/>
     </h4>
-    <xsl:apply-templates select="*[not(self::title)]"/>
+    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
   </section>
 </xsl:template>
 
@@ -164,7 +164,7 @@ BLOCKS
     <h5>
       <xsl:apply-templates select="title"/>
     </h5>
-    <xsl:apply-templates select="*[not(self::title)]"/>
+    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
   </section>
 </xsl:template>
   
@@ -173,7 +173,7 @@ BLOCKS
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sidebar</xsl:attribute>
     <h5><xsl:apply-templates select="title"/></h5>
-    <xsl:apply-templates select="*[not(self::title)]"/>
+    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
   </aside>
 </xsl:template>
 
@@ -192,7 +192,7 @@ BLOCKS
       <xsl:attribute name="class">safarienabled</xsl:attribute>
     </xsl:if>
     <xsl:if test="title"><h1><xsl:apply-templates select="title"/></h1></xsl:if>
-    <xsl:apply-templates select="*[not(self::title)]"/>
+    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
   </div>
 </xsl:template>
 
@@ -208,7 +208,7 @@ BLOCKS
         <xsl:apply-templates select="attribution"/>
       </p>
     </xsl:if>
-    <xsl:apply-templates select="*[not(self::attribution)]"/>
+    <xsl:apply-templates select="*[not(self::attribution)] | processing-instruction()"/>
   </blockquote>
 </xsl:template>
 
@@ -226,7 +226,7 @@ BLOCKS
   <div>
     <xsl:attribute name="data-type">glossdiv</xsl:attribute>
     <h2><xsl:apply-templates select="title"/></h2>
-    <xsl:apply-templates select="*[not(self::title)]"/>
+    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
   </div>
 </xsl:template>
 <xsl:template match="glossentry">
@@ -349,7 +349,7 @@ BLOCKS
       <caption><xsl:apply-templates select="title"/></caption>
     </xsl:if>
     <!-- TODO: Add handling for colspec? -->
-    <xsl:apply-templates select="*[not(self::title)]"/> 
+    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/> 
   </table>
 </xsl:template>
 <xsl:template match="tgroup">
@@ -451,6 +451,10 @@ INLINES
     <xsl:attribute name="class">keep-together</xsl:attribute>
     <xsl:apply-templates/>
   </span>
+</xsl:template>
+  
+<xsl:template match="processing-instruction()">
+  <xsl:copy/>
 </xsl:template>
   
 <xsl:template match="lineannotation">
