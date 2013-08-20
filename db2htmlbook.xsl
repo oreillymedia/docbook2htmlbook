@@ -5,6 +5,14 @@
   xsi:schemaLocation="http://www.w3.org/1999/xhtml ../schema/htmlbook.xsd"
   xmlns="http://www.w3.org/1999/xhtml">
 <xsl:output method="xml" indent="yes"/>
+  
+<!-- 
+*******************************
+PARAMETERS:
+* xref_label outputs text labels of all xrefs
+******************************* 
+-->
+<xsl:param name="xref_label">false</xsl:param>
 
 
 <!-- 
@@ -536,7 +544,10 @@ INLINES
     </xsl:for-each>
   </xsl:variable>
   <a href="#{@linkend}">
-    <xsl:value-of select="$label"/><xsl:value-of select="$count"/>
+    <xsl:attribute name="data-type">xref</xsl:attribute>
+    <xsl:if test="$xref_label = 'true'">
+      <xsl:value-of select="$label"/><xsl:value-of select="$count"/>
+    </xsl:if>
   </a>
 </xsl:template>
   
