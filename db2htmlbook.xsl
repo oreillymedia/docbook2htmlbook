@@ -95,6 +95,31 @@ BLOCKS
   </section>
 </xsl:template>
   
+<!-- Titles -->
+<xsl:template match="title">
+  <xsl:choose>
+    <xsl:when test="parent::sect1">
+      <h1><xsl:apply-templates/></h1>
+    </xsl:when>
+    <xsl:when test="parent::sect2">
+      <h2><xsl:apply-templates/></h2>
+    </xsl:when>
+    <xsl:when test="parent::sect3">
+      <h3><xsl:apply-templates/></h3>
+    </xsl:when>
+    <xsl:when test="parent::sect4">
+      <h4><xsl:apply-templates/></h4>
+    </xsl:when>
+    <xsl:when test="parent::sect5">
+      <h5><xsl:apply-templates/></h5>
+    </xsl:when>
+    <xsl:when test="parent::sidebar">
+      <h5><xsl:apply-templates/></h5>
+    </xsl:when>
+    <xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+  
 <xsl:template match="footnote">
   <span>
     <xsl:attribute name="data-type">footnote</xsl:attribute>
@@ -117,10 +142,7 @@ BLOCKS
   <section>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect1</xsl:attribute>
-    <h1>
-      <xsl:apply-templates select="title"/>
-    </h1>
-    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+    <xsl:apply-templates/>
   </section>
 </xsl:template>
   
@@ -128,10 +150,7 @@ BLOCKS
   <section>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect2</xsl:attribute>
-    <h2>
-      <xsl:apply-templates select="title"/>
-    </h2>
-    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+    <xsl:apply-templates/>
   </section>
 </xsl:template>
 
@@ -139,10 +158,7 @@ BLOCKS
   <section>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect3</xsl:attribute>
-    <h3>
-      <xsl:apply-templates select="title"/>
-    </h3>
-    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+    <xsl:apply-templates/>
   </section>
 </xsl:template>
 
@@ -150,10 +166,7 @@ BLOCKS
   <section>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect4</xsl:attribute>
-    <h4>
-      <xsl:apply-templates select="title"/>
-    </h4>
-    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+    <xsl:apply-templates/>
   </section>
 </xsl:template>
 
@@ -161,10 +174,7 @@ BLOCKS
   <section>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect5</xsl:attribute>
-    <h5>
-      <xsl:apply-templates select="title"/>
-    </h5>
-    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+    <xsl:apply-templates/>
   </section>
 </xsl:template>
   
@@ -172,8 +182,7 @@ BLOCKS
   <aside>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sidebar</xsl:attribute>
-    <h5><xsl:apply-templates select="title"/></h5>
-    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+    <xsl:apply-templates/>
   </aside>
 </xsl:template>
 
@@ -246,11 +255,6 @@ BLOCKS
     <xsl:attribute name="data-type">glossdef</xsl:attribute>
     <xsl:apply-templates/>
   </dd>
-</xsl:template>
-
-<!-- Titles -->
-<xsl:template match="title">
-  <xsl:apply-templates select="./text()|./*"/>
 </xsl:template>
   
 <!-- Lists -->
