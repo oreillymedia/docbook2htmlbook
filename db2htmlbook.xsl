@@ -446,22 +446,13 @@ INLINES
   <span data-type="strikethrough"><xsl:apply-templates/></span>
 </xsl:template>
   
-<xsl:template match="ulink | link">
-  <xsl:choose>
-    <xsl:when test="self::link">
-      <a href="#{@linkend}">
-        <xsl:apply-templates/>
-      </a>
-    </xsl:when>
-    <xsl:otherwise>
-      <a href="{@url}">
-        <xsl:apply-templates/>
-      </a>
-    </xsl:otherwise>
-  </xsl:choose>
+<xsl:template match="ulink">
+  <a href="{@url}">
+    <xsl:apply-templates/>
+  </a>
 </xsl:template>
   
-<xsl:template match="xref">
+<xsl:template match="xref | link">
   <xsl:variable name="label">
     <xsl:choose>
       <!-- To Do: Test part rendering -->
@@ -544,10 +535,23 @@ INLINES
     </xsl:for-each>
   </xsl:variable>
   <a href="#{@linkend}">
-    <xsl:attribute name="data-type">xref</xsl:attribute>
-    <xsl:if test="$xref_label = 'true'">
-      <xsl:value-of select="$label"/><xsl:value-of select="$count"/>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="self::xref">
+        <xsl:attribute name="data-type">xref</xsl:attribute>
+      </xsl:when>
+      <xsl:when test="self::link">
+        <xsl:attribute name="data-type">link</xsl:attribute>
+      </xsl:when>
+    </xsl:choose>
+    <xsl:choose>
+      <xsl:when test="$xref_label = 'true'">
+        <xsl:value-of select="$label"/><xsl:value-of select="$count"/>
+      </xsl:when>
+      <xsl:when test="self::link">
+        <xsl:apply-templates/>
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
   </a>
 </xsl:template>
   
