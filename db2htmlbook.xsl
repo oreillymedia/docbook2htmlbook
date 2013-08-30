@@ -197,8 +197,16 @@ BLOCKS
 <xsl:template match="para | simpara">
   <xsl:choose>
     <!-- When itemizedlist is only child of a para element, ditch the para and keep the list. -->
-    <xsl:when test="itemizedlist[position() = 1] and not(node()[position() = 2])">
+    <xsl:when test="itemizedlist[position()=1] and not(text()[normalize-space()])">
       <xsl:apply-templates select="child::itemizedlist"/>
+    </xsl:when>
+    <!-- When table is only child of a para element, ditch the para and keep the table. -->
+    <xsl:when test="table[position()=1] and not(text()[normalize-space()])">
+      <xsl:apply-templates select="child::table"/>
+    </xsl:when>
+    <!-- When informaltable is only child of a para element, ditch the para and keep the table. -->
+    <xsl:when test="informaltable[position()=1] and not(text()[normalize-space()])">
+      <xsl:apply-templates select="child::informaltable"/>
     </xsl:when>
     <xsl:otherwise>
       <p>
