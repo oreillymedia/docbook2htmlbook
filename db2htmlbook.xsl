@@ -2,6 +2,7 @@
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mml="http://www.w3.org/1998/Math/MathML"
   xsi:schemaLocation="http://www.w3.org/1999/xhtml ../schema/htmlbook.xsd"
   xmlns="http://www.w3.org/1999/xhtml">
 <xsl:output method="xml" indent="yes"/>
@@ -194,10 +195,18 @@ BLOCKS
 </xsl:template>
  
 <xsl:template match="para | simpara">
-  <p>
-    <xsl:call-template name="process-id"/>
-    <xsl:apply-templates/>
-  </p>
+  <xsl:choose>
+    <!-- When itemizedlist is only child of a para element, ditch the para and keep the list. -->
+    <xsl:when test="itemizedlist[position() = 1] and not(node()[position() = 2])">
+      <xsl:apply-templates select="child::itemizedlist"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <p>
+        <xsl:call-template name="process-id"/>
+        <xsl:apply-templates/>
+      </p>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
   
 <xsl:template match="sect1">
@@ -283,6 +292,24 @@ BLOCKS
   </blockquote>
 </xsl:template>
 
+<!--<xsl:template match="equation | informalequation">
+  <xsl:choose>
+    <xsl:when test="self::inlineequation">
+      <!-\- To Do: Inlineequation handling not in spec yet. Check span is okay for output. -\->
+      <span>
+        <xsl:call-template name="process-equation"/>
+      </span>
+    </xsl:when>
+    <xsl:otherwise>
+      <div>
+        <xsl:call-template name="process-equation"/>
+      </div>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>-->
+  
+  <xsl:template match="equation | inlineequation | informalequation"></xsl:template>
+
 <!-- Glossary -->
 <xsl:template match="glossary">
   <section>
@@ -365,6 +392,7 @@ BLOCKS
 </xsl:template>
   
 <!-- Figures -->
+<!-- TO DO: Add informalfigure to schema. Currently this template creates invalid htmlbook -->
 <xsl:template match="figure | informalfigure">
   <figure>
     <xsl:call-template name="process-id"/>
@@ -494,7 +522,7 @@ INLINES
 ******************************* 
 -->
 
-<xsl:template match="literal"><code><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="literal | code"><code><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="emphasis"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="emphasis[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
 <xsl:template match="superscript"><sup><xsl:apply-templates/></sup></xsl:template>
@@ -777,18 +805,41 @@ NAMED TEMPLATES
   </section>
 </xsl:template>
 
+<xsl:template name="process-id">
+  <xsl:if test="@id">
+    <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="process-equation">
+  <xsl:call-template name="process-id"/>
+  <xsl:attribute name="data-type">equation</xsl:attribute>
+  <xsl:if test="title"><h5><xsl:apply-templates select="title"/></h5></xsl:if>
+  <xsl:choose>
+    <!-- To Do: Once spec for Latex is finished, review this is converting it correctly -->
+    <xsl:when test="mathphrase[@role='tex']">
+      <math>
+        <xsl:copy-of select="mathphrase/text() | mathphrase/*"/>
+      </math>
+    </xsl:when>
+    <xsl:when test="mathphrase[not(@role='tex')]">
+      <math>
+        <xsl:apply-templates select="mathphrase"/>
+      </math>
+    </xsl:when>
+    <xsl:when test="mml:*">
+      <math xmlns="http://www.w3.org/1998/Math/MathML">
+        <xsl:copy-of select="*"/>
+      </math>
+    </xsl:when>
+  </xsl:choose>
+</xsl:template>
 
 <!-- 
 *******************************
 MISC
 ******************************* 
 -->
-  
-<xsl:template name="process-id">
-  <xsl:if test="@id">
-    <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-  </xsl:if>
-</xsl:template>
  
 <!-- Don't output --> 
 <xsl:template match="bookinfo"/>
@@ -806,7 +857,6 @@ TO DO
 <xsl:template match="co"/>
 <xsl:template match="calloutlist"/>
 <xsl:template match="refentry"/>
-<xsl:template match="equation | inlineequation | informalequation"/>
 <!-- Spec for other PIs -->
   
 </xsl:stylesheet>
