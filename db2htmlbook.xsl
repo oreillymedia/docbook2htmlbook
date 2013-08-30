@@ -196,27 +196,88 @@ BLOCKS
  
 <xsl:template match="para | simpara">
   <xsl:choose>
-    <!-- When itemizedlist is only child of a para element, ditch the para and keep the list. -->
+    <!-- Lone block element nested inside a para with no other elements or text. Ditch the para and output only the nested element. -->
+    <!-- To Do: Can these be moved into a single xsl:when like below? -->
+    <xsl:when test="figure[position()=1] and not(text()[normalize-space()])">
+      <xsl:apply-templates select="child::figure"/>
+    </xsl:when>
+    <xsl:when test="informalfigure[position()=1] and not(text()[normalize-space()])">
+      <xsl:apply-templates select="child::informalfigure"/>
+    </xsl:when>
     <xsl:when test="itemizedlist[position()=1] and not(text()[normalize-space()])">
       <xsl:apply-templates select="child::itemizedlist"/>
     </xsl:when>
-    <!-- When table is only child of a para element, ditch the para and keep the table. -->
+    <xsl:when test="variablelist[position()=1] and not(text()[normalize-space()])">
+      <xsl:apply-templates select="child::variablelist"/>
+    </xsl:when>
+    <xsl:when test="orderedlist[position()=1] and not(text()[normalize-space()])">
+      <xsl:apply-templates select="child::orderedlist"/>
+    </xsl:when>
     <xsl:when test="table[position()=1] and not(text()[normalize-space()])">
       <xsl:apply-templates select="child::table"/>
     </xsl:when>
-    <!-- When informaltable is only child of a para element, ditch the para and keep the table. -->
     <xsl:when test="informaltable[position()=1] and not(text()[normalize-space()])">
       <xsl:apply-templates select="child::informaltable"/>
     </xsl:when>
-    <!-- When example is only child of a para element, ditch the para and keep the example. -->
     <xsl:when test="example[position()=1] and not(text()[normalize-space()])">
       <xsl:apply-templates select="child::example"/>
     </xsl:when>
+    <xsl:when test="equation[position()=1] and not(text()[normalize-space()])">
+      <xsl:apply-templates select="child::equation"/>
+    </xsl:when>
+    <xsl:when test="informalequation[position()=1] and not(text()[normalize-space()])">
+      <xsl:apply-templates select="child::informalequation"/>
+    </xsl:when>
+    <xsl:when test="note[position()=1] and not(text()[normalize-space()])">
+      <xsl:apply-templates select="child::note"/>
+    </xsl:when>
+    <xsl:when test="warning[position()=1] and not(text()[normalize-space()])">
+      <xsl:apply-templates select="child::warning"/>
+    </xsl:when>
+    <xsl:when test="tip[position()=1] and not(text()[normalize-space()])">
+      <xsl:apply-templates select="child::tip"/>
+    </xsl:when>
+    <xsl:when test="caution[position()=1] and not(text()[normalize-space()])">
+      <xsl:apply-templates select="child::caution"/>
+    </xsl:when>
+    <xsl:when test="programlisting[position()=1] and not(text()[normalize-space()])">
+      <xsl:apply-templates select="child::programlisting"/>
+    </xsl:when>
+    <!-- Otherwise output <p> -->
     <xsl:otherwise>
-      <p>
-        <xsl:call-template name="process-id"/>
-        <xsl:apply-templates/>
-      </p>
+      <xsl:choose>
+        <!-- If para contains any of these nested block elements, move them outside the <p> in the output. -->
+        <!-- To Do: This logic will not take into account if one of these block elements falls in the middle of a para, with text on either side. Need to add handling for that so it will split the para into separate <p> elements surrounding the block element. -->
+        <xsl:when test="figure | informalfigure | itemizedlist | variablelist | orderedlist | note | warning | tip | caution | table | informaltable | example | equation | informalequation | programlisting">
+          <p>
+            <xsl:call-template name="process-id"/>
+            <xsl:apply-templates select="node()[
+              not(self::figure) and
+              not(self::informalfigure) and
+              not(self::itemizedlist) and
+              not(self::variablelist) and
+              not(self::orderedlist) and
+              not(self::note) and 
+              not(self::warning) and
+              not(self::tip) and
+              not(self::caution) and
+              not(self::table) and 
+              not(self::informaltable) and 
+              not(self::example) and 
+              not(self::equation) and 
+              not(self::informalequation) and 
+              not(self::programlisting)]"/>
+          </p>
+          <xsl:apply-templates select="figure | informalfigure | itemizedlist | variablelist | orderedlist | note | warning | tip | caution | table | informaltable | example | equation | informalequation | programlisting"/>
+        </xsl:when>
+        <!-- Otherwise process para normally -->
+        <xsl:otherwise>
+          <p>
+            <xsl:call-template name="process-id"/>
+            <xsl:apply-templates/>
+          </p>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -304,23 +365,70 @@ BLOCKS
   </blockquote>
 </xsl:template>
 
-<!--<xsl:template match="equation | informalequation">
-  <xsl:choose>
-    <xsl:when test="self::inlineequation">
-      <!-\- To Do: Inlineequation handling not in spec yet. Check span is okay for output. -\->
-      <span>
-        <xsl:call-template name="process-equation"/>
-      </span>
-    </xsl:when>
-    <xsl:otherwise>
-      <div>
-        <xsl:call-template name="process-equation"/>
-      </div>
-    </xsl:otherwise>
-  </xsl:choose>
-</xsl:template>-->
-  
-  <xsl:template match="equation | inlineequation | informalequation"></xsl:template>
+<!-- Equations -->
+  <!-- Inline Equations -->
+  <xsl:template match="inlineequation">
+    <xsl:choose>
+      <!-- Latex -->
+      <!-- To Do: Test inline latex equations -->
+      <xsl:when test="mathphrase[@role='tex']">
+        <span>
+          <xsl:attribute name="data-type">latex</xsl:attribute>
+          <xsl:copy-of select="mathphrase/text() | mathphrase/*"/>
+        </span>
+      </xsl:when>
+      <!-- MathML -->
+      <xsl:when test="mml:*">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <xsl:copy-of select="node()"/>
+        </math>
+      </xsl:when>
+      <!-- Regular mathphrase equation -->
+      <!-- To Do: Test regular inline equations -->
+      <xsl:when test="mathphrase[not(@role='tex')]">
+        <math>
+          <xsl:copy-of select="node()"/>
+        </math>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
+  <!-- Block Equations -->
+  <xsl:template match="equation | informalequation">
+      <xsl:choose>
+        <!-- Latex -->
+        <xsl:when test="mathphrase[@role='tex']">
+          <xsl:call-template name="process-id"/>
+          <xsl:if test="title"><h5><xsl:apply-templates select="title"/></h5></xsl:if>
+          <p>
+            <xsl:attribute name="data-type">latex</xsl:attribute>
+            <xsl:copy-of select="mathphrase/text() | mathphrase/*"/>
+          </p>
+        </xsl:when>
+        <!-- MathML -->
+        <xsl:when test="mml:*">
+          <div>
+            <xsl:call-template name="process-id"/>
+            <xsl:attribute name="data-type">equation</xsl:attribute>
+            <xsl:if test="title"><h5><xsl:apply-templates select="title"/></h5></xsl:if>
+            <math xmlns="http://www.w3.org/1998/Math/MathML">
+              <xsl:copy-of select="*[not(self::title)] | processing-instruction()"/>
+            </math>
+          </div>
+        </xsl:when>
+        <!-- Regular mathphrase equation -->
+        <!-- To Do: Check this is the correct output for regular equations -->
+        <xsl:when test="mathphrase[not(@role='tex')]">
+          <div>
+            <xsl:call-template name="process-id"/>
+            <xsl:attribute name="data-type">equation</xsl:attribute>
+            <xsl:if test="title"><h5><xsl:apply-templates select="title"/></h5></xsl:if>
+            <p>
+              <xsl:apply-templates select="mathphrase"/>
+            </p>
+          </div>
+        </xsl:when>
+      </xsl:choose>
+</xsl:template>
 
 <!-- Glossary -->
 <xsl:template match="glossary">
@@ -399,7 +507,7 @@ BLOCKS
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">example</xsl:attribute>
     <h5><xsl:apply-templates select="title"/></h5>
-    <xsl:apply-templates select="node()"/>
+    <xsl:apply-templates select="node()[not(self::title)] | processing-instruction()"/>
   </div>
 </xsl:template>
   
@@ -412,6 +520,8 @@ BLOCKS
       <xsl:attribute name="float"><xsl:value-of select="@float"/></xsl:attribute>
     </xsl:if>
     <xsl:if test="title"><figcaption><xsl:apply-templates select="title"/></figcaption></xsl:if>
+    <!-- To Do: Once handling is added to schema to allow figure without a figcaption, remove xsl:if below this comment. (It outputs an empty figcaption element for figures that don't have a title, to trick the schema. -->
+    <xsl:if test="not(title)"><figcaption/></xsl:if>
     <img>
       <xsl:attribute name="src">
         <xsl:choose>
@@ -821,30 +931,6 @@ NAMED TEMPLATES
   <xsl:if test="@id">
     <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
   </xsl:if>
-</xsl:template>
-
-<xsl:template name="process-equation">
-  <xsl:call-template name="process-id"/>
-  <xsl:attribute name="data-type">equation</xsl:attribute>
-  <xsl:if test="title"><h5><xsl:apply-templates select="title"/></h5></xsl:if>
-  <xsl:choose>
-    <!-- To Do: Once spec for Latex is finished, review this is converting it correctly -->
-    <xsl:when test="mathphrase[@role='tex']">
-      <math>
-        <xsl:copy-of select="mathphrase/text() | mathphrase/*"/>
-      </math>
-    </xsl:when>
-    <xsl:when test="mathphrase[not(@role='tex')]">
-      <math>
-        <xsl:apply-templates select="mathphrase"/>
-      </math>
-    </xsl:when>
-    <xsl:when test="mml:*">
-      <math xmlns="http://www.w3.org/1998/Math/MathML">
-        <xsl:copy-of select="*"/>
-      </math>
-    </xsl:when>
-  </xsl:choose>
 </xsl:template>
 
 <!-- 
