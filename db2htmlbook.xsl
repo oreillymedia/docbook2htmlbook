@@ -208,6 +208,10 @@ BLOCKS
     <xsl:when test="informaltable[position()=1] and not(text()[normalize-space()])">
       <xsl:apply-templates select="child::informaltable"/>
     </xsl:when>
+    <!-- When example is only child of a para element, ditch the para and keep the example. -->
+    <xsl:when test="example[position()=1] and not(text()[normalize-space()])">
+      <xsl:apply-templates select="child::example"/>
+    </xsl:when>
     <xsl:otherwise>
       <p>
         <xsl:call-template name="process-id"/>
@@ -395,7 +399,7 @@ BLOCKS
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">example</xsl:attribute>
     <h5><xsl:apply-templates select="title"/></h5>
-    <xsl:apply-templates select="programlisting"/>
+    <xsl:apply-templates select="node()"/>
   </div>
 </xsl:template>
   
