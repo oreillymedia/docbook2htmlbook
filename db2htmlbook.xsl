@@ -654,29 +654,26 @@ INLINES
 <xsl:template match="replaceable"><em><code><xsl:apply-templates/></code></em></xsl:template>
 <xsl:template match="userinput"><strong><code><xsl:apply-templates/></code></strong></xsl:template>
 <xsl:template match="firstterm"><span data-type="firstterm"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="email"><em><xsl:apply-templates/></em></xsl:template>
-<xsl:template match="filename"><em><xsl:apply-templates/></em></xsl:template>
+<xsl:template match="email"><em data-type="email"><xsl:apply-templates/></em></xsl:template>
+<xsl:template match="filename"><code data-type="filename"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="citetitle"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="acronym"><span data-type="acronym"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="function"><code><xsl:apply-templates/></code></xsl:template>
-  
-<xsl:template match="emphasis[@role='strikethrough'] | phrase[@role='strikethrough']">
-  <span data-type="strikethrough"><xsl:apply-templates/></span>
-</xsl:template>
-  
-<xsl:template match="phrase[@role='keep-together']">
+<xsl:template match="function"><code data-type="function"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="phrase[@role='keep-together']"><span class="keep-together"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="processing-instruction()"><xsl:copy/></xsl:template>
+<xsl:template match="processing-instruction('lb')"><br /></xsl:template>
+
+<!-- To Do: Currently retaining value of @remap (unicode character value) for symbol element in a class. Okay? -->
+<xsl:template match="symbol">
   <span>
-    <xsl:attribute name="class">keep-together</xsl:attribute>
+    <xsl:attribute name="data-type">symbol</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="@remap"/></xsl:attribute>
     <xsl:apply-templates/>
   </span>
 </xsl:template>
   
-<xsl:template match="processing-instruction()">
-  <xsl:copy/>
-</xsl:template>
-  
-<xsl:template match="processing-instruction('lb')">
-  <br />
+<xsl:template match="emphasis[@role='strikethrough'] | phrase[@role='strikethrough']">
+  <span data-type="strikethrough"><xsl:apply-templates/></span>
 </xsl:template>
   
 <!-- TO DO: Check after spec is discussed -->
