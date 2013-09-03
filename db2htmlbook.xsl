@@ -70,7 +70,9 @@ BLOCKS
   </div>
 </xsl:template>
   
-<!-- TODO: Partintro; What element should this convert to? -->
+<xsl:template match="partintro">
+  <xsl:apply-templates/>
+</xsl:template>
   
 <xsl:template match="chapter | preface | appendix | colophon | dedication">
   <section>
