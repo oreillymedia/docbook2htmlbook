@@ -380,7 +380,7 @@ BLOCKS
       <!-- MathML -->
       <xsl:when test="mml:*">
         <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <xsl:copy-of select="node()"/>
+          <xsl:copy-of select="mml:math/node()"/>
         </math>
       </xsl:when>
       <!-- Regular mathphrase equation -->
@@ -411,7 +411,7 @@ BLOCKS
             <xsl:attribute name="data-type">equation</xsl:attribute>
             <xsl:if test="title"><h5><xsl:apply-templates select="title"/></h5></xsl:if>
             <math xmlns="http://www.w3.org/1998/Math/MathML">
-              <xsl:copy-of select="*[not(self::title)] | processing-instruction()"/>
+              <xsl:copy-of select="mml:math/node()"/>
             </math>
           </div>
         </xsl:when>
