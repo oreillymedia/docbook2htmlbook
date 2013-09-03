@@ -495,10 +495,12 @@ BLOCKS
 </xsl:template>
 
 <!-- Code Blocks -->
-<xsl:template match="programlisting | screen">
+<xsl:template match="programlisting | screen | literallayout">
   <pre>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">programlisting</xsl:attribute>
+    <!-- To Do: Check this special literallayout class is the best way to handle this element -->
+    <xsl:if test="self::literallayout"><xsl:attribute name="class">literallayout</xsl:attribute></xsl:if>
     <xsl:apply-templates/>
   </pre>
 </xsl:template>
