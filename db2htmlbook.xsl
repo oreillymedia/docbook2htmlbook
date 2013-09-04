@@ -455,6 +455,7 @@ BLOCKS
   <pre>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">programlisting</xsl:attribute>
+    <xsl:if test="@language"><xsl:attribute name="data-code-language"><xsl:value-of select="@language"/></xsl:attribute></xsl:if>
     <!-- To Do: Check this special literallayout class is the best way to handle this element -->
     <xsl:if test="self::literallayout"><xsl:attribute name="class">literallayout</xsl:attribute></xsl:if>
     <xsl:apply-templates/>
