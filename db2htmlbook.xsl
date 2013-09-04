@@ -24,10 +24,7 @@ Output warning and all elements not handled by this stylesheet yet.
 -->
 
 <xsl:template match="*">
-  <xsl:message terminate="no">
-    WARNING: Unmatched element: <xsl:value-of select="name()"/>
-  </xsl:message>
-  
+  <xsl:message terminate="no">WARNING: Unmatched element: <xsl:value-of select="name()"/></xsl:message>
   <xsl:apply-templates/>
 </xsl:template>
   
@@ -66,7 +63,7 @@ BLOCKS
     <h1>
       <xsl:apply-templates select="title"/>
     </h1>
-    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+    <xsl:apply-templates select="node()[not(self::title)]"/>
   </div>
 </xsl:template>
   
@@ -94,18 +91,17 @@ BLOCKS
     <h1>
       <xsl:apply-templates select="title"/>
     </h1>
-    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+    <xsl:apply-templates select="node()[not(self::title)]"/>
   </section>
 </xsl:template>
 
 <!-- TO DO: Adjust prefacinfo byline output to match whatever we decide on for spec and internal convention -->
 <!-- TO DO: Test this more extensively on varied prefaceinfo markup structures -->
-<xsl:template match="prefaceinfo">
+<xsl:template match="prefaceinfo | chapterinfo">
   <div>
     <xsl:attribute name="data-class">byline</xsl:attribute>
     <p>
       <xsl:attribute name="data-class">author</xsl:attribute>
-      <xsl:text>— </xsl:text>
     <xsl:choose>
       <xsl:when test="author">
         <xsl:for-each select="author">
@@ -150,32 +146,8 @@ BLOCKS
     </xsl:if>
   </div>
 </xsl:template>
-  
-
-  
-<!-- Titles -->
-<xsl:template match="title">
-  <xsl:choose>
-    <xsl:when test="parent::sect1">
-      <h1><xsl:apply-templates/></h1>
-    </xsl:when>
-    <xsl:when test="parent::sect2">
-      <h2><xsl:apply-templates/></h2>
-    </xsl:when>
-    <xsl:when test="parent::sect3">
-      <h3><xsl:apply-templates/></h3>
-    </xsl:when>
-    <xsl:when test="parent::sect4">
-      <h4><xsl:apply-templates/></h4>
-    </xsl:when>
-    <xsl:when test="parent::sect5">
-      <h5><xsl:apply-templates/></h5>
-    </xsl:when>
-    <xsl:when test="parent::sidebar">
-      <h5><xsl:apply-templates/></h5>
-    </xsl:when>
-    <xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
-  </xsl:choose>
+<xsl:template match="jobtitle">
+  <xsl:apply-templates/>
 </xsl:template>
   
 <xsl:template match="footnote">
@@ -197,52 +169,68 @@ BLOCKS
 </xsl:template>
   
 <xsl:template match="para | simpara">
-        <p>
-          <xsl:call-template name="process-id"/>
-          <xsl:apply-templates/>
-        </p>
+  <!-- Begin error handling for block elements nested in para/simpara that will cause invalid HTMLBook output -->
+  <xsl:if test="count(screen) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: screen</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(figure) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: figure</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(informalfigure) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: informalfigure</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(programlisting) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: programlisting</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(orderedlist) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: orderedlist</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(itemizedlist) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: itemizedlist</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(variablelist) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: variablelist</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(table) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: table</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(informaltable) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: informaltable</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(example) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: example</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(equation) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: equation</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(informalequation) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: informalequation</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(note) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: note</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(warning) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: warning</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(tip) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: tip</xsl:message>
+  </xsl:if>
+  <xsl:if test="count(caution) > 0">
+    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: caution</xsl:message>
+  </xsl:if>
+  <!-- End error handling for nested block elements -->
+  <p>
+    <xsl:call-template name="process-id"/>
+    <xsl:apply-templates/>
+  </p>
 </xsl:template>
-  
-<!-- For lone block elements nested inside a para with no other elements or text, ditch the para and output only the nested element. -->
-  <xsl:template match="
-    para[figure[position()=1] and not(text()[normalize-space()])] | 
-    para[informalfigure[position()=1] and not(text()[normalize-space()])] |
-    para[itemizedlist[position()=1] and not(text()[normalize-space()])] |
-    para[variablelist[position()=1] and not(text()[normalize-space()])] |
-    para[orderedlist[position()=1] and not(text()[normalize-space()])] |
-    para[table[position()=1] and not(text()[normalize-space()])] |
-    para[informaltable[position()=1] and not(text()[normalize-space()])] |
-    para[example[position()=1] and not(text()[normalize-space()])] |
-    para[equation[position()=1] and not(text()[normalize-space()])] |
-    para[informalequation[position()=1] and not(text()[normalize-space()])] |
-    para[note[position()=1] and not(text()[normalize-space()])] |
-    para[warning[position()=1] and not(text()[normalize-space()])] |
-    para[tip[position()=1] and not(text()[normalize-space()])] |
-    para[caution[position()=1] and not(text()[normalize-space()])] |
-    para[programlisting[position()=1] and not(text()[normalize-space()])] |
-    simpara[figure[position()=1] and not(text()[normalize-space()])] | 
-    simpara[informalfigure[position()=1] and not(text()[normalize-space()])] |
-    simpara[itemizedlist[position()=1] and not(text()[normalize-space()])] |
-    simpara[variablelist[position()=1] and not(text()[normalize-space()])] |
-    simpara[orderedlist[position()=1] and not(text()[normalize-space()])] |
-    simpara[table[position()=1] and not(text()[normalize-space()])] |
-    simpara[informaltable[position()=1] and not(text()[normalize-space()])] |
-    simpara[example[position()=1] and not(text()[normalize-space()])] |
-    simpara[equation[position()=1] and not(text()[normalize-space()])] |
-    simpara[informalequation[position()=1] and not(text()[normalize-space()])] |
-    simpara[note[position()=1] and not(text()[normalize-space()])] |
-    simpara[warning[position()=1] and not(text()[normalize-space()])] |
-    simpara[tip[position()=1] and not(text()[normalize-space()])] |
-    simpara[caution[position()=1] and not(text()[normalize-space()])] |
-    simpara[programlisting[position()=1] and not(text()[normalize-space()])]">
-    <xsl:apply-templates select="node()[not(para)] | node()[not(simpara)]"/>
-  </xsl:template>
   
 <xsl:template match="sect1">
   <section>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect1</xsl:attribute>
-    <xsl:apply-templates/>
+    <h1><xsl:apply-templates select="title"/></h1>
+    <xsl:apply-templates select="node()[not(self::title)]"/>
   </section>
 </xsl:template>
   
@@ -250,7 +238,8 @@ BLOCKS
   <section>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect2</xsl:attribute>
-    <xsl:apply-templates/>
+    <h2><xsl:apply-templates select="title"/></h2>
+    <xsl:apply-templates select="node()[not(self::title)]"/>
   </section>
 </xsl:template>
 
@@ -258,7 +247,8 @@ BLOCKS
   <section>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect3</xsl:attribute>
-    <xsl:apply-templates/>
+    <h3><xsl:apply-templates select="title"/></h3>
+    <xsl:apply-templates select="node()[not(self::title)]"/>
   </section>
 </xsl:template>
 
@@ -266,7 +256,8 @@ BLOCKS
   <section>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect4</xsl:attribute>
-    <xsl:apply-templates/>
+    <h4><xsl:apply-templates select="title"/></h4>
+    <xsl:apply-templates select="node()[not(self::title)]"/>
   </section>
 </xsl:template>
 
@@ -274,7 +265,8 @@ BLOCKS
   <section>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sect5</xsl:attribute>
-    <xsl:apply-templates/>
+    <h5><xsl:apply-templates select="title"/></h5>
+    <xsl:apply-templates select="node()[not(self::title)]"/>
   </section>
 </xsl:template>
   
@@ -282,11 +274,12 @@ BLOCKS
   <aside>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">sidebar</xsl:attribute>
-    <xsl:apply-templates/>
+    <h5><xsl:apply-templates select="title"/></h5>
+    <xsl:apply-templates select="node()[not(self::title)]"/>
   </aside>
 </xsl:template>
 
-<xsl:template match="note | tip | warning | caution">
+<xsl:template match="note | tip | warning | caution | important">
   <div>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">
@@ -295,30 +288,38 @@ BLOCKS
         <xsl:when test="self::tip">tip</xsl:when>
         <xsl:when test="self::warning">warning</xsl:when>
         <xsl:when test="self::caution">caution</xsl:when>
+        <xsl:when test="self::important">important</xsl:when>
       </xsl:choose>
     </xsl:attribute>
     <xsl:if test="@role='safarienabled'">
       <xsl:attribute name="class">safarienabled</xsl:attribute>
     </xsl:if>
     <xsl:if test="title"><h1><xsl:apply-templates select="title"/></h1></xsl:if>
-    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+    <xsl:apply-templates select="node()[not(self::title)]"/>
   </div>
 </xsl:template>
 
-<xsl:template match="blockquote | epigraph">
+<xsl:template match="blockquote | epigraph | quote">
   <blockquote>
     <xsl:call-template name="process-id"/>
     <xsl:if test="self::epigraph">
       <xsl:attribute name="data-type">epigraph</xsl:attribute>
     </xsl:if>
     <xsl:if test="attribution">
-      <p>
-        <xsl:attribute name="data-type">attribution</xsl:attribute>
-        <xsl:apply-templates select="attribution"/>
-      </p>
+      <xsl:apply-templates select="attribution"/>
     </xsl:if>
-    <xsl:apply-templates select="*[not(self::attribution)] | processing-instruction()"/>
+    <xsl:apply-templates select="node()[not(self::attribution)]"/>
   </blockquote>
+</xsl:template>
+<xsl:template match="attribution">
+  <p>
+    <xsl:attribute name="data-type">attribution</xsl:attribute>
+    <xsl:apply-templates/>
+  </p>
+</xsl:template>
+
+<xsl:template match="title">
+  <xsl:apply-templates/>
 </xsl:template>
 
 <!-- Equations -->
@@ -392,7 +393,7 @@ BLOCKS
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">glossary</xsl:attribute>
     <h1><xsl:apply-templates select="title"/></h1>
-    <xsl:apply-templates select="*[not(self::title)]"/>
+    <xsl:apply-templates select="node()[not(self::title)]"/>
   </section>
 </xsl:template>
   <!-- No glossdiv info on spec page; check this handling is okay with toolchain -->
@@ -400,7 +401,7 @@ BLOCKS
   <div>
     <xsl:attribute name="data-type">glossdiv</xsl:attribute>
     <h2><xsl:apply-templates select="title"/></h2>
-    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+    <xsl:apply-templates select="node()[not(self::title)]"/>
   </div>
 </xsl:template>
 <xsl:template match="glossentry">
@@ -449,6 +450,14 @@ BLOCKS
     </xsl:for-each>
   </dl>
 </xsl:template>
+  <!-- To Do: Check this is how we want to handle simple lists -->
+<xsl:template match="simplelist">
+  <ul data-type="simplelist">
+    <xsl:for-each select="member">
+      <li><xsl:apply-templates/></li>
+    </xsl:for-each>
+  </ul>
+</xsl:template>
 
 <!-- Code Blocks -->
 <xsl:template match="programlisting | screen | literallayout">
@@ -466,7 +475,7 @@ BLOCKS
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">example</xsl:attribute>
     <h5><xsl:apply-templates select="title"/></h5>
-    <xsl:apply-templates select="node()[not(self::title)] | processing-instruction()"/>
+    <xsl:apply-templates select="node()[not(self::title)]"/>
   </div>
 </xsl:template>
   
@@ -520,42 +529,44 @@ BLOCKS
 <xsl:template match="table | informaltable">
   <table>
     <xsl:call-template name="process-id"/>
-    <xsl:if test="title">
-      <!-- If table contains child indexterm element, output it in title not as child of table element -->
-      <caption><xsl:apply-templates select="title"/><xsl:if test="title/following-sibling::indexterm"><xsl:apply-templates select="indexterm"/></xsl:if></caption>
+    <xsl:if test="@tabstyle='landscape' or @orient='land'">
+      <xsl:attribute name="class">landscape</xsl:attribute>
     </xsl:if>
-    <!-- TODO: Add handling for colspec? -->
-    <xsl:apply-templates select="*[not(self::title) and not(self::indexterm)] | processing-instruction()"/> 
+    <xsl:if test="title">
+      <caption><xsl:apply-templates select="title"/></caption>
+    </xsl:if>
+    <xsl:apply-templates select="node()[not(self::title)]"/> 
   </table>
 </xsl:template>
 <xsl:template match="tgroup">
   <xsl:apply-templates/>
 </xsl:template>
-<xsl:template match="table/tgroup/thead | informaltable/tgroup/thead">
+<xsl:template match="thead">
 <thead>
   <xsl:apply-templates/>
 </thead>
 </xsl:template>
-<xsl:template match="table/tgroup/tbody | informaltable/tgroup/tbody">
+  <xsl:template match="tbody">
 <tbody>
   <xsl:apply-templates/>
 </tbody>
 </xsl:template>
-<xsl:template match="row">
+  <xsl:template match="row">
 <tr><xsl:apply-templates/></tr>
 </xsl:template>
-<xsl:template match="entry">
-<!-- TODO: Add handling for entry attributes like align, etc. -->
+  <xsl:template match="entry">
 <xsl:choose>
   <xsl:when test="ancestor::thead">
     <!-- No p elements inside table heads -->
-    <th><xsl:apply-templates select="para/text() | para/*"/></th>
+    <th><xsl:apply-templates select="para/node()"/></th>
   </xsl:when>
   <xsl:otherwise>
     <td><xsl:apply-templates/></td>
   </xsl:otherwise>
 </xsl:choose>
 </xsl:template>
+<!-- Column widths should be handled in the CSS -->
+<xsl:template match="colspec"/>
   
 <!-- Indexterms -->
 <xsl:template match="indexterm">
@@ -616,10 +627,32 @@ INLINES
 <xsl:template match="filename"><code data-type="filename"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="citetitle"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="acronym"><span data-type="acronym"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="command"><span data-type="command"><em><xsl:apply-templates/></em></span></xsl:template>
+<xsl:template match="application"><span data-type="application"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="computeroutput"><span data-type="computeroutput"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="parameter"><span data-type="parameter"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="function"><code data-type="function"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="varname"><code data-type="varname"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="option"><code data-type="option"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="prompt"><code data-type="prompt"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="uri"><code data-type="uri"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="interfacename"><span data-type="interfacename"><em><xsl:apply-templates/></em></span></xsl:template>
+<xsl:template match="optional"><span data-type="optional"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="phrase[@role='keep-together']"><span class="keep-together"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="phrase[@role='unicode']"><span class="unicode"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="processing-instruction()"><xsl:copy/></xsl:template>
 <xsl:template match="processing-instruction('lb')"><br /></xsl:template>
+  
+<!-- To Do: Should menu elements output with arrow characters between them, or leave this to CSS? -->
+<xsl:template match="menuchoice"><xsl:apply-templates/></xsl:template>
+<xsl:template match="guimenu"><span data-type="guimenu"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="guisubmenu"><span data-type="guisubmenu"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="guibutton"><span data-type="guibutton"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="guilabel"><span data-type="guilabel"><xsl:apply-templates/></span></xsl:template>
+  
+<!-- To Do: Should key elements output with plus characters between them, or leave this to CSS? -->
+<xsl:template match="keycombo"><xsl:apply-templates/></xsl:template>
+<xsl:template match="keycap"><span data-type="keycap"><xsl:apply-templates/></span></xsl:template>
 
 <!-- To Do: Currently retaining value of @remap (unicode character value) for symbol element in a class. Okay? -->
 <xsl:template match="symbol">
@@ -907,11 +940,8 @@ TO DO
 -->
   
 <xsl:template match="index"/>  
-<xsl:template match="simplelist"/>
-<xsl:template match="formalpara"/>
 <xsl:template match="co"/>
 <xsl:template match="calloutlist"/>
 <xsl:template match="refentry"/>
-<!-- Spec for other PIs -->
   
 </xsl:stylesheet>
