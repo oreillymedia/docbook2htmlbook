@@ -195,94 +195,48 @@ BLOCKS
     <xsl:attribute name="data-type">footnoteref</xsl:attribute>
   </a>
 </xsl:template>
- 
+  
 <xsl:template match="para | simpara">
-  <xsl:choose>
-    <!-- Lone block element nested inside a para with no other elements or text. Ditch the para and output only the nested element. -->
-    <!-- To Do: Can these be moved into a single xsl:when like below? -->
-    <xsl:when test="figure[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::figure"/>
-    </xsl:when>
-    <xsl:when test="informalfigure[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::informalfigure"/>
-    </xsl:when>
-    <xsl:when test="itemizedlist[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::itemizedlist"/>
-    </xsl:when>
-    <xsl:when test="variablelist[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::variablelist"/>
-    </xsl:when>
-    <xsl:when test="orderedlist[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::orderedlist"/>
-    </xsl:when>
-    <xsl:when test="table[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::table"/>
-    </xsl:when>
-    <xsl:when test="informaltable[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::informaltable"/>
-    </xsl:when>
-    <xsl:when test="example[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::example"/>
-    </xsl:when>
-    <xsl:when test="equation[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::equation"/>
-    </xsl:when>
-    <xsl:when test="informalequation[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::informalequation"/>
-    </xsl:when>
-    <xsl:when test="note[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::note"/>
-    </xsl:when>
-    <xsl:when test="warning[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::warning"/>
-    </xsl:when>
-    <xsl:when test="tip[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::tip"/>
-    </xsl:when>
-    <xsl:when test="caution[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::caution"/>
-    </xsl:when>
-    <xsl:when test="programlisting[position()=1] and not(text()[normalize-space()])">
-      <xsl:apply-templates select="child::programlisting"/>
-    </xsl:when>
-    <!-- Otherwise output <p> -->
-    <xsl:otherwise>
-      <xsl:choose>
-        <!-- If para contains any of these nested block elements, move them outside the <p> in the output. -->
-        <!-- To Do: This logic will not take into account if one of these block elements falls in the middle of a para, with text on either side. Need to add handling for that so it will split the para into separate <p> elements surrounding the block element. -->
-        <xsl:when test="figure | informalfigure | itemizedlist | variablelist | orderedlist | note | warning | tip | caution | table | informaltable | example | equation | informalequation | programlisting">
-          <p>
-            <xsl:call-template name="process-id"/>
-            <xsl:apply-templates select="node()[
-              not(self::figure) and
-              not(self::informalfigure) and
-              not(self::itemizedlist) and
-              not(self::variablelist) and
-              not(self::orderedlist) and
-              not(self::note) and 
-              not(self::warning) and
-              not(self::tip) and
-              not(self::caution) and
-              not(self::table) and 
-              not(self::informaltable) and 
-              not(self::example) and 
-              not(self::equation) and 
-              not(self::informalequation) and 
-              not(self::programlisting)]"/>
-          </p>
-          <xsl:apply-templates select="figure | informalfigure | itemizedlist | variablelist | orderedlist | note | warning | tip | caution | table | informaltable | example | equation | informalequation | programlisting"/>
-        </xsl:when>
-        <!-- Otherwise process para normally -->
-        <xsl:otherwise>
-          <p>
-            <xsl:call-template name="process-id"/>
-            <xsl:apply-templates/>
-          </p>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:otherwise>
-  </xsl:choose>
+        <p>
+          <xsl:call-template name="process-id"/>
+          <xsl:apply-templates/>
+        </p>
 </xsl:template>
+  
+<!-- For lone block elements nested inside a para with no other elements or text, ditch the para and output only the nested element. -->
+  <xsl:template match="
+    para[figure[position()=1] and not(text()[normalize-space()])] | 
+    para[informalfigure[position()=1] and not(text()[normalize-space()])] |
+    para[itemizedlist[position()=1] and not(text()[normalize-space()])] |
+    para[variablelist[position()=1] and not(text()[normalize-space()])] |
+    para[orderedlist[position()=1] and not(text()[normalize-space()])] |
+    para[table[position()=1] and not(text()[normalize-space()])] |
+    para[informaltable[position()=1] and not(text()[normalize-space()])] |
+    para[example[position()=1] and not(text()[normalize-space()])] |
+    para[equation[position()=1] and not(text()[normalize-space()])] |
+    para[informalequation[position()=1] and not(text()[normalize-space()])] |
+    para[note[position()=1] and not(text()[normalize-space()])] |
+    para[warning[position()=1] and not(text()[normalize-space()])] |
+    para[tip[position()=1] and not(text()[normalize-space()])] |
+    para[caution[position()=1] and not(text()[normalize-space()])] |
+    para[programlisting[position()=1] and not(text()[normalize-space()])] |
+    simpara[figure[position()=1] and not(text()[normalize-space()])] | 
+    simpara[informalfigure[position()=1] and not(text()[normalize-space()])] |
+    simpara[itemizedlist[position()=1] and not(text()[normalize-space()])] |
+    simpara[variablelist[position()=1] and not(text()[normalize-space()])] |
+    simpara[orderedlist[position()=1] and not(text()[normalize-space()])] |
+    simpara[table[position()=1] and not(text()[normalize-space()])] |
+    simpara[informaltable[position()=1] and not(text()[normalize-space()])] |
+    simpara[example[position()=1] and not(text()[normalize-space()])] |
+    simpara[equation[position()=1] and not(text()[normalize-space()])] |
+    simpara[informalequation[position()=1] and not(text()[normalize-space()])] |
+    simpara[note[position()=1] and not(text()[normalize-space()])] |
+    simpara[warning[position()=1] and not(text()[normalize-space()])] |
+    simpara[tip[position()=1] and not(text()[normalize-space()])] |
+    simpara[caution[position()=1] and not(text()[normalize-space()])] |
+    simpara[programlisting[position()=1] and not(text()[normalize-space()])]">
+    <xsl:apply-templates select="node()[not(para)] | node()[not(simpara)]"/>
+  </xsl:template>
   
 <xsl:template match="sect1">
   <section>
@@ -566,10 +520,11 @@ BLOCKS
   <table>
     <xsl:call-template name="process-id"/>
     <xsl:if test="title">
-      <caption><xsl:apply-templates select="title"/></caption>
+      <!-- If table contains child indexterm element, output it in title not as child of table element -->
+      <caption><xsl:apply-templates select="title"/><xsl:if test="title/following-sibling::indexterm"><xsl:apply-templates select="indexterm"/></xsl:if></caption>
     </xsl:if>
     <!-- TODO: Add handling for colspec? -->
-    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/> 
+    <xsl:apply-templates select="*[not(self::title) and not(self::indexterm)] | processing-instruction()"/> 
   </table>
 </xsl:template>
 <xsl:template match="tgroup">
