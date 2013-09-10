@@ -384,6 +384,9 @@ BLOCKS
         </xsl:when>
       </xsl:choose>
 </xsl:template>
+<xsl:template match="mathphrase">
+  <xsl:apply-templates/>
+</xsl:template>
 
 <!-- Glossary -->
 <xsl:template match="glossary">
