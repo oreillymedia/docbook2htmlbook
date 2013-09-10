@@ -84,7 +84,6 @@ BLOCKS
         <xsl:attribute name="data-type">afterword</xsl:attribute>
       </xsl:when>
       <xsl:when test="self::appendix"><xsl:attribute name="data-type">appendix</xsl:attribute></xsl:when>
-      <!-- TODO: colophon not working -->
       <xsl:when test="self::colophon"><xsl:attribute name="data-type">colophon</xsl:attribute></xsl:when>
       <xsl:when test="self::dedication"><xsl:attribute name="data-type">dedication</xsl:attribute></xsl:when>
     </xsl:choose>
@@ -96,7 +95,6 @@ BLOCKS
 </xsl:template>
 
 <!-- TO DO: Adjust prefacinfo byline output to match whatever we decide on for spec and internal convention -->
-<!-- TO DO: Test this more extensively on varied prefaceinfo markup structures -->
 <xsl:template match="prefaceinfo | chapterinfo">
   <div>
     <xsl:attribute name="data-class">byline</xsl:attribute>
@@ -681,7 +679,6 @@ INLINES
   </a>
 </xsl:template>
   
-<!-- TO DO: Check link after spec is discussed -->
 <xsl:template match="xref | link">
   <xsl:variable name="label">
     <xsl:choose>
@@ -802,7 +799,6 @@ NAMED TEMPLATES
       <xsl:attribute name="name">edition</xsl:attribute>
       <xsl:attribute name="content"><xsl:value-of select="bookinfo/edition"/></xsl:attribute>
     </meta>
-    <!-- Question: What other meta elements do we want to pull in from the Docbook? -->
   </xsl:if>
 </xsl:template>
 
@@ -922,16 +918,6 @@ NAMED TEMPLATES
     <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
   </xsl:if>
 </xsl:template>
-
-<!-- 
-*******************************
-MISC
-******************************* 
--->
- 
-<!-- Don't output --> 
-<xsl:template match="bookinfo"/>
-  
   
 <!-- 
 *******************************
@@ -939,6 +925,7 @@ TO DO
 ******************************* 
 -->
   
+<xsl:template match="bookinfo"/>
 <xsl:template match="index"/>  
 <xsl:template match="co"/>
 <xsl:template match="calloutlist"/>
