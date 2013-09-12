@@ -223,6 +223,41 @@ BLOCKS
   </p>
 </xsl:template>
   
+<!-- For lone block elements nested inside a para with no other elements or text, ditch the para and output only the nested element. -->
+<xsl:template match="
+  para[figure[position()=1] and not(text()[normalize-space()])] |
+  para[informalfigure[position()=1] and not(text()[normalize-space()])] |
+  para[itemizedlist[position()=1] and not(text()[normalize-space()])] |
+  para[variablelist[position()=1] and not(text()[normalize-space()])] |
+  para[orderedlist[position()=1] and not(text()[normalize-space()])] |
+  para[table[position()=1] and not(text()[normalize-space()])] |
+  para[informaltable[position()=1] and not(text()[normalize-space()])] |
+  para[example[position()=1] and not(text()[normalize-space()])] |
+  para[equation[position()=1] and not(text()[normalize-space()])] |
+  para[informalequation[position()=1] and not(text()[normalize-space()])] |
+  para[note[position()=1] and not(text()[normalize-space()])] |
+  para[warning[position()=1] and not(text()[normalize-space()])] |
+  para[tip[position()=1] and not(text()[normalize-space()])] |
+  para[caution[position()=1] and not(text()[normalize-space()])] |
+  para[programlisting[position()=1] and not(text()[normalize-space()])] |
+  simpara[figure[position()=1] and not(text()[normalize-space()])] |
+  simpara[informalfigure[position()=1] and not(text()[normalize-space()])] |
+  simpara[itemizedlist[position()=1] and not(text()[normalize-space()])] |
+  simpara[variablelist[position()=1] and not(text()[normalize-space()])] |
+  simpara[orderedlist[position()=1] and not(text()[normalize-space()])] |
+  simpara[table[position()=1] and not(text()[normalize-space()])] |
+  simpara[informaltable[position()=1] and not(text()[normalize-space()])] |
+  simpara[example[position()=1] and not(text()[normalize-space()])] |
+  simpara[equation[position()=1] and not(text()[normalize-space()])] |
+  simpara[informalequation[position()=1] and not(text()[normalize-space()])] |
+  simpara[note[position()=1] and not(text()[normalize-space()])] |
+  simpara[warning[position()=1] and not(text()[normalize-space()])] |
+  simpara[tip[position()=1] and not(text()[normalize-space()])] |
+  simpara[caution[position()=1] and not(text()[normalize-space()])] |
+  simpara[programlisting[position()=1] and not(text()[normalize-space()])]">
+  <xsl:apply-templates select="node()[not(para)] | node()[not(simpara)]"/>
+</xsl:template>
+  
 <xsl:template match="sect1">
   <section>
     <xsl:call-template name="process-id"/>
