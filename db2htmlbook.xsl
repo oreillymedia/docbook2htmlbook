@@ -654,6 +654,7 @@ INLINES
 <xsl:template match="literal | code"><code><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="emphasis"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="emphasis[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
+<xsl:template match="phrase[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
 <xsl:template match="superscript"><sup><xsl:apply-templates/></sup></xsl:template>
 <xsl:template match="subscript"><sub><xsl:apply-templates/></sub></xsl:template>
 <xsl:template match="replaceable"><em><code><xsl:apply-templates/></code></em></xsl:template>
