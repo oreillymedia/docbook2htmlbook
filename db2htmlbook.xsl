@@ -406,7 +406,6 @@ BLOCKS
           </div>
         </xsl:when>
         <!-- Regular mathphrase equation -->
-        <!-- To Do: Check this is the correct output for regular equations -->
         <xsl:when test="mathphrase[not(@role='tex')]">
           <div>
             <xsl:call-template name="process-id"/>
@@ -486,7 +485,6 @@ BLOCKS
     </xsl:for-each>
   </dl>
 </xsl:template>
-  <!-- To Do: Check this is how we want to handle simple lists -->
 <xsl:template match="simplelist">
   <ul data-type="simplelist">
     <xsl:for-each select="member">
@@ -496,15 +494,20 @@ BLOCKS
 </xsl:template>
 
 <!-- Code Blocks -->
-<xsl:template match="programlisting | screen | literallayout">
+<xsl:template match="programlisting | screen">
   <pre>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">programlisting</xsl:attribute>
     <xsl:if test="@language"><xsl:attribute name="data-code-language"><xsl:value-of select="@language"/></xsl:attribute></xsl:if>
-    <!-- To Do: Check this special literallayout class is the best way to handle this element -->
-    <xsl:if test="self::literallayout"><xsl:attribute name="class">literallayout</xsl:attribute></xsl:if>
     <xsl:apply-templates/>
   </pre>
+</xsl:template>
+<xsl:template match="literallayout">
+  <pre>
+  <xsl:call-template name="process-id"/>
+  <xsl:attribute name="data-type">literallayout</xsl:attribute>
+  <xsl:apply-templates/>
+</pre>
 </xsl:template>
 <xsl:template match="example">
   <div>
