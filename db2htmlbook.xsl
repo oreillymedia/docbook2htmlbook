@@ -431,7 +431,7 @@ BLOCKS
     <xsl:apply-templates select="node()[not(self::title)]"/>
   </section>
 </xsl:template>
-  <!-- No glossdiv info on spec page; check this handling is okay with toolchain -->
+  <!-- Question: h2 heading okay for glossdivs? -->
 <xsl:template match="glossdiv">
   <div>
     <xsl:attribute name="data-type">glossdiv</xsl:attribute>
@@ -684,22 +684,22 @@ INLINES
 <xsl:template match="processing-instruction()"><xsl:copy/></xsl:template>
 <xsl:template match="processing-instruction('lb')"><br /></xsl:template>
   
-<!-- To Do: Should menu elements output with arrow characters between them, or leave this to CSS? -->
+<!-- To Do: Should menu elements output with arrow characters between them, or leave this to CSS?
 <xsl:template match="menuchoice"><xsl:apply-templates/></xsl:template>
 <xsl:template match="guimenu"><span data-type="guimenu"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="guisubmenu"><span data-type="guisubmenu"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="guibutton"><span data-type="guibutton"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="guilabel"><span data-type="guilabel"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="guilabel"><span data-type="guilabel"><xsl:apply-templates/></span></xsl:template> -->
   
-<!-- To Do: Should key elements output with plus characters between them, or leave this to CSS? -->
+<!-- To Do: Should key elements output with plus characters between them, or leave this to CSS?
 <xsl:template match="keycombo"><xsl:apply-templates/></xsl:template>
-<xsl:template match="keycap"><span data-type="keycap"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="keycap"><span data-type="keycap"><xsl:apply-templates/></span></xsl:template> -->
 
 <!-- To Do: Currently retaining value of @remap (unicode character value) for symbol element in a class. Okay? -->
 <xsl:template match="symbol">
   <span>
     <xsl:attribute name="data-type">symbol</xsl:attribute>
-    <xsl:attribute name="class"><xsl:value-of select="@remap"/></xsl:attribute>
+    <xsl:attribute name="data-remap"><xsl:value-of select="@remap"/></xsl:attribute>
     <xsl:apply-templates/>
   </span>
 </xsl:template>
