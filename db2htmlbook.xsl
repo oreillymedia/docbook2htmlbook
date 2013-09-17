@@ -223,6 +223,18 @@ BLOCKS
   </p>
 </xsl:template>
   
+<!-- Question: What heading level should formalpara have? Or should title be run in with a span? -->
+<xsl:template match="formalpara">
+  <div>
+    <xsl:attribute name="data-type">formalpara</xsl:attribute>
+    <h5>
+      <xsl:apply-templates select="title"/>
+    </h5> 
+      <xsl:call-template name="process-id"/>
+      <xsl:apply-templates select="node()[not(self::title)]"/>
+  </div>
+</xsl:template>
+  
 <!-- For lone block elements nested inside a para with no other elements or text, ditch the para and output only the nested element. -->
 <xsl:template match="
   para[figure[position()=1] and not(text()[normalize-space()])] |
