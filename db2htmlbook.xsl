@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsl:stylesheet version="1.0"
+<xsl:stylesheet version="2.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:mml="http://www.w3.org/1998/Math/MathML"
@@ -14,7 +14,7 @@ PARAMETERS:
 ******************************* 
 -->
 <xsl:param name="xref_label">false</xsl:param>
-
+<xsl:param name="chunk-output">false</xsl:param>
 
 <!-- 
 *******************************
@@ -27,8 +27,6 @@ Output warning and all elements not handled by this stylesheet yet.
   <xsl:message terminate="no">WARNING: Unmatched element: <xsl:value-of select="name()"/></xsl:message>
   <xsl:apply-templates/>
 </xsl:template>
-  
-<!-- To Do: Enable file chunking -->
   
   
 <!-- 
@@ -51,10 +49,85 @@ BLOCKS
     <xsl:call-template name="titlepage"/>
     <xsl:call-template name="copyrightpage"/>
     <!-- TO DO: Add parametrized TOC for optional output -->
-    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+    <xsl:choose>
+      <xsl:when test="$chunk-output != 'false'">
+        <xsl:apply-templates select="*[not(self::title)] | processing-instruction()" mode="chunk"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </body>
 </html>
 </xsl:template>
+  
+<!-- BEGIN FILE CHUNKING -->
+<xsl:template match="chapter|appendix|preface|colophon|dedication|glossary|bibliography" mode="chunk">
+  <xsl:variable name="doc-name">
+    <xsl:choose>
+      <xsl:when test="self::chapter">
+        <xsl:text>ch</xsl:text>
+        <xsl:number count="chapter" level="any" format="01"/>
+      </xsl:when>
+      <xsl:when test="self::appendix">
+        <xsl:text>app</xsl:text>
+        <xsl:number count="appendix" level="any" format="a"/>
+      </xsl:when>
+      <xsl:when test="self::preface">
+        <xsl:text>pr</xsl:text>
+        <xsl:number count="preface" level="any" format="01"/>
+      </xsl:when>
+      <xsl:when test="self::colophon">
+        <xsl:text>colo</xsl:text>
+        <xsl:if test="count(//colophon) &gt; 1">
+          <xsl:number count="colo" level="any" format="01"/>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="self::dedication">
+        <xsl:text>dedication</xsl:text>
+        <xsl:if test="count(//dedication) &gt; 1">
+          <xsl:number count="dedication" level="any" format="01"/>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="self::glossary">
+        <xsl:text>glossary</xsl:text>
+        <xsl:if test="count(//glossary) &gt; 1">
+          <xsl:number count="glossary" level="any" format="01"/>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="self::bibliography">
+        <xsl:text>bibliography</xsl:text>
+        <xsl:if test="count(//bibliography) &gt; 1">
+          <xsl:number count="bibliography" level="any" format="01"/>
+        </xsl:if>
+      </xsl:when>
+    </xsl:choose>
+    <xsl:text>.html</xsl:text>
+  </xsl:variable>
+  <xsl:result-document href="{$doc-name}">
+    <xsl:apply-templates select="." mode="#default"/>
+  </xsl:result-document>
+</xsl:template>
+  <!-- *** In Process. Not outputting parts correctly yet *** -->
+<xsl:template match="part" mode="chunk">
+  <xsl:choose>
+    <xsl:when test="partintro">
+      <xsl:variable name="doc-name">
+        <xsl:text>part</xsl:text>
+        <xsl:number count="part" level="any" format="i"/>
+        <xsl:text>.html</xsl:text>
+      </xsl:variable>
+      <xsl:result-document href="{$doc-name}">
+        <xsl:apply-templates select="partintro" mode="#default"/>
+      </xsl:result-document>
+      <xsl:apply-templates select="*[not(self::title)][not(self::partintro)]" mode="chunk"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates select="."/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+<!-- END FILE CHUNKING -->
   
 <xsl:template match="part">
   <div>
