@@ -167,7 +167,7 @@ BLOCKS
   </section>
 </xsl:template>
 
-<!-- TO DO: Adjust prefacinfo byline output to match whatever we decide on for spec and internal convention -->
+<!-- TO DO: Check prefacinfo byline output after spec solidified -->
 <xsl:template match="prefaceinfo | chapterinfo">
   <div>
     <xsl:attribute name="data-class">byline</xsl:attribute>
@@ -232,7 +232,7 @@ BLOCKS
   </span>
 </xsl:template> 
   
-<!-- TO DO: Check this after spec is decided upon -->
+<!-- TO DO: Check footnoteref after spec solidified -->
 <xsl:template match="footnoteref">
   <a href="{@linkend}">
     <xsl:attribute name="data-type">footnoteref</xsl:attribute>
@@ -296,7 +296,7 @@ BLOCKS
   </p>
 </xsl:template>
   
-<!-- Question: What heading level should formalpara have? Or should title be run in with a span? -->
+  <!-- TO DO: Check formalpara heading level after spec solidified -->
 <xsl:template match="formalpara">
   <div>
     <xsl:attribute name="data-type">formalpara</xsl:attribute>
@@ -516,10 +516,10 @@ BLOCKS
     <xsl:apply-templates select="node()[not(self::title)]"/>
   </section>
 </xsl:template>
-  <!-- Question: h2 heading okay for glossdivs? -->
 <xsl:template match="glossdiv">
   <div>
     <xsl:attribute name="data-type">glossdiv</xsl:attribute>
+    <!-- TO DO: Check glossdiv heading level after spec solidified -->
     <h2><xsl:apply-templates select="title"/></h2>
     <xsl:apply-templates select="node()[not(self::title)]"/>
   </div>
@@ -604,7 +604,6 @@ BLOCKS
 </xsl:template>
   
 <!-- Figures -->
-<!-- TO DO: Add informalfigure to schema. Currently this template creates invalid htmlbook -->
 <xsl:template match="figure | informalfigure">
   <figure>
     <xsl:call-template name="process-id"/>
@@ -612,7 +611,7 @@ BLOCKS
       <xsl:attribute name="float"><xsl:value-of select="@float"/></xsl:attribute>
     </xsl:if>
     <xsl:if test="title"><figcaption><xsl:apply-templates select="title"/></figcaption></xsl:if>
-    <!-- To Do: Once handling is added to schema to allow figure without a figcaption, remove xsl:if below this comment. (It outputs an empty figcaption element for figures that don't have a title, to trick the schema. -->
+    <!-- TO DO: Once handling is added to schema to allow figure without a figcaption, remove xsl:if below this comment. (It outputs an empty figcaption element for figures that don't have a title, to trick the schema. -->
     <xsl:if test="not(title)"><figcaption/></xsl:if>
     <img>
       <xsl:attribute name="src">
@@ -692,6 +691,9 @@ BLOCKS
 <!-- Column widths should be handled in the CSS -->
 <xsl:template match="colspec"/>
   
+<!-- Suppress the index -->
+<xsl:template match="index"/>
+  
 <!-- Indexterms -->
 <xsl:template match="indexterm">
   <a>
@@ -732,6 +734,35 @@ BLOCKS
   <xsl:comment><xsl:apply-templates/></xsl:comment>
 </xsl:template>
   
+<!-- Code Callouts -->
+<xsl:template match="co">
+  <a>
+    <xsl:attribute name="class">co</xsl:attribute>
+    <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+    <xsl:attribute name="href"><xsl:value-of select="@linkends"/></xsl:attribute>
+    <!-- Insert callout number (image or glyph)? -->
+  </a>
+</xsl:template>
+<xsl:template match="calloutlist">
+  <div>
+    <xsl:attribute name="class">calloutlist</xsl:attribute>
+    <dl>
+      <xsl:for-each select="callout">
+        <dt>
+          <a>
+            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+            <xsl:attribute name="href"><xsl:value-of select="@arearefs"/></xsl:attribute>
+          </a>
+          <!-- Insert callout number (image or glyph)? -->
+        </dt>
+        <dd>
+          <xsl:apply-templates/>
+        </dd>
+      </xsl:for-each>
+    </dl>
+  </div>
+</xsl:template>
+  
   
 <!-- 
 *******************************
@@ -769,18 +800,17 @@ INLINES
 <xsl:template match="processing-instruction()"><xsl:copy/></xsl:template>
 <xsl:template match="processing-instruction('lb')"><br /></xsl:template>
   
-<!-- To Do: Should menu elements output with arrow characters between them, or leave this to CSS?
+<!-- TO DO: Output should insert the proper arrow character between elements. 
 <xsl:template match="menuchoice"><xsl:apply-templates/></xsl:template>
 <xsl:template match="guimenu"><span data-type="guimenu"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="guisubmenu"><span data-type="guisubmenu"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="guibutton"><span data-type="guibutton"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="guilabel"><span data-type="guilabel"><xsl:apply-templates/></span></xsl:template> -->
   
-<!-- To Do: Should key elements output with plus characters between them, or leave this to CSS?
+<!-- TO DO: Output should insert the proper plus character between elements.
 <xsl:template match="keycombo"><xsl:apply-templates/></xsl:template>
 <xsl:template match="keycap"><span data-type="keycap"><xsl:apply-templates/></span></xsl:template> -->
 
-<!-- To Do: Currently retaining value of @remap (unicode character value) for symbol element in a class. Okay? -->
 <xsl:template match="symbol">
   <span>
     <xsl:attribute name="data-type">symbol</xsl:attribute>
@@ -793,7 +823,7 @@ INLINES
   <span data-type="strikethrough"><xsl:apply-templates/></span>
 </xsl:template>
   
-<!-- TO DO: Check after spec is discussed -->
+<!-- TO DO: Check lineannotation after spec solidified -->
 <xsl:template match="lineannotation">
   <code>
     <xsl:attribute name="data-type">lineannotation</xsl:attribute>
@@ -810,7 +840,7 @@ INLINES
 <xsl:template match="xref | link">
   <xsl:variable name="label">
     <xsl:choose>
-      <!-- To Do: Test part rendering -->
+      <!-- TO DO: Test part rendering -->
       <xsl:when test="id(@linkend)[self::part]"><xsl:text>Part </xsl:text></xsl:when>
       <xsl:when test="id(@linkend)[self::chapter]"><xsl:text>Chapter </xsl:text></xsl:when>
       <xsl:when test="id(@linkend)[self::preface]"><xsl:text>Preface</xsl:text></xsl:when>
@@ -1053,10 +1083,7 @@ TO DO
 ******************************* 
 -->
   
-<xsl:template match="bookinfo"/>
-<xsl:template match="index"/>  
-<xsl:template match="co"/>
-<xsl:template match="calloutlist"/>
+<xsl:template match="bookinfo"/>  
 <xsl:template match="refentry"/>
   
 </xsl:stylesheet>
