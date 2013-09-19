@@ -240,60 +240,78 @@ BLOCKS
 </xsl:template>
   
 <xsl:template match="para | simpara">
-  <!-- Begin error handling for block elements nested in para/simpara that will cause invalid HTMLBook output -->
-  <xsl:if test="count(screen) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: screen</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(figure) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: figure</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(informalfigure) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: informalfigure</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(programlisting) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: programlisting</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(orderedlist) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: orderedlist</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(itemizedlist) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: itemizedlist</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(variablelist) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: variablelist</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(table) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: table</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(informaltable) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: informaltable</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(example) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: example</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(equation) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: equation</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(informalequation) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: informalequation</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(note) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: note</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(warning) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: warning</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(tip) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: tip</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(caution) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: caution</xsl:message>
-  </xsl:if>
-  <!-- End error handling for nested block elements -->
   <p>
     <xsl:call-template name="process-id"/>
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="
+      node()[not(self::figure | self::informalfigure | self::itemizedlist | self::variablelist | self::orderedlist | self::table | self::informaltable | self::example | self::equation | self::informalequation | self::note | self::warning | self::tip | self::caution | self::programlisting | self::screen)]"/>
   </p>
+  <!-- Move nested block elements outside of the para and warn user -->
+  <!-- *** Please note that if the nested block element had a specific meaningful placement within the parent para element,
+       this will be lost. The block element(s) will simply be output in order of occurrence after the para. *** -->
+  <xsl:if test="figure">
+    <xsl:apply-templates select="figure"/>
+    <xsl:message terminate="no">WARNING: Nested figure moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="informalfigure">
+    <xsl:apply-templates select="informalfigure"/>
+    <xsl:message terminate="no">WARNING: Nested informalfigure moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="itemizedlist">
+    <xsl:apply-templates select="itemizedlist"/>
+    <xsl:message terminate="no">WARNING: Nested itemizedlist moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="variablelist">
+    <xsl:apply-templates select="variablelist"/>
+    <xsl:message terminate="no">WARNING: Nested variablelist moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="orderedlist">
+    <xsl:apply-templates select="orderedlist"/>
+    <xsl:message terminate="no">WARNING: Nested orderedlist moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="table">
+    <xsl:apply-templates select="table"/>
+    <xsl:message terminate="no">WARNING: Nested table moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="informaltable">
+    <xsl:apply-templates select="informaltable"/>
+    <xsl:message terminate="no">WARNING: Nested informaltable moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="example">
+    <xsl:apply-templates select="example"/>
+    <xsl:message terminate="no">WARNING: Nested example moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="equation">
+    <xsl:apply-templates select="equation"/>
+    <xsl:message terminate="no">WARNING: Nested equation moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="informalequation">
+    <xsl:apply-templates select="informalequation"/>
+    <xsl:message terminate="no">WARNING: Nested informalequation moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="note">
+    <xsl:apply-templates select="note"/>
+    <xsl:message terminate="no">WARNING: Nested note moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="warning">
+    <xsl:apply-templates select="warning"/>
+    <xsl:message terminate="no">WARNING: Nested warning moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="tip">
+    <xsl:apply-templates select="tip"/>
+    <xsl:message terminate="no">WARNING: Nested tip moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="caution">
+    <xsl:apply-templates select="caution"/>
+    <xsl:message terminate="no">WARNING: Nested caution moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="programlisting">
+    <xsl:apply-templates select="programlisting"/>
+    <xsl:message terminate="no">WARNING: Nested programlisting moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="screen">
+    <xsl:apply-templates select="screen"/>
+    <xsl:message terminate="no">WARNING: Nested screen moved out of para or simpara element</xsl:message>
+  </xsl:if>
 </xsl:template>
   
   <!-- TO DO: Check formalpara heading level after spec solidified -->
@@ -306,41 +324,6 @@ BLOCKS
       <xsl:call-template name="process-id"/>
       <xsl:apply-templates select="node()[not(self::title)]"/>
   </div>
-</xsl:template>
-  
-<!-- For lone block elements nested inside a para with no other elements or text, ditch the para and output only the nested element. -->
-<xsl:template match="
-  para[figure[position()=1] and not(text()[normalize-space()])] |
-  para[informalfigure[position()=1] and not(text()[normalize-space()])] |
-  para[itemizedlist[position()=1] and not(text()[normalize-space()])] |
-  para[variablelist[position()=1] and not(text()[normalize-space()])] |
-  para[orderedlist[position()=1] and not(text()[normalize-space()])] |
-  para[table[position()=1] and not(text()[normalize-space()])] |
-  para[informaltable[position()=1] and not(text()[normalize-space()])] |
-  para[example[position()=1] and not(text()[normalize-space()])] |
-  para[equation[position()=1] and not(text()[normalize-space()])] |
-  para[informalequation[position()=1] and not(text()[normalize-space()])] |
-  para[note[position()=1] and not(text()[normalize-space()])] |
-  para[warning[position()=1] and not(text()[normalize-space()])] |
-  para[tip[position()=1] and not(text()[normalize-space()])] |
-  para[caution[position()=1] and not(text()[normalize-space()])] |
-  para[programlisting[position()=1] and not(text()[normalize-space()])] |
-  simpara[figure[position()=1] and not(text()[normalize-space()])] |
-  simpara[informalfigure[position()=1] and not(text()[normalize-space()])] |
-  simpara[itemizedlist[position()=1] and not(text()[normalize-space()])] |
-  simpara[variablelist[position()=1] and not(text()[normalize-space()])] |
-  simpara[orderedlist[position()=1] and not(text()[normalize-space()])] |
-  simpara[table[position()=1] and not(text()[normalize-space()])] |
-  simpara[informaltable[position()=1] and not(text()[normalize-space()])] |
-  simpara[example[position()=1] and not(text()[normalize-space()])] |
-  simpara[equation[position()=1] and not(text()[normalize-space()])] |
-  simpara[informalequation[position()=1] and not(text()[normalize-space()])] |
-  simpara[note[position()=1] and not(text()[normalize-space()])] |
-  simpara[warning[position()=1] and not(text()[normalize-space()])] |
-  simpara[tip[position()=1] and not(text()[normalize-space()])] |
-  simpara[caution[position()=1] and not(text()[normalize-space()])] |
-  simpara[programlisting[position()=1] and not(text()[normalize-space()])]">
-  <xsl:apply-templates select="node()[not(para)] | node()[not(simpara)]"/>
 </xsl:template>
   
 <xsl:template match="sect1">
