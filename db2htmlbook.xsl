@@ -723,27 +723,24 @@ BLOCKS
     <xsl:attribute name="class">co</xsl:attribute>
     <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
     <xsl:attribute name="href"><xsl:value-of select="@linkends"/></xsl:attribute>
-    <!-- Insert callout number (image or glyph)? -->
   </a>
 </xsl:template>
 <xsl:template match="calloutlist">
-  <div>
-    <xsl:attribute name="class">calloutlist</xsl:attribute>
     <dl>
+      <xsl:attribute name="class">calloutlist</xsl:attribute>
       <xsl:for-each select="callout">
         <dt>
           <a>
+            <xsl:attribute name="class">co</xsl:attribute>
             <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
             <xsl:attribute name="href"><xsl:value-of select="@arearefs"/></xsl:attribute>
           </a>
-          <!-- Insert callout number (image or glyph)? -->
         </dt>
         <dd>
           <xsl:apply-templates/>
         </dd>
       </xsl:for-each>
     </dl>
-  </div>
 </xsl:template>
   
   
