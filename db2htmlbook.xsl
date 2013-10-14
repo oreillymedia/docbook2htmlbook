@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsl:stylesheet version="1.0"
+<xsl:stylesheet version="2.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:mml="http://www.w3.org/1998/Math/MathML"
@@ -14,7 +14,7 @@ PARAMETERS:
 ******************************* 
 -->
 <xsl:param name="xref_label">false</xsl:param>
-
+<xsl:param name="chunk-output">false</xsl:param>
 
 <!-- 
 *******************************
@@ -27,8 +27,6 @@ Output warning and all elements not handled by this stylesheet yet.
   <xsl:message terminate="no">WARNING: Unmatched element: <xsl:value-of select="name()"/></xsl:message>
   <xsl:apply-templates/>
 </xsl:template>
-  
-<!-- To Do: Enable file chunking -->
   
   
 <!-- 
@@ -51,10 +49,86 @@ BLOCKS
     <xsl:call-template name="titlepage"/>
     <xsl:call-template name="copyrightpage"/>
     <!-- TO DO: Add parametrized TOC for optional output -->
-    <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+    <xsl:choose>
+      <xsl:when test="$chunk-output != 'false'">
+        <xsl:apply-templates select="*[not(self::title)] | processing-instruction()" mode="chunk"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </body>
 </html>
 </xsl:template>
+  
+<!--**** FILE CHUNKING NOT IMPLEMENTED YET ****-->
+<!-- BEGIN FILE CHUNKING -->
+<!--<xsl:template match="chapter|appendix|preface|colophon|dedication|glossary|bibliography" mode="chunk">
+  <xsl:variable name="doc-name">
+    <xsl:choose>
+      <xsl:when test="self::chapter">
+        <xsl:text>ch</xsl:text>
+        <xsl:number count="chapter" level="any" format="01"/>
+      </xsl:when>
+      <xsl:when test="self::appendix">
+        <xsl:text>app</xsl:text>
+        <xsl:number count="appendix" level="any" format="a"/>
+      </xsl:when>
+      <xsl:when test="self::preface">
+        <xsl:text>pr</xsl:text>
+        <xsl:number count="preface" level="any" format="01"/>
+      </xsl:when>
+      <xsl:when test="self::colophon">
+        <xsl:text>colo</xsl:text>
+        <xsl:if test="count(//colophon) &gt; 1">
+          <xsl:number count="colo" level="any" format="01"/>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="self::dedication">
+        <xsl:text>dedication</xsl:text>
+        <xsl:if test="count(//dedication) &gt; 1">
+          <xsl:number count="dedication" level="any" format="01"/>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="self::glossary">
+        <xsl:text>glossary</xsl:text>
+        <xsl:if test="count(//glossary) &gt; 1">
+          <xsl:number count="glossary" level="any" format="01"/>
+        </xsl:if>
+      </xsl:when>
+      <xsl:when test="self::bibliography">
+        <xsl:text>bibliography</xsl:text>
+        <xsl:if test="count(//bibliography) &gt; 1">
+          <xsl:number count="bibliography" level="any" format="01"/>
+        </xsl:if>
+      </xsl:when>
+    </xsl:choose>
+    <xsl:text>.html</xsl:text>
+  </xsl:variable>
+  <xsl:result-document href="{$doc-name}">
+    <xsl:apply-templates select="." mode="#default"/>
+  </xsl:result-document>
+</xsl:template>-->
+  <!-- *** In Process. Not outputting parts correctly yet *** -->
+<!--<xsl:template match="part" mode="chunk">
+  <xsl:choose>
+    <xsl:when test="partintro">
+      <xsl:variable name="doc-name">
+        <xsl:text>part</xsl:text>
+        <xsl:number count="part" level="any" format="i"/>
+        <xsl:text>.html</xsl:text>
+      </xsl:variable>
+      <xsl:result-document href="{$doc-name}">
+        <xsl:apply-templates select="partintro" mode="#default"/>
+      </xsl:result-document>
+      <xsl:apply-templates select="*[not(self::title)][not(self::partintro)]" mode="chunk"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates select="."/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>-->
+<!-- END FILE CHUNKING -->
   
 <xsl:template match="part">
   <div>
@@ -84,7 +158,6 @@ BLOCKS
         <xsl:attribute name="data-type">afterword</xsl:attribute>
       </xsl:when>
       <xsl:when test="self::appendix"><xsl:attribute name="data-type">appendix</xsl:attribute></xsl:when>
-      <!-- TODO: colophon not working -->
       <xsl:when test="self::colophon"><xsl:attribute name="data-type">colophon</xsl:attribute></xsl:when>
       <xsl:when test="self::dedication"><xsl:attribute name="data-type">dedication</xsl:attribute></xsl:when>
     </xsl:choose>
@@ -95,8 +168,7 @@ BLOCKS
   </section>
 </xsl:template>
 
-<!-- TO DO: Adjust prefacinfo byline output to match whatever we decide on for spec and internal convention -->
-<!-- TO DO: Test this more extensively on varied prefaceinfo markup structures -->
+<!-- TO DO: Check prefacinfo byline output after spec solidified -->
 <xsl:template match="prefaceinfo | chapterinfo">
   <div>
     <xsl:attribute name="data-class">byline</xsl:attribute>
@@ -161,7 +233,7 @@ BLOCKS
   </span>
 </xsl:template> 
   
-<!-- TO DO: Check this after spec is decided upon -->
+<!-- TO DO: Check footnoteref after spec solidified -->
 <xsl:template match="footnoteref">
   <a href="{@linkend}">
     <xsl:attribute name="data-type">footnoteref</xsl:attribute>
@@ -169,60 +241,95 @@ BLOCKS
 </xsl:template>
   
 <xsl:template match="para | simpara">
-  <!-- Begin error handling for block elements nested in para/simpara that will cause invalid HTMLBook output -->
-  <xsl:if test="count(screen) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: screen</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(figure) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: figure</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(informalfigure) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: informalfigure</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(programlisting) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: programlisting</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(orderedlist) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: orderedlist</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(itemizedlist) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: itemizedlist</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(variablelist) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: variablelist</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(table) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: table</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(informaltable) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: informaltable</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(example) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: example</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(equation) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: equation</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(informalequation) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: informalequation</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(note) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: note</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(warning) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: warning</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(tip) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: tip</xsl:message>
-  </xsl:if>
-  <xsl:if test="count(caution) > 0">
-    <xsl:message terminate="no">WARNING: Nested block element in para or simpara: caution</xsl:message>
-  </xsl:if>
-  <!-- End error handling for nested block elements -->
   <p>
     <xsl:call-template name="process-id"/>
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="
+      node()[not(self::figure | self::informalfigure | self::itemizedlist | self::variablelist | self::orderedlist | self::table | self::informaltable | self::example | self::equation | self::informalequation | self::note | self::warning | self::tip | self::caution | self::programlisting | self::screen)]"/>
   </p>
+  <!-- Move nested block elements outside of the para and warn user -->
+  <!-- *** Please note that if the nested block element had a specific meaningful placement within the parent para element,
+       this will be lost. The block element(s) will simply be output in order of occurrence after the para. *** -->
+  <!-- TO DO: Need better logic for moving nested block elements out of paras. For example:
+         * For nested block element at the very beginning of para content, move outside and before para element 
+         * For nested block element at the very end of para content, move outside and after para element
+         * For nested block element embedded within para content, don't move but output warning
+         * For multiple nested block elements inside a single para, don't move but output warning-->
+  <xsl:if test="figure">
+    <xsl:apply-templates select="figure"/>
+    <xsl:message terminate="no">WARNING: Nested figure moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="informalfigure">
+    <xsl:apply-templates select="informalfigure"/>
+    <xsl:message terminate="no">WARNING: Nested informalfigure moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="itemizedlist">
+    <xsl:apply-templates select="itemizedlist"/>
+    <xsl:message terminate="no">WARNING: Nested itemizedlist moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="variablelist">
+    <xsl:apply-templates select="variablelist"/>
+    <xsl:message terminate="no">WARNING: Nested variablelist moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="orderedlist">
+    <xsl:apply-templates select="orderedlist"/>
+    <xsl:message terminate="no">WARNING: Nested orderedlist moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="table">
+    <xsl:apply-templates select="table"/>
+    <xsl:message terminate="no">WARNING: Nested table moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="informaltable">
+    <xsl:apply-templates select="informaltable"/>
+    <xsl:message terminate="no">WARNING: Nested informaltable moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="example">
+    <xsl:apply-templates select="example"/>
+    <xsl:message terminate="no">WARNING: Nested example moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="equation">
+    <xsl:apply-templates select="equation"/>
+    <xsl:message terminate="no">WARNING: Nested equation moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="informalequation">
+    <xsl:apply-templates select="informalequation"/>
+    <xsl:message terminate="no">WARNING: Nested informalequation moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="note">
+    <xsl:apply-templates select="note"/>
+    <xsl:message terminate="no">WARNING: Nested note moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="warning">
+    <xsl:apply-templates select="warning"/>
+    <xsl:message terminate="no">WARNING: Nested warning moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="tip">
+    <xsl:apply-templates select="tip"/>
+    <xsl:message terminate="no">WARNING: Nested tip moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="caution">
+    <xsl:apply-templates select="caution"/>
+    <xsl:message terminate="no">WARNING: Nested caution moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="programlisting">
+    <xsl:apply-templates select="programlisting"/>
+    <xsl:message terminate="no">WARNING: Nested programlisting moved out of para or simpara element</xsl:message>
+  </xsl:if>
+  <xsl:if test="screen">
+    <xsl:apply-templates select="screen"/>
+    <xsl:message terminate="no">WARNING: Nested screen moved out of para or simpara element</xsl:message>
+  </xsl:if>
+</xsl:template>
+  
+  <!-- TO DO: Check formalpara heading level after spec solidified -->
+<xsl:template match="formalpara">
+  <div>
+    <xsl:attribute name="data-type">formalpara</xsl:attribute>
+    <h5>
+      <xsl:apply-templates select="title"/>
+    </h5> 
+      <xsl:call-template name="process-id"/>
+      <xsl:apply-templates select="node()[not(self::title)]"/>
+  </div>
 </xsl:template>
   
 <xsl:template match="sect1">
@@ -373,7 +480,6 @@ BLOCKS
           </div>
         </xsl:when>
         <!-- Regular mathphrase equation -->
-        <!-- To Do: Check this is the correct output for regular equations -->
         <xsl:when test="mathphrase[not(@role='tex')]">
           <div>
             <xsl:call-template name="process-id"/>
@@ -386,6 +492,9 @@ BLOCKS
         </xsl:when>
       </xsl:choose>
 </xsl:template>
+<xsl:template match="mathphrase">
+  <xsl:apply-templates/>
+</xsl:template>
 
 <!-- Glossary -->
 <xsl:template match="glossary">
@@ -396,10 +505,10 @@ BLOCKS
     <xsl:apply-templates select="node()[not(self::title)]"/>
   </section>
 </xsl:template>
-  <!-- No glossdiv info on spec page; check this handling is okay with toolchain -->
 <xsl:template match="glossdiv">
   <div>
     <xsl:attribute name="data-type">glossdiv</xsl:attribute>
+    <!-- TO DO: Check glossdiv heading level after spec solidified -->
     <h2><xsl:apply-templates select="title"/></h2>
     <xsl:apply-templates select="node()[not(self::title)]"/>
   </div>
@@ -450,7 +559,6 @@ BLOCKS
     </xsl:for-each>
   </dl>
 </xsl:template>
-  <!-- To Do: Check this is how we want to handle simple lists -->
 <xsl:template match="simplelist">
   <ul data-type="simplelist">
     <xsl:for-each select="member">
@@ -460,15 +568,20 @@ BLOCKS
 </xsl:template>
 
 <!-- Code Blocks -->
-<xsl:template match="programlisting | screen | literallayout">
+<xsl:template match="programlisting | screen">
   <pre>
     <xsl:call-template name="process-id"/>
     <xsl:attribute name="data-type">programlisting</xsl:attribute>
     <xsl:if test="@language"><xsl:attribute name="data-code-language"><xsl:value-of select="@language"/></xsl:attribute></xsl:if>
-    <!-- To Do: Check this special literallayout class is the best way to handle this element -->
-    <xsl:if test="self::literallayout"><xsl:attribute name="class">literallayout</xsl:attribute></xsl:if>
     <xsl:apply-templates/>
   </pre>
+</xsl:template>
+<xsl:template match="literallayout">
+  <pre>
+  <xsl:call-template name="process-id"/>
+  <xsl:attribute name="data-type">literallayout</xsl:attribute>
+  <xsl:apply-templates/>
+</pre>
 </xsl:template>
 <xsl:template match="example">
   <div>
@@ -480,7 +593,6 @@ BLOCKS
 </xsl:template>
   
 <!-- Figures -->
-<!-- TO DO: Add informalfigure to schema. Currently this template creates invalid htmlbook -->
 <xsl:template match="figure | informalfigure">
   <figure>
     <xsl:call-template name="process-id"/>
@@ -488,7 +600,7 @@ BLOCKS
       <xsl:attribute name="float"><xsl:value-of select="@float"/></xsl:attribute>
     </xsl:if>
     <xsl:if test="title"><figcaption><xsl:apply-templates select="title"/></figcaption></xsl:if>
-    <!-- To Do: Once handling is added to schema to allow figure without a figcaption, remove xsl:if below this comment. (It outputs an empty figcaption element for figures that don't have a title, to trick the schema. -->
+    <!-- TO DO: Once handling is added to schema to allow figure without a figcaption, remove xsl:if below this comment. (It outputs an empty figcaption element for figures that don't have a title, to trick the schema. -->
     <xsl:if test="not(title)"><figcaption/></xsl:if>
     <img>
       <xsl:attribute name="src">
@@ -568,6 +680,9 @@ BLOCKS
 <!-- Column widths should be handled in the CSS -->
 <xsl:template match="colspec"/>
   
+<!-- Suppress the index -->
+<xsl:template match="index"/>
+  
 <!-- Indexterms -->
 <xsl:template match="indexterm">
   <a>
@@ -608,6 +723,32 @@ BLOCKS
   <xsl:comment><xsl:apply-templates/></xsl:comment>
 </xsl:template>
   
+<!-- Code Callouts -->
+<xsl:template match="co">
+  <a>
+    <xsl:attribute name="class">co</xsl:attribute>
+    <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+    <xsl:attribute name="href"><xsl:value-of select="@linkends"/></xsl:attribute>
+  </a>
+</xsl:template>
+<xsl:template match="calloutlist">
+    <dl>
+      <xsl:attribute name="class">calloutlist</xsl:attribute>
+      <xsl:for-each select="callout">
+        <dt>
+          <a>
+            <xsl:attribute name="class">co</xsl:attribute>
+            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+            <xsl:attribute name="href"><xsl:value-of select="@arearefs"/></xsl:attribute>
+          </a>
+        </dt>
+        <dd>
+          <xsl:apply-templates/>
+        </dd>
+      </xsl:for-each>
+    </dl>
+</xsl:template>
+  
   
 <!-- 
 *******************************
@@ -618,6 +759,8 @@ INLINES
 <xsl:template match="literal | code"><code><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="emphasis"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="emphasis[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
+<xsl:template match="phrase[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
+<xsl:template match="phrase[@role='bolditalic']"><em><strong><xsl:apply-templates/></strong></em></xsl:template>
 <xsl:template match="superscript"><sup><xsl:apply-templates/></sup></xsl:template>
 <xsl:template match="subscript"><sub><xsl:apply-templates/></sub></xsl:template>
 <xsl:template match="replaceable"><em><code><xsl:apply-templates/></code></em></xsl:template>
@@ -643,22 +786,21 @@ INLINES
 <xsl:template match="processing-instruction()"><xsl:copy/></xsl:template>
 <xsl:template match="processing-instruction('lb')"><br /></xsl:template>
   
-<!-- To Do: Should menu elements output with arrow characters between them, or leave this to CSS? -->
+<!-- TO DO: Output should insert the proper arrow character between elements. Need example books to test.
 <xsl:template match="menuchoice"><xsl:apply-templates/></xsl:template>
 <xsl:template match="guimenu"><span data-type="guimenu"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="guisubmenu"><span data-type="guisubmenu"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="guibutton"><span data-type="guibutton"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="guilabel"><span data-type="guilabel"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="guilabel"><span data-type="guilabel"><xsl:apply-templates/></span></xsl:template> -->
   
-<!-- To Do: Should key elements output with plus characters between them, or leave this to CSS? -->
+<!-- TO DO: Output should insert the proper plus character between elements. Need example books to test.
 <xsl:template match="keycombo"><xsl:apply-templates/></xsl:template>
-<xsl:template match="keycap"><span data-type="keycap"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="keycap"><span data-type="keycap"><xsl:apply-templates/></span></xsl:template> -->
 
-<!-- To Do: Currently retaining value of @remap (unicode character value) for symbol element in a class. Okay? -->
 <xsl:template match="symbol">
   <span>
     <xsl:attribute name="data-type">symbol</xsl:attribute>
-    <xsl:attribute name="class"><xsl:value-of select="@remap"/></xsl:attribute>
+    <xsl:attribute name="data-remap"><xsl:value-of select="@remap"/></xsl:attribute>
     <xsl:apply-templates/>
   </span>
 </xsl:template>
@@ -667,7 +809,7 @@ INLINES
   <span data-type="strikethrough"><xsl:apply-templates/></span>
 </xsl:template>
   
-<!-- TO DO: Check after spec is discussed -->
+<!-- TO DO: Check lineannotation after spec solidified -->
 <xsl:template match="lineannotation">
   <code>
     <xsl:attribute name="data-type">lineannotation</xsl:attribute>
@@ -681,11 +823,10 @@ INLINES
   </a>
 </xsl:template>
   
-<!-- TO DO: Check link after spec is discussed -->
 <xsl:template match="xref | link">
   <xsl:variable name="label">
     <xsl:choose>
-      <!-- To Do: Test part rendering -->
+      <!-- TO DO: Test part rendering -->
       <xsl:when test="id(@linkend)[self::part]"><xsl:text>Part </xsl:text></xsl:when>
       <xsl:when test="id(@linkend)[self::chapter]"><xsl:text>Chapter </xsl:text></xsl:when>
       <xsl:when test="id(@linkend)[self::preface]"><xsl:text>Preface</xsl:text></xsl:when>
@@ -802,7 +943,6 @@ NAMED TEMPLATES
       <xsl:attribute name="name">edition</xsl:attribute>
       <xsl:attribute name="content"><xsl:value-of select="bookinfo/edition"/></xsl:attribute>
     </meta>
-    <!-- Question: What other meta elements do we want to pull in from the Docbook? -->
   </xsl:if>
 </xsl:template>
 
@@ -922,16 +1062,6 @@ NAMED TEMPLATES
     <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
   </xsl:if>
 </xsl:template>
-
-<!-- 
-*******************************
-MISC
-******************************* 
--->
- 
-<!-- Don't output --> 
-<xsl:template match="bookinfo"/>
-  
   
 <!-- 
 *******************************
@@ -939,9 +1069,7 @@ TO DO
 ******************************* 
 -->
   
-<xsl:template match="index"/>  
-<xsl:template match="co"/>
-<xsl:template match="calloutlist"/>
+<xsl:template match="bookinfo"/>  
 <xsl:template match="refentry"/>
   
 </xsl:stylesheet>
