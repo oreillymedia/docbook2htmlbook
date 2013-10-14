@@ -61,8 +61,9 @@ BLOCKS
 </html>
 </xsl:template>
   
+<!--**** FILE CHUNKING NOT IMPLEMENTED YET ****-->
 <!-- BEGIN FILE CHUNKING -->
-<xsl:template match="chapter|appendix|preface|colophon|dedication|glossary|bibliography" mode="chunk">
+<!--<xsl:template match="chapter|appendix|preface|colophon|dedication|glossary|bibliography" mode="chunk">
   <xsl:variable name="doc-name">
     <xsl:choose>
       <xsl:when test="self::chapter">
@@ -107,9 +108,9 @@ BLOCKS
   <xsl:result-document href="{$doc-name}">
     <xsl:apply-templates select="." mode="#default"/>
   </xsl:result-document>
-</xsl:template>
+</xsl:template>-->
   <!-- *** In Process. Not outputting parts correctly yet *** -->
-<xsl:template match="part" mode="chunk">
+<!--<xsl:template match="part" mode="chunk">
   <xsl:choose>
     <xsl:when test="partintro">
       <xsl:variable name="doc-name">
@@ -126,7 +127,7 @@ BLOCKS
       <xsl:apply-templates select="."/>
     </xsl:otherwise>
   </xsl:choose>
-</xsl:template>
+</xsl:template>-->
 <!-- END FILE CHUNKING -->
   
 <xsl:template match="part">
@@ -248,6 +249,11 @@ BLOCKS
   <!-- Move nested block elements outside of the para and warn user -->
   <!-- *** Please note that if the nested block element had a specific meaningful placement within the parent para element,
        this will be lost. The block element(s) will simply be output in order of occurrence after the para. *** -->
+  <!-- TO DO: Need better logic for moving nested block elements out of paras. For example:
+         * For nested block element at the very beginning of para content, move outside and before para element 
+         * For nested block element at the very end of para content, move outside and after para element
+         * For nested block element embedded within para content, don't move but output warning
+         * For multiple nested block elements inside a single para, don't move but output warning-->
   <xsl:if test="figure">
     <xsl:apply-templates select="figure"/>
     <xsl:message terminate="no">WARNING: Nested figure moved out of para or simpara element</xsl:message>
@@ -780,14 +786,14 @@ INLINES
 <xsl:template match="processing-instruction()"><xsl:copy/></xsl:template>
 <xsl:template match="processing-instruction('lb')"><br /></xsl:template>
   
-<!-- TO DO: Output should insert the proper arrow character between elements. 
+<!-- TO DO: Output should insert the proper arrow character between elements. Need example books to test.
 <xsl:template match="menuchoice"><xsl:apply-templates/></xsl:template>
 <xsl:template match="guimenu"><span data-type="guimenu"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="guisubmenu"><span data-type="guisubmenu"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="guibutton"><span data-type="guibutton"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="guilabel"><span data-type="guilabel"><xsl:apply-templates/></span></xsl:template> -->
   
-<!-- TO DO: Output should insert the proper plus character between elements.
+<!-- TO DO: Output should insert the proper plus character between elements. Need example books to test.
 <xsl:template match="keycombo"><xsl:apply-templates/></xsl:template>
 <xsl:template match="keycap"><span data-type="keycap"><xsl:apply-templates/></span></xsl:template> -->
 
