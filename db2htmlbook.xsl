@@ -15,7 +15,7 @@ PARAMETERS:
 -->
 <xsl:param name="xref_label">false</xsl:param>
 <xsl:param name="chunk-output">false</xsl:param>
-
+<xsl:param name="include-html-wrapper">true</xsl:param>
 <!-- 
 *******************************
 DEVELOPMENT:
@@ -36,29 +36,31 @@ BLOCKS
 -->
   
 <xsl:template match="book">
-<html>
-  <xsl:copy-of select="document('')/*/@xsi:schemaLocation"/>
-  <head>
-    <title><xsl:apply-templates select="title"/></title>
-    <xsl:call-template name="meta"/>
-  </head>
-  <body>
-    <xsl:call-template name="process-id"/>
-    <xsl:attribute name="data-type">book</xsl:attribute>
-    <h1><xsl:apply-templates select="title"/></h1>
-    <xsl:call-template name="titlepage"/>
-    <xsl:call-template name="copyrightpage"/>
-    <!-- TO DO: Add parametrized TOC for optional output -->
-    <xsl:choose>
-      <xsl:when test="$chunk-output != 'false'">
-        <xsl:apply-templates select="*[not(self::title)] | processing-instruction()" mode="chunk"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </body>
-</html>
+  <xsl:if test="$include-html-wrapper = 'true'">
+    <html>
+      <xsl:copy-of select="document('')/*/@xsi:schemaLocation"/>
+      <head>
+	<title><xsl:apply-templates select="title"/></title>
+	<xsl:call-template name="meta"/>
+      </head>
+      <body>
+	<xsl:call-template name="process-id"/>
+	<xsl:attribute name="data-type">book</xsl:attribute>
+	<h1><xsl:apply-templates select="title"/></h1>
+	<xsl:call-template name="titlepage"/>
+	<xsl:call-template name="copyrightpage"/>
+	<!-- TO DO: Add parametrized TOC for optional output -->
+	<xsl:choose>
+	  <xsl:when test="$chunk-output != 'false'">
+            <xsl:apply-templates select="*[not(self::title)] | processing-instruction()" mode="chunk"/>
+	  </xsl:when>
+	  <xsl:otherwise>
+            <xsl:apply-templates select="*[not(self::title)] | processing-instruction()"/>
+	  </xsl:otherwise>
+	</xsl:choose>
+      </body>
+    </html>
+  </xsl:if>
 </xsl:template>
   
 <!--**** FILE CHUNKING NOT IMPLEMENTED YET ****-->
