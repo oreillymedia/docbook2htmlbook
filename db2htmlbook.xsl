@@ -567,6 +567,37 @@ BLOCKS
   </ul>
 </xsl:template>
 
+<!-- Procedures and steps/substeps-->
+<xsl:template match="procedure">
+  <ol>
+    <xsl:call-template name="process-id"/>
+    <xsl:attribute name="class">procedure</xsl:attribute>
+    <li>
+      <xsl:attribute name="class">procedure-title</xsl:attribute>
+      <xsl:apply-templates select="title"/>
+    </li>
+    <xsl:for-each select="step">
+      <li>
+        <xsl:attribute name="class">step</xsl:attribute>
+        <xsl:apply-templates/>
+      </li>
+    </xsl:for-each>
+  </ol>
+</xsl:template>
+
+<xsl:template match="substeps">
+  <ol>
+    <xsl:call-template name="process-id"/>
+    <xsl:attribute name="class">substeps</xsl:attribute>
+    <xsl:for-each select="step">
+      <li>
+        <xsl:attribute name="class">step</xsl:attribute>
+        <xsl:apply-templates/>
+      </li>
+    </xsl:for-each>
+  </ol>
+</xsl:template>
+
 <!-- Code Blocks -->
 <xsl:template match="programlisting | screen">
   <pre>
@@ -637,7 +668,7 @@ BLOCKS
     </img>
   </xsl:template>
   
-<!-- Tables -->
+<!-- Handle CALS or HTML Tables -->
 <xsl:template match="table | informaltable">
   <table>
     <xsl:call-template name="process-id"/>
@@ -647,11 +678,16 @@ BLOCKS
     <xsl:if test="title">
       <caption><xsl:apply-templates select="title"/></caption>
     </xsl:if>
-    <xsl:apply-templates select="node()[not(self::title)]"/> 
+    <xsl:apply-templates select="node()[not(self::title|self::caption)]"/> 
   </table>
 </xsl:template>
 <xsl:template match="tgroup">
   <xsl:apply-templates/>
+</xsl:template>
+<xsl:template match="caption">
+<caption>
+  <xsl:apply-templates select="node()"/>
+</caption>
 </xsl:template>
 <xsl:template match="thead">
 <thead>
@@ -666,7 +702,22 @@ BLOCKS
   <xsl:template match="row">
 <tr><xsl:apply-templates/></tr>
 </xsl:template>
-  <xsl:template match="entry">
+<xsl:template match="tr">
+<tr>
+  <xsl:apply-templates select="node()"/>
+</tr>
+</xsl:template>
+<xsl:template match="th">
+<th>
+  <xsl:apply-templates select="node()"/>
+</th>
+</xsl:template>
+<xsl:template match="td">
+<td>
+  <xsl:apply-templates select="node()"/>
+</td>
+</xsl:template>
+<xsl:template match="entry">
 <xsl:choose>
   <xsl:when test="ancestor::thead">
     <!-- No p elements inside table heads -->
@@ -679,7 +730,8 @@ BLOCKS
 </xsl:template>
 <!-- Column widths should be handled in the CSS -->
 <xsl:template match="colspec"/>
-  
+<xsl:template match="col"/>
+
 <!-- Suppress the index -->
 <xsl:template match="index"/>
   
@@ -759,6 +811,7 @@ INLINES
 <xsl:template match="literal | code"><code><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="emphasis"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="emphasis[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
+<xsl:template match="emphasis[@role='bold']"><strong><xsl:apply-templates/></strong></xsl:template>
 <xsl:template match="phrase[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
 <xsl:template match="phrase[@role='bolditalic']"><em><strong><xsl:apply-templates/></strong></em></xsl:template>
 <xsl:template match="superscript"><sup><xsl:apply-templates/></sup></xsl:template>
@@ -772,12 +825,13 @@ INLINES
 <xsl:template match="acronym"><span data-type="acronym"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="command"><span data-type="command"><em><xsl:apply-templates/></em></span></xsl:template>
 <xsl:template match="application"><span data-type="application"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="computeroutput"><span data-type="computeroutput"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="parameter"><span data-type="parameter"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="computeroutput"><code data-type="computeroutput"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="parameter"><code data-type="parameter"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="function"><code data-type="function"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="varname"><code data-type="varname"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="option"><code data-type="option"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="prompt"><code data-type="prompt"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="systemitem"><code data-type="systemitem"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="uri"><code data-type="uri"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="interfacename"><span data-type="interfacename"><em><xsl:apply-templates/></em></span></xsl:template>
 <xsl:template match="optional"><span data-type="optional"><xsl:apply-templates/></span></xsl:template>
@@ -786,12 +840,13 @@ INLINES
 <xsl:template match="processing-instruction()"><xsl:copy/></xsl:template>
 <xsl:template match="processing-instruction('lb')"><br /></xsl:template>
   
-<!-- TO DO: Output should insert the proper arrow character between elements. Need example books to test.
-<xsl:template match="menuchoice"><xsl:apply-templates/></xsl:template>
+<!-- TO DO: Output should insert the proper arrow character between elements. Need example books to test. -->
+<!-- <xsl:template match="menuchoice"><xsl:apply-templates/></xsl:template> -->
 <xsl:template match="guimenu"><span data-type="guimenu"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="guisubmenu"><span data-type="guisubmenu"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="guibutton"><span data-type="guibutton"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="guilabel"><span data-type="guilabel"><xsl:apply-templates/></span></xsl:template> -->
+<xsl:template match="guilabel"><span data-type="guilabel"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="guiicon"><span data-type="guiicon"><xsl:apply-templates/></span></xsl:template>
   
 <!-- TO DO: Output should insert the proper plus character between elements. Need example books to test.
 <xsl:template match="keycombo"><xsl:apply-templates/></xsl:template>
