@@ -5,7 +5,7 @@
   xmlns:mml="http://www.w3.org/1998/Math/MathML"
   xsi:schemaLocation="http://www.w3.org/1999/xhtml ../schema/htmlbook.xsd"
   xmlns="http://www.w3.org/1999/xhtml">
-<xsl:output method="xml" indent="yes"/>
+<xsl:output method="xml"/>
   
 <!-- 
 *******************************
