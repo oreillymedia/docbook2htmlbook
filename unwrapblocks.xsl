@@ -10,6 +10,9 @@
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
+  
+<!-- Run this script before db2htmlbook.xsl to remove any block elements nested inside para elements 
+     that would cause invalid HTMLBook output. -->
 
 <!-- Unwrap block elements from paras -->
   <xsl:template match="para[blockquote]">
@@ -193,6 +196,31 @@
       </xsl:choose>
     </xsl:for-each-group>
   </xsl:template>
+  <xsl:template match="para[caution]">
+    <xsl:for-each-group select="*|node()" group-starting-with="caution">
+      <xsl:choose>
+        <xsl:when test="current-group()[1]/self::caution">
+          <xsl:for-each-group select="current-group()" group-ending-with="*[not(caution)]">
+            <xsl:choose>
+              <xsl:when test="current-group()[1]/self::caution">
+                <xsl:apply-templates select="current-group()"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <para>
+                  <xsl:sequence select="current-group()"/>
+                </para>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each-group>
+        </xsl:when>
+        <xsl:otherwise>
+          <para>
+            <xsl:sequence select="current-group()"/>
+          </para>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each-group>
+  </xsl:template>
   <xsl:template match="para[tip]">
     <xsl:for-each-group select="*|node()" group-starting-with="tip">
       <xsl:choose>
@@ -303,6 +331,58 @@
           <xsl:for-each-group select="current-group()" group-ending-with="*[not(screen)]">
             <xsl:choose>
               <xsl:when test="current-group()[1]/self::screen">
+                <xsl:apply-templates select="current-group()"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <para>
+                  <xsl:sequence select="current-group()"/>
+                </para>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each-group>
+        </xsl:when>
+        <xsl:otherwise>
+          <para>
+            <xsl:sequence select="current-group()"/>
+          </para>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each-group>
+  </xsl:template>
+  
+  <xsl:template match="para[equation]">
+    <xsl:for-each-group select="*|node()" group-starting-with="equation">
+      <xsl:choose>
+        <xsl:when test="current-group()[1]/self::equation">
+          <xsl:for-each-group select="current-group()" group-ending-with="*[not(equation)]">
+            <xsl:choose>
+              <xsl:when test="current-group()[1]/self::equation">
+                <xsl:apply-templates select="current-group()"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <para>
+                  <xsl:sequence select="current-group()"/>
+                </para>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each-group>
+        </xsl:when>
+        <xsl:otherwise>
+          <para>
+            <xsl:sequence select="current-group()"/>
+          </para>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each-group>
+  </xsl:template>
+  
+  <xsl:template match="para[informalequation]">
+    <xsl:for-each-group select="*|node()" group-starting-with="informalequation">
+      <xsl:choose>
+        <xsl:when test="current-group()[1]/self::informalequation">
+          <xsl:for-each-group select="current-group()" group-ending-with="*[not(informalequation)]">
+            <xsl:choose>
+              <xsl:when test="current-group()[1]/self::informalequation">
                 <xsl:apply-templates select="current-group()"/>
               </xsl:when>
               <xsl:otherwise>

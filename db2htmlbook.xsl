@@ -252,83 +252,13 @@ BLOCKS
 </xsl:template>
   
 <xsl:template match="para | simpara">
+  <xsl:if test="blockquote | figure | informalfigure | itemizedlist | variablelist | orderedlist | table | informaltable | example | equation | informalequation | note | warning | tip | caution | programlisting | screen">
+    <xsl:message terminate="no">WARNING: Nested element inside para will cause invalid HTMLBook output. Please run unwrapblocks.xsl first, and then rerun db2htmlbook.xsl.</xsl:message>
+  </xsl:if>
   <p>
     <xsl:call-template name="process-id"/>
-    <xsl:apply-templates select="
-      node()[not(self::figure | self::informalfigure | self::itemizedlist | self::variablelist | self::orderedlist | self::table | self::informaltable | self::example | self::equation | self::informalequation | self::note | self::warning | self::tip | self::caution | self::programlisting | self::screen)]"/>
+    <xsl:apply-templates/>
   </p>
-  <!-- Move nested block elements outside of the para and warn user -->
-  <!-- *** Please note that if the nested block element had a specific meaningful placement within the parent para element,
-       this will be lost. The block element(s) will simply be output in order of occurrence after the para. *** -->
-  <!-- TO DO: Need better logic for moving nested block elements out of paras. For example:
-         * For nested block element at the very beginning of para content, move outside and before para element 
-         * For nested block element at the very end of para content, move outside and after para element
-         * For nested block element embedded within para content, don't move but output warning
-         * For multiple nested block elements inside a single para, don't move but output warning-->
-  <xsl:if test="figure">
-    <xsl:apply-templates select="figure"/>
-    <xsl:message terminate="no">WARNING: Nested figure moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="informalfigure">
-    <xsl:apply-templates select="informalfigure"/>
-    <xsl:message terminate="no">WARNING: Nested informalfigure moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="itemizedlist">
-    <xsl:apply-templates select="itemizedlist"/>
-    <xsl:message terminate="no">WARNING: Nested itemizedlist moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="variablelist">
-    <xsl:apply-templates select="variablelist"/>
-    <xsl:message terminate="no">WARNING: Nested variablelist moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="orderedlist">
-    <xsl:apply-templates select="orderedlist"/>
-    <xsl:message terminate="no">WARNING: Nested orderedlist moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="table">
-    <xsl:apply-templates select="table"/>
-    <xsl:message terminate="no">WARNING: Nested table moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="informaltable">
-    <xsl:apply-templates select="informaltable"/>
-    <xsl:message terminate="no">WARNING: Nested informaltable moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="example">
-    <xsl:apply-templates select="example"/>
-    <xsl:message terminate="no">WARNING: Nested example moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="equation">
-    <xsl:apply-templates select="equation"/>
-    <xsl:message terminate="no">WARNING: Nested equation moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="informalequation">
-    <xsl:apply-templates select="informalequation"/>
-    <xsl:message terminate="no">WARNING: Nested informalequation moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="note">
-    <xsl:apply-templates select="note"/>
-    <xsl:message terminate="no">WARNING: Nested note moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="warning">
-    <xsl:apply-templates select="warning"/>
-    <xsl:message terminate="no">WARNING: Nested warning moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="tip">
-    <xsl:apply-templates select="tip"/>
-    <xsl:message terminate="no">WARNING: Nested tip moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="caution">
-    <xsl:apply-templates select="caution"/>
-    <xsl:message terminate="no">WARNING: Nested caution moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="programlisting">
-    <xsl:apply-templates select="programlisting"/>
-    <xsl:message terminate="no">WARNING: Nested programlisting moved out of para or simpara element</xsl:message>
-  </xsl:if>
-  <xsl:if test="screen">
-    <xsl:apply-templates select="screen"/>
-    <xsl:message terminate="no">WARNING: Nested screen moved out of para or simpara element</xsl:message>
-  </xsl:if>
 </xsl:template>
   
   <!-- TO DO: Check formalpara heading level after spec solidified -->
