@@ -7,13 +7,12 @@
   xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns:exsl="http://exslt.org/common"
   exclude-result-prefixes="d xi xlink exsl html">
+
+  <xsl:preserve-space elements="*"/>
   
   <xsl:output method="xml" indent="yes" 
     doctype-public="-//OASIS//DTD DocBook XML V4.5//EN"
     doctype-system="http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"/>
-  <xsl:strip-space elements="*"/>
-  <xsl:preserve-space 
-    elements="d:screen d:programlisting d:literallayout xi:*"/>
   <xsl:variable name="inlines">abbrev accel acronym alt anchor
     annotation application author biblioref citation citebiblioid
     citerefentry citetitle classname code command computeroutput
@@ -48,7 +47,7 @@
     
   <xsl:template match="@xml:id|@xml:lang">
     <xsl:attribute name="{local-name()}">
-      <xsl:apply-templates/>
+      <xsl:value-of select="."/>
     </xsl:attribute>
   </xsl:template>
   
