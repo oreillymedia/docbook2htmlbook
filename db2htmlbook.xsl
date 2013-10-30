@@ -16,6 +16,7 @@ PARAMETERS:
 <xsl:param name="xref_label">false</xsl:param>
 <xsl:param name="chunk-output">false</xsl:param>
 <xsl:param name="include-html-wrapper">true</xsl:param>
+<xsl:param name="include-toc">true</xsl:param>
 <!-- 
 *******************************
 DEVELOPMENT:
@@ -60,8 +61,14 @@ BLOCKS
 
 <xsl:template name="process-child-content">
   <xsl:call-template name="titlepage"/>
+  <!-- Adding parametrized TOC for optional output -->
+    <xsl:choose>
+      <xsl:when test="$include-toc = 'true'">
+        <nav data-type="toc"/>
+      </xsl:when>
+      <xsl:otherwise/>
+    </xsl:choose>
   <xsl:call-template name="copyrightpage"/>
-  <!-- TO DO: Add parametrized TOC for optional output -->
   <xsl:choose>
     <xsl:when test="$chunk-output != 'false'">
       <xsl:apply-templates select="*[not(self::title)] | processing-instruction()" mode="chunk"/>
@@ -144,6 +151,7 @@ BLOCKS
 <xsl:template match="part">
   <div>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">part</xsl:attribute>
     <h1>
       <xsl:apply-templates select="title"/>
@@ -159,6 +167,7 @@ BLOCKS
 <xsl:template match="chapter | preface | appendix | colophon | dedication">
   <section>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:choose>
       <xsl:when test="self::chapter"><xsl:attribute name="data-type">chapter</xsl:attribute></xsl:when>
       <xsl:when test="self::preface[contains(@id,'foreword')]">
@@ -237,6 +246,7 @@ BLOCKS
   <span>
     <xsl:attribute name="data-type">footnote</xsl:attribute>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:for-each select="para">
       <xsl:if test="not(position() = 1 )"><br/></xsl:if>
       <xsl:apply-templates select="text() | *"/>
@@ -257,6 +267,7 @@ BLOCKS
   </xsl:if>
   <p>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:apply-templates/>
   </p>
 </xsl:template>
@@ -269,6 +280,7 @@ BLOCKS
       <xsl:apply-templates select="title"/>
     </h5> 
       <xsl:call-template name="process-id"/>
+      <xsl:call-template name="process-role"/>
       <xsl:apply-templates select="node()[not(self::title)]"/>
   </div>
 </xsl:template>
@@ -276,6 +288,7 @@ BLOCKS
 <xsl:template match="sect1">
   <section>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">sect1</xsl:attribute>
     <h1><xsl:apply-templates select="title"/></h1>
     <xsl:apply-templates select="node()[not(self::title)]"/>
@@ -285,6 +298,7 @@ BLOCKS
 <xsl:template match="sect2">
   <section>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">sect2</xsl:attribute>
     <h2><xsl:apply-templates select="title"/></h2>
     <xsl:apply-templates select="node()[not(self::title)]"/>
@@ -294,6 +308,7 @@ BLOCKS
 <xsl:template match="sect3">
   <section>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">sect3</xsl:attribute>
     <h3><xsl:apply-templates select="title"/></h3>
     <xsl:apply-templates select="node()[not(self::title)]"/>
@@ -303,6 +318,7 @@ BLOCKS
 <xsl:template match="sect4">
   <section>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">sect4</xsl:attribute>
     <h4><xsl:apply-templates select="title"/></h4>
     <xsl:apply-templates select="node()[not(self::title)]"/>
@@ -312,6 +328,7 @@ BLOCKS
 <xsl:template match="sect5">
   <section>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">sect5</xsl:attribute>
     <h5><xsl:apply-templates select="title"/></h5>
     <xsl:apply-templates select="node()[not(self::title)]"/>
@@ -321,6 +338,7 @@ BLOCKS
 <xsl:template match="sidebar">
   <aside>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">sidebar</xsl:attribute>
     <h5><xsl:apply-templates select="title"/></h5>
     <xsl:apply-templates select="node()[not(self::title)]"/>
@@ -330,6 +348,7 @@ BLOCKS
 <xsl:template match="note | tip | warning | caution | important">
   <div>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">
       <xsl:choose>
         <xsl:when test="self::note">note</xsl:when>
@@ -350,6 +369,7 @@ BLOCKS
 <xsl:template match="blockquote | epigraph | quote">
   <blockquote>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:if test="self::epigraph">
       <xsl:attribute name="data-type">epigraph</xsl:attribute>
     </xsl:if>
@@ -403,6 +423,7 @@ BLOCKS
         <!-- Latex -->
         <xsl:when test="mathphrase[@role='tex']">
           <xsl:call-template name="process-id"/>
+          <xsl:call-template name="process-role"/>
           <xsl:if test="title"><h5><xsl:apply-templates select="title"/></h5></xsl:if>
           <p>
             <xsl:attribute name="data-type">latex</xsl:attribute>
@@ -413,6 +434,7 @@ BLOCKS
         <xsl:when test="mml:*">
           <div>
             <xsl:call-template name="process-id"/>
+            <xsl:call-template name="process-role"/>
             <xsl:attribute name="data-type">equation</xsl:attribute>
             <xsl:if test="title"><h5><xsl:apply-templates select="title"/></h5></xsl:if>
             <math xmlns="http://www.w3.org/1998/Math/MathML">
@@ -424,6 +446,7 @@ BLOCKS
         <xsl:when test="mathphrase[not(@role='tex')]">
           <div>
             <xsl:call-template name="process-id"/>
+            <xsl:call-template name="process-role"/>
             <xsl:attribute name="data-type">equation</xsl:attribute>
             <xsl:if test="title"><h5><xsl:apply-templates select="title"/></h5></xsl:if>
             <p>
@@ -441,6 +464,7 @@ BLOCKS
 <xsl:template match="glossary">
   <section>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">glossary</xsl:attribute>
     <h1><xsl:apply-templates select="title"/></h1>
     <xsl:apply-templates select="node()[not(self::title)]"/>
@@ -449,6 +473,7 @@ BLOCKS
 <xsl:template match="glossdiv">
   <div>
     <xsl:attribute name="data-type">glossdiv</xsl:attribute>
+    <xsl:call-template name="process-role"/>
     <!-- TO DO: Check glossdiv heading level after spec solidified -->
     <h2><xsl:apply-templates select="title"/></h2>
     <xsl:apply-templates select="node()[not(self::title)]"/>
@@ -457,18 +482,21 @@ BLOCKS
 <xsl:template match="glossentry">
   <dl>
     <xsl:attribute name="data-type">glossary</xsl:attribute>
+    <xsl:call-template name="process-role"/>
     <xsl:apply-templates/>
   </dl>
 </xsl:template>
 <xsl:template match="glossterm">
   <dt>
     <xsl:attribute name="data-type">glossterm</xsl:attribute>
+    <xsl:call-template name="process-role"/>
     <dfn><xsl:apply-templates/></dfn>
   </dt>
 </xsl:template>
 <xsl:template match="glossdef">
   <dd>
     <xsl:attribute name="data-type">glossdef</xsl:attribute>
+    <xsl:call-template name="process-role"/>
     <xsl:apply-templates/>
   </dd>
 </xsl:template>
@@ -476,6 +504,7 @@ BLOCKS
 <!-- Lists -->
 <xsl:template match="itemizedlist">
   <ul>
+    <xsl:call-template name="process-role"/>
     <xsl:for-each select="listitem">
       <li><xsl:apply-templates/></li>
     </xsl:for-each>
@@ -483,6 +512,7 @@ BLOCKS
 </xsl:template>
 <xsl:template match="orderedlist">
   <ol>
+    <xsl:call-template name="process-role"/>
     <xsl:for-each select="listitem">
       <li><xsl:apply-templates/></li>
     </xsl:for-each>
@@ -490,6 +520,7 @@ BLOCKS
 </xsl:template>
 <xsl:template match="variablelist">
   <dl>
+    <xsl:call-template name="process-role"/>
     <xsl:for-each select="varlistentry">
       <xsl:for-each select="term">
         <dt><xsl:apply-templates/></dt>
@@ -502,6 +533,7 @@ BLOCKS
 </xsl:template>
 <xsl:template match="simplelist">
   <ul data-type="simplelist">
+    <xsl:call-template name="process-role"/>
     <xsl:for-each select="member">
       <li><xsl:apply-templates/></li>
     </xsl:for-each>
@@ -512,6 +544,7 @@ BLOCKS
 <xsl:template match="procedure">
   <ol>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:attribute name="class">procedure</xsl:attribute>
     <li>
       <xsl:attribute name="class">procedure-title</xsl:attribute>
@@ -529,6 +562,7 @@ BLOCKS
 <xsl:template match="substeps">
   <ol>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:attribute name="class">substeps</xsl:attribute>
     <xsl:for-each select="step">
       <li>
@@ -543,6 +577,7 @@ BLOCKS
 <xsl:template match="programlisting | screen">
   <pre>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">programlisting</xsl:attribute>
     <xsl:if test="@language"><xsl:attribute name="data-code-language"><xsl:value-of select="@language"/></xsl:attribute></xsl:if>
     <xsl:apply-templates/>
@@ -551,6 +586,7 @@ BLOCKS
 <xsl:template match="literallayout">
   <pre>
   <xsl:call-template name="process-id"/>
+  <xsl:call-template name="process-role"/>
   <xsl:attribute name="data-type">literallayout</xsl:attribute>
   <xsl:apply-templates/>
 </pre>
@@ -558,6 +594,7 @@ BLOCKS
 <xsl:template match="example">
   <div>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">example</xsl:attribute>
     <h5><xsl:apply-templates select="title"/></h5>
     <xsl:apply-templates select="node()[not(self::title)]"/>
@@ -568,6 +605,7 @@ BLOCKS
 <xsl:template match="figure | informalfigure">
   <figure>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:if test="@float">
       <xsl:attribute name="float"><xsl:value-of select="@float"/></xsl:attribute>
     </xsl:if>
@@ -613,9 +651,22 @@ BLOCKS
 <xsl:template match="table | informaltable">
   <table>
     <xsl:call-template name="process-id"/>
-    <xsl:if test="@tabstyle='landscape' or @orient='land'">
-      <xsl:attribute name="class">landscape</xsl:attribute>
-    </xsl:if>
+    <xsl:choose>
+    <xsl:when test="@tabstyle='landscape' or @orient='land'">
+      <xsl:choose>
+      <xsl:when test="@role">
+         <xsl:attribute name="class"><xsl:value-of select="concat('landscape ', @role)"/></xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+         <xsl:attribute name="class">landscape</xsl:attribute>
+      </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:when test="@role">
+      <xsl:attribute name="class"><xsl:value-of select="@role"/></xsl:attribute>
+    </xsl:when>
+    <xsl:otherwise/>
+    </xsl:choose>
     <xsl:if test="title">
       <caption><xsl:apply-templates select="title"/></caption>
     </xsl:if>
@@ -632,29 +683,37 @@ BLOCKS
 </xsl:template>
 <xsl:template match="thead">
 <thead>
+  <xsl:call-template name="process-role"/>
   <xsl:apply-templates/>
 </thead>
 </xsl:template>
   <xsl:template match="tbody">
 <tbody>
+  <xsl:call-template name="process-role"/>
   <xsl:apply-templates/>
 </tbody>
 </xsl:template>
   <xsl:template match="row">
-<tr><xsl:apply-templates/></tr>
+<tr>
+  <xsl:call-template name="process-role"/>
+  <xsl:apply-templates/>
+</tr>
 </xsl:template>
 <xsl:template match="tr">
 <tr>
+  <xsl:call-template name="process-role"/>
   <xsl:apply-templates select="node()"/>
 </tr>
 </xsl:template>
 <xsl:template match="th">
 <th>
+  <xsl:call-template name="process-role"/>
   <xsl:apply-templates select="node()"/>
 </th>
 </xsl:template>
 <xsl:template match="td">
 <td>
+  <xsl:call-template name="process-role"/>
   <xsl:apply-templates select="node()"/>
 </td>
 </xsl:template>
@@ -662,10 +721,16 @@ BLOCKS
 <xsl:choose>
   <xsl:when test="ancestor::thead">
     <!-- No p elements inside table heads -->
-    <th><xsl:apply-templates select="para/node()"/></th>
+    <th>
+      <xsl:call-template name="process-role"/>
+      <xsl:apply-templates select="para/node()"/>
+    </th>
   </xsl:when>
   <xsl:otherwise>
-    <td><xsl:apply-templates/></td>
+    <td>
+      <xsl:call-template name="process-role"/>
+      <xsl:apply-templates/>
+    </td>
   </xsl:otherwise>
 </xsl:choose>
 </xsl:template>
@@ -681,6 +746,7 @@ BLOCKS
   <a>
     <xsl:attribute name="data-type">indexterm</xsl:attribute>
     <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
     <xsl:if test="primary">
       <xsl:attribute name="data-primary"><xsl:value-of select="primary"/></xsl:attribute>
     </xsl:if>
@@ -1056,6 +1122,12 @@ NAMED TEMPLATES
 <xsl:template name="process-id">
   <xsl:if test="@id">
     <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="process-role">
+  <xsl:if test="@role">
+    <xsl:attribute name="class"><xsl:value-of select="@role"/></xsl:attribute>
   </xsl:if>
 </xsl:template>
   
