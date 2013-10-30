@@ -610,6 +610,9 @@ BLOCKS
       <xsl:attribute name="float"><xsl:value-of select="@float"/></xsl:attribute>
     </xsl:if>
     <xsl:if test="title"><figcaption><xsl:apply-templates select="title"/></figcaption></xsl:if>
+    <img>
+      <xsl:call-template name="fig-attrs"/>
+    </img>
   </figure>
 </xsl:template>
 
