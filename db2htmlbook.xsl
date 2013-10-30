@@ -1126,19 +1126,9 @@ NAMED TEMPLATES
 </xsl:template>
 
 <xsl:template name="process-role">
-  <xsl:choose>
-    <xsl:when test="@class">
-      <xsl:attribute name="class"><xsl:value-of select="concat(@class, ' ', @role)"/></xsl:attribute>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:attribute name="class"><xsl:value-of select="@role"/></xsl:attribute>
-    </xsl:otherwise>
-  </xsl:choose>
-<!--
   <xsl:if test="@role">
     <xsl:attribute name="class"><xsl:value-of select="@role"/></xsl:attribute>
   </xsl:if>
--->
 </xsl:template>
   
 <!-- 
