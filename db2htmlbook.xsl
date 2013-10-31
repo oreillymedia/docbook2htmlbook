@@ -542,19 +542,31 @@ BLOCKS
 
 <!-- Procedures and steps/substeps-->
 <xsl:template match="procedure">
+  <p>
+    <xsl:attribute name="class">procedure-title</xsl:attribute>
+    <xsl:apply-templates select="title"/>
+  </p>
   <ol>
     <xsl:call-template name="process-id"/>
-    <xsl:call-template name="process-role"/>
-    <xsl:attribute name="class">procedure</xsl:attribute>
-    <li>
-      <xsl:attribute name="class">procedure-title</xsl:attribute>
-      <xsl:apply-templates select="title"/>
-    </li>
+      <xsl:choose>
+      <xsl:when test="@role">
+         <xsl:attribute name="class"><xsl:value-of select="concat('procedure ', @role)"/></xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+         <xsl:attribute name="class">procedure</xsl:attribute>
+      </xsl:otherwise>
+      </xsl:choose>
     <xsl:for-each select="step">
       <li>
         <xsl:call-template name="process-id"/>
-        <xsl:call-template name="process-role"/>
-        <xsl:attribute name="class">step</xsl:attribute>
+      <xsl:choose>
+      <xsl:when test="@role">
+         <xsl:attribute name="class"><xsl:value-of select="concat('step ', @role)"/></xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+         <xsl:attribute name="class">step</xsl:attribute>
+      </xsl:otherwise>
+      </xsl:choose>
         <xsl:apply-templates/>
       </li>
     </xsl:for-each>
@@ -564,13 +576,25 @@ BLOCKS
 <xsl:template match="substeps">
   <ol>
     <xsl:call-template name="process-id"/>
-    <xsl:call-template name="process-role"/>
-    <xsl:attribute name="class">substeps</xsl:attribute>
+      <xsl:choose>
+      <xsl:when test="@role">
+         <xsl:attribute name="class"><xsl:value-of select="concat('substeps ', @role)"/></xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+         <xsl:attribute name="class">substeps</xsl:attribute>
+      </xsl:otherwise>
+      </xsl:choose>
     <xsl:for-each select="step">
       <li>
         <xsl:call-template name="process-id"/>
-        <xsl:call-template name="process-role"/>
-        <xsl:attribute name="class">step</xsl:attribute>
+      <xsl:choose>
+      <xsl:when test="@role">
+         <xsl:attribute name="class"><xsl:value-of select="concat('step ', @role)"/></xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+         <xsl:attribute name="class">step</xsl:attribute>
+      </xsl:otherwise>
+      </xsl:choose>
         <xsl:apply-templates/>
       </li>
     </xsl:for-each>
