@@ -542,6 +542,8 @@ BLOCKS
 
 <!-- Procedures and steps/substeps-->
 <xsl:template match="procedure">
+<div>
+<xsl:call-template name="process-role"/>
   <p>
     <xsl:attribute name="class">procedure-title</xsl:attribute>
     <xsl:apply-templates select="title"/>
@@ -571,6 +573,7 @@ BLOCKS
       </li>
     </xsl:for-each>
   </ol>
+</div>
 </xsl:template>
 
 <xsl:template match="substeps">
