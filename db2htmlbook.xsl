@@ -61,6 +61,7 @@ BLOCKS
 
 <xsl:template name="process-child-content">
   <xsl:call-template name="titlepage"/>
+  <xsl:call-template name="copyrightpage"/>
   <!-- Adding parametrized TOC for optional output -->
     <xsl:choose>
       <xsl:when test="$include-toc = 'true'">
@@ -68,7 +69,6 @@ BLOCKS
       </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
-  <xsl:call-template name="copyrightpage"/>
   <xsl:choose>
     <xsl:when test="$chunk-output != 'false'">
       <xsl:apply-templates select="*[not(self::title)] | processing-instruction()" mode="chunk"/>
