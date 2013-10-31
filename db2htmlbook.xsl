@@ -552,6 +552,8 @@ BLOCKS
     </li>
     <xsl:for-each select="step">
       <li>
+        <xsl:call-template name="process-id"/>
+        <xsl:call-template name="process-role"/>
         <xsl:attribute name="class">step</xsl:attribute>
         <xsl:apply-templates/>
       </li>
@@ -566,6 +568,8 @@ BLOCKS
     <xsl:attribute name="class">substeps</xsl:attribute>
     <xsl:for-each select="step">
       <li>
+        <xsl:call-template name="process-id"/>
+        <xsl:call-template name="process-role"/>
         <xsl:attribute name="class">step</xsl:attribute>
         <xsl:apply-templates/>
       </li>
