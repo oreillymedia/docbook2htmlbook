@@ -606,7 +606,7 @@ BLOCKS
 </xsl:template>
   
 <!-- Figures -->
-<xsl:template match="figure | informalfigure">
+<xsl:template match="figure">
   <figure>
     <xsl:call-template name="process-id"/>
     <xsl:call-template name="process-role"/>
@@ -614,30 +614,39 @@ BLOCKS
       <xsl:attribute name="float"><xsl:value-of select="@float"/></xsl:attribute>
     </xsl:if>
     <xsl:if test="title"><figcaption><xsl:apply-templates select="title"/></figcaption></xsl:if>
-    <!-- TO DO: Once handling is added to schema to allow figure without a figcaption, remove xsl:if below this comment. (It outputs an empty figcaption element for figures that don't have a title, to trick the schema. -->
-    <xsl:if test="not(title)"><figcaption/></xsl:if>
     <img>
-      <xsl:attribute name="src">
-        <xsl:choose>
-          <xsl:when test="mediaobject/imageobject[@role='web']">
-            <xsl:value-of select="mediaobject/imageobject[@role='web']/imagedata/@fileref"/>
-          </xsl:when>
-          <xsl:otherwise><xsl:value-of select="mediaobject/imageobject/imagedata/@fileref"/></xsl:otherwise>
-        </xsl:choose>
-      </xsl:attribute>
-      <xsl:if test="mediaobject/imageobject/imagedata[@width]">
-        <xsl:attribute name="width"><xsl:value-of select="mediaobject/imageobject/imagedata/@width"/></xsl:attribute>
-      </xsl:if>
-      <xsl:if test="mediaobject/imageobject/imagedata[@height]">
-        <xsl:attribute name="height"><xsl:value-of select="mediaobject/imageobject/imagedata/@height"/></xsl:attribute>
-      </xsl:if>
-      <xsl:if test="mediaobject/textobject">
-        <!-- Use value-of for alt text, so no child elements are output in alt attribute -->
-        <xsl:attribute name="alt"><xsl:value-of select="mediaobject/textobject/phrase"/></xsl:attribute>
-      </xsl:if>
+      <xsl:call-template name="fig-attrs"/>
     </img>
   </figure>
 </xsl:template>
+
+<xsl:template match="informalfigure">
+  <img>
+    <xsl:call-template name="fig-attrs"/>
+  </img>
+</xsl:template>
+
+<xsl:template name="fig-attrs">
+  <xsl:attribute name="src">
+    <xsl:choose>
+      <xsl:when test="mediaobject/imageobject[@role='web']">
+        <xsl:value-of select="mediaobject/imageobject[@role='web']/imagedata/@fileref"/>
+      </xsl:when>
+      <xsl:otherwise><xsl:value-of select="mediaobject/imageobject/imagedata/@fileref"/></xsl:otherwise>
+    </xsl:choose>
+  </xsl:attribute>
+  <xsl:if test="mediaobject/imageobject/imagedata[@width]">
+    <xsl:attribute name="width"><xsl:value-of select="mediaobject/imageobject/imagedata/@width"/></xsl:attribute>
+  </xsl:if>
+  <xsl:if test="mediaobject/imageobject/imagedata[@height]">
+    <xsl:attribute name="height"><xsl:value-of select="mediaobject/imageobject/imagedata/@height"/></xsl:attribute>
+  </xsl:if>
+  <xsl:if test="mediaobject/textobject">
+    <!-- Use value-of for alt text, so no child elements are output in alt attribute -->
+    <xsl:attribute name="alt"><xsl:value-of select="mediaobject/textobject/phrase"/></xsl:attribute>
+  </xsl:if>
+</xsl:template>
+
   <xsl:template match="inlinemediaobject">
     <img>
       <xsl:attribute name="src">
