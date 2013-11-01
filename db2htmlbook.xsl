@@ -474,17 +474,20 @@ BLOCKS
   <div>
     <xsl:attribute name="data-type">glossdiv</xsl:attribute>
     <xsl:call-template name="process-role"/>
-    <!-- TO DO: Check glossdiv heading level after spec solidified -->
-    <h2><xsl:apply-templates select="title"/></h2>
-    <xsl:apply-templates select="node()[not(self::title)]"/>
-  </div>
-</xsl:template>
-<xsl:template match="glossentry">
+    <!-- Per AW, all glossary items should be wrapped in one single <dl> -->
   <dl>
     <xsl:attribute name="data-type">glossary</xsl:attribute>
     <xsl:call-template name="process-role"/>
-    <xsl:apply-templates/>
+    <!-- TO DO: Check glossdiv heading level after spec solidified -->
+    <!-- Removing h2 per AW -->
+    <!-- <h2><xsl:apply-templates select="title"/></h2> -->
+    <xsl:apply-templates select="node()[not(self::title)]"/>
   </dl>
+  </div>
+</xsl:template>
+<xsl:template match="glossentry">
+    <xsl:call-template name="process-role"/>
+    <xsl:apply-templates/>
 </xsl:template>
 <xsl:template match="glossterm">
   <dt>
