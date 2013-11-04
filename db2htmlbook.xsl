@@ -492,6 +492,9 @@ BLOCKS
 <xsl:template match="glossterm">
   <dt>
     <xsl:attribute name="data-type">glossterm</xsl:attribute>
+    <xsl:if test="parent::glossentry/@id">
+      <xsl:attribute name="id"><xsl:value-of select="parent::glossentry/@id"/></xsl:attribute>
+    </xsl:if>
     <xsl:call-template name="process-role"/>
     <dfn><xsl:apply-templates/></dfn>
   </dt>
