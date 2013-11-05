@@ -467,24 +467,20 @@ BLOCKS
     <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">glossary</xsl:attribute>
     <h1><xsl:apply-templates select="title"/></h1>
-    <xsl:apply-templates select="node()[not(self::title)]"/>
+    <xsl:apply-templates select="child::para"/>
+    <!-- Per AW, all glossary items should be wrapped in one single <dl> -->
+    <!-- See https://github.com/oreillymedia/docbook2htmlbook/issues/20 -->
+    <dl>
+      <xsl:attribute name="data-type">glossary</xsl:attribute>
+      <xsl:call-template name="process-role"/>
+      <xsl:apply-templates select="node()[not(self::title) and not(self::para)]"/>
+    </dl>
   </section>
 </xsl:template>
 <xsl:template match="glossdiv">
-  <div>
-    <xsl:attribute name="data-type">glossdiv</xsl:attribute>
-    <xsl:call-template name="process-role"/>
-    <!-- Per AW, all glossary items should be wrapped in one single <dl> -->
-  <dl>
-    <xsl:attribute name="data-type">glossary</xsl:attribute>
-    <xsl:call-template name="process-role"/>
-    <!-- TO DO: Check glossdiv heading level after spec solidified -->
-    <!-- Removing h2 per AW -->
-    <!-- <h2><xsl:apply-templates select="title"/></h2> -->
-    <xsl:apply-templates select="node()[not(self::title)]"/>
-  </dl>
-  </div>
+    <xsl:apply-templates select="node()/*"/>
 </xsl:template>
+    <!-- Removing h2 per AW -->
 <xsl:template match="glossentry">
     <xsl:call-template name="process-role"/>
     <xsl:apply-templates/>
