@@ -3,10 +3,8 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:mml="http://www.w3.org/1998/Math/MathML"
-  xmlns:saxon="http://icl.com/saxon"
   xsi:schemaLocation="http://www.w3.org/1999/xhtml ../schema/htmlbook.xsd"
-  xmlns="http://www.w3.org/1999/xhtml"
-  extension-element-prefixes="saxon">
+  xmlns="http://www.w3.org/1999/xhtml">
 <xsl:output method="xml" omit-xml-declaration="yes"/>
   
 <!-- 
