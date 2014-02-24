@@ -193,7 +193,6 @@
   </xsl:template>
 
   <!-- Store a global list of glossentry IDs -->
-  <!-- so we can match linkends against it in the following template-->
   <xsl:variable name="globalidlist">
     <xsl:for-each select="//d:glossentry/d:glossterm/text()">
     <xsl:call-template name="processid">
@@ -202,14 +201,23 @@
   </xsl:for-each>
   </xsl:variable>
 
+  <!-- Store a global list of glossterm IDs not in glossary -->
+  <xsl:variable name="globaltermlist">
+    <xsl:for-each select="//d:glossterm[not(ancestor::d:glossary)]/text()">
+    <xsl:call-template name="processid">
+        <xsl:with-param name="string" select="."/>
+    </xsl:call-template>
+  </xsl:for-each>
+  </xsl:variable>
+
   <!-- Convert glossterms not in glossary to links, and add linkend -->
-  <!-- but ONLY if the linkend will match a glossentry ID -->
+  <!-- but ONLY if the linkend would match a glossentry ID -->
   <!-- otherwise drop the tag and add a remark around it -->
   <xsl:template match="d:glossterm[not(ancestor::d:glossary)]">
     <xsl:param name="glosslinkend">
         <xsl:call-template name="processid"/>
     </xsl:param>
-    <xsl:choose>    
+    <xsl:choose>
     <xsl:when test="contains($globalidlist, $glosslinkend)">
       <link>
         <xsl:attribute name="linkend"><xsl:value-of select="$glosslinkend"/></xsl:attribute>
@@ -219,23 +227,31 @@
     <xsl:otherwise>
       <xsl:apply-templates/>
       <remark>Warning: "<xsl:value-of select="."/>" was marked up as a glossterm but did not match any glossary entries, so the markup was removed during conversion to prevent errors.</remark>
+      <xsl:message>Warning: "<xsl:value-of select="."/>" was marked up as a glossterm but did not match any glossary entries, so the markup was removed during conversion to prevent errors.</xsl:message>
     </xsl:otherwise>
   </xsl:choose>
   </xsl:template>
 
-  <!-- Add IDs to glossentries in glossary that match glossterm linkends *not* in glossary (linkends created above)-->
+  <!-- Add IDs only to glossentries that match linkends not in glossary-->
   <xsl:template match="d:glossentry">
-  <xsl:choose>
-  <xsl:when test="string-length(child::d:glossterm/text()) != 0">
-    <xsl:variable name="glossid">
+  <xsl:variable name="glossid">
       <xsl:call-template name="processid">
         <xsl:with-param name="string" select="child::d:glossterm"/>
       </xsl:call-template>
-    </xsl:variable>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="contains($globaltermlist, $glossid)">
+      <xsl:choose>
+    <xsl:when test="string-length(child::d:glossterm/text()) != 0">
   <glossentry>
     <xsl:attribute name="id"><xsl:value-of select="$glossid"/></xsl:attribute>
     <xsl:apply-templates/>
   </glossentry>
+</xsl:when>
+  <xsl:otherwise>
+<glossentry><xsl:apply-templates/></glossentry>
+  </xsl:otherwise>
+  </xsl:choose>
   </xsl:when>
   <xsl:otherwise>
       <glossentry><xsl:apply-templates/></glossentry>

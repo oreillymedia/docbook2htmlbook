@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
-<xsl:stylesheet version="2.0"
+<xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:mml="http://www.w3.org/1998/Math/MathML"
   xsi:schemaLocation="http://www.w3.org/1999/xhtml ../schema/htmlbook.xsd"
-  xmlns="http://www.w3.org/1999/xhtml">
+  xmlns="http://www.w3.org/1999/xhtml"
+  exclude-result-prefixes="xsi mml">
 <xsl:output method="xml" omit-xml-declaration="yes"/>
   
 <!-- 
@@ -263,7 +264,7 @@ BLOCKS
   
 <xsl:template match="para | simpara">
   <xsl:if test="blockquote | figure | informalfigure | itemizedlist | variablelist | orderedlist | table | informaltable | example | equation | informalequation | note | warning | tip | caution | programlisting | screen">
-    <xsl:message terminate="no">WARNING: Nested element <xsl:value-of select="*/name()"/> inside para will cause invalid HTMLBook output. Please run unwrapblocks.xsl first, and then rerun db2htmlbook.xsl.</xsl:message>
+    <xsl:message terminate="no">WARNING: Nested element <xsl:value-of select="name()"/> inside para will cause invalid HTMLBook output. Please run unwrapblocks.xsl first, and then rerun db2htmlbook.xsl.</xsl:message>
   </xsl:if>
   <p>
     <xsl:call-template name="process-id"/>
