@@ -26,7 +26,7 @@ Output warning and all elements not handled by this stylesheet yet.
 -->
 
 <xsl:template match="*">
-  <xsl:message terminate="no">WARNING: Unmatched element: <xsl:value-of select="name()"/></xsl:message>
+  <xsl:message terminate="no">WARNING: Unmatched element: <xsl:value-of select="name()"/>: <xsl:value-of select="."/></xsl:message>
   <xsl:apply-templates/>
 </xsl:template>
   
@@ -902,9 +902,33 @@ INLINES
 <xsl:template match="guiicon"><span data-type="guiicon"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="guimenuitem"><span data-type="guimenuitem"><xsl:apply-templates/></span></xsl:template>
   
-<!-- TO DO: Output should insert the proper plus character between elements. Need example books to test.
-<xsl:template match="keycombo"><xsl:apply-templates/></xsl:template>
-<xsl:template match="keycap"><span data-type="keycap"><xsl:apply-templates/></span></xsl:template> -->
+<!-- TO DO: Output should insert the proper plus character between elements. Need example books to test.-->
+<xsl:template match="keycombo">
+  <xsl:variable name="action" select="@action"/>
+  <xsl:variable name="joinchar">
+    <xsl:choose>
+      <xsl:when test="$action='seq'"><xsl:text> </xsl:text></xsl:when>
+      <xsl:when test="$action='simul'">+</xsl:when>
+      <xsl:when test="$action='press'">-</xsl:when>
+      <xsl:when test="$action='click'">-</xsl:when>
+      <xsl:when test="$action='double-click'">-</xsl:when>
+      <xsl:when test="$action='other'"/>
+      <xsl:otherwise>+</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:for-each select="keycap">
+    <xsl:if test="position()&gt;1"><xsl:value-of select="$joinchar"/></xsl:if>
+    <span data-type="keycap"><xsl:apply-templates select="."/></span>
+  </xsl:for-each>
+</xsl:template>
+
+<xsl:template match="keycap[parent::keycombo]">
+      <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="keycap[not(parent::keycombo)]">
+      <span data-type="keycap"><xsl:apply-templates/></span>
+</xsl:template>
 
 <xsl:template match="symbol">
   <span>
@@ -925,10 +949,11 @@ INLINES
     <xsl:apply-templates/>
   </code>
 </xsl:template>
-  
+
+<!-- Added 'select' to apply-templates below to fix https://github.com/oreillymedia/docbook2htmlbook/issues/26 -->
 <xsl:template match="ulink">
   <a href="{@url}">
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="@*|node()"/>
   </a>
 </xsl:template>
   
