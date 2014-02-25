@@ -641,7 +641,7 @@ BLOCKS
     <xsl:call-template name="process-id"/>
     <xsl:call-template name="process-role"/>
     <xsl:if test="@float">
-      <xsl:attribute name="float"><xsl:value-of select="@float"/></xsl:attribute>
+      <xsl:attribute name="style">float: <xsl:value-of select="@float"/></xsl:attribute>
     </xsl:if>
     <xsl:if test="title"><figcaption><xsl:apply-templates select="title"/></figcaption></xsl:if>
     <img>
@@ -652,6 +652,10 @@ BLOCKS
 
 <xsl:template match="informalfigure">
   <figure>
+  <xsl:call-template name="process-role"/>
+  <xsl:if test="@float">
+      <xsl:attribute name="style">float: <xsl:value-of select="@float"/></xsl:attribute>
+  </xsl:if>
   <figcaption/>
     <img>
       <xsl:call-template name="fig-attrs"/>
