@@ -515,6 +515,18 @@ BLOCKS
 </xsl:template>
 <xsl:template match="orderedlist">
   <ol>
+    <xsl:if test="@numeration='loweralpha'">
+      <xsl:attribute name="type">a</xsl:attribute>
+    </xsl:if>
+    <xsl:if test="@numeration='lowerroman'">
+      <xsl:attribute name="type">i</xsl:attribute>
+    </xsl:if>
+    <xsl:if test="@numeration='upperalpha'">
+      <xsl:attribute name="type">A</xsl:attribute>
+    </xsl:if>
+    <xsl:if test="@numeration='upperroman'">
+      <xsl:attribute name="type">I</xsl:attribute>
+    </xsl:if>
     <xsl:call-template name="process-role"/>
     <xsl:for-each select="listitem">
       <li><xsl:apply-templates/></li>
