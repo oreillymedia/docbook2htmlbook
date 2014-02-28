@@ -881,8 +881,6 @@ INLINES
 <xsl:template match="emphasis"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="emphasis[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
 <xsl:template match="emphasis[@role='bold']"><strong><xsl:apply-templates/></strong></xsl:template>
-<xsl:template match="phrase[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
-<xsl:template match="phrase[@role='bolditalic']"><em><strong><xsl:apply-templates/></strong></em></xsl:template>
 <xsl:template match="superscript"><sup><xsl:apply-templates/></sup></xsl:template>
 <xsl:template match="subscript"><sub><xsl:apply-templates/></sub></xsl:template>
 <xsl:template match="replaceable"><em><code><xsl:apply-templates/></code></em></xsl:template>
@@ -904,10 +902,43 @@ INLINES
 <xsl:template match="uri"><code data-type="uri"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="interfacename"><span data-type="interfacename"><em><xsl:apply-templates/></em></span></xsl:template>
 <xsl:template match="optional"><span data-type="optional"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="phrase[@role='keep-together']"><span class="keep-together"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="phrase[@role='unicode']"><span class="unicode"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="processing-instruction()"><xsl:copy/></xsl:template>
 <xsl:template match="processing-instruction('lb')"><br /></xsl:template>
+
+<!-- Handling for custom <phrase> roles -->
+<xsl:template match="phrase[@role]">
+  <xsl:choose>
+    <xsl:when test="@role='strong'">
+      <strong><xsl:apply-templates/></strong>
+    </xsl:when>
+    <xsl:when test="@role='bold'">
+      <strong><xsl:apply-templates/></strong>
+    </xsl:when>
+    <xsl:when test="@role='bolditalic'">
+      <em><strong><xsl:apply-templates/></strong></em>
+    </xsl:when>
+    <xsl:when test="@role='keep-together'">
+      <span class="keep-together"><xsl:apply-templates/></span>
+    </xsl:when>
+    <xsl:when test="@role='unicode'">
+      <span class="unicode"><xsl:apply-templates/></span>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="classname"><xsl:value-of select="@role"/></xsl:variable>
+      <span>
+        <xsl:attribute name="class"><xsl:value-of select="$classname"/></xsl:attribute>
+        <xsl:apply-templates/>
+      </span>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="phrase[not(@role)]">
+  <span>
+    <xsl:call-template name="process-id"/>
+    <xsl:apply-templates/>
+  </span>
+</xsl:template>
   
 <!-- TO DO: Output should insert the proper arrow character between elements. Need example books to test. -->
 <!-- <xsl:template match="menuchoice"><xsl:apply-templates/></xsl:template> -->
