@@ -380,10 +380,35 @@ BLOCKS
     <xsl:apply-templates select="node()[not(self::attribution)]"/>
   </blockquote>
 </xsl:template>
+
 <xsl:template match="attribution">
   <p>
-    <xsl:attribute name="data-type">attribution</xsl:attribute>
-    <xsl:apply-templates/>
+  <xsl:attribute name="data-class">author</xsl:attribute>
+  <xsl:choose>
+      <xsl:when test="author">
+        <xsl:for-each select="author">
+          <xsl:if test="position()=last() and count(../author) > 2">
+            <xsl:text>and </xsl:text>
+          </xsl:if>
+          <xsl:if test="firstname"><xsl:value-of select="firstname"/><xsl:text> </xsl:text></xsl:if>
+          <xsl:if test="othername"><xsl:value-of select="othername"/><xsl:text> </xsl:text></xsl:if>
+          <xsl:if test="surname"><xsl:value-of select="surname"/></xsl:if>
+          <xsl:choose>
+            <!-- Only 2 authors -->
+            <xsl:when test="position() = 1 and count(../author) = 2">
+              <xsl:text> and </xsl:text>
+            </xsl:when>
+            <!-- More than 2 authors -->
+            <xsl:when test="not(position()=last()) and count(../author) > 2">
+              <xsl:text>, </xsl:text>
+            </xsl:when>
+          </xsl:choose>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates/>
+      </xsl:otherwise>
+    </xsl:choose>
   </p>
 </xsl:template>
 
