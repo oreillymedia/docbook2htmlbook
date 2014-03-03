@@ -374,10 +374,10 @@ BLOCKS
     <xsl:if test="self::epigraph">
       <xsl:attribute name="data-type">epigraph</xsl:attribute>
     </xsl:if>
+    <xsl:apply-templates select="node()[not(self::attribution)]"/>
     <xsl:if test="attribution">
       <xsl:apply-templates select="attribution"/>
     </xsl:if>
-    <xsl:apply-templates select="node()[not(self::attribution)]"/>
   </blockquote>
 </xsl:template>
 
