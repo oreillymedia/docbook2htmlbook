@@ -1025,6 +1025,7 @@ INLINES
 <!-- Added 'select' to apply-templates below to fix https://github.com/oreillymedia/docbook2htmlbook/issues/26 -->
 <xsl:template match="ulink">
   <a href="{@url}">
+    <xsl:call-template name="process-role"/>
     <xsl:choose>
       <xsl:when test="text()">
         <xsl:apply-templates/>
