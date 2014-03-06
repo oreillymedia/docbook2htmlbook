@@ -680,10 +680,10 @@ BLOCKS
     <xsl:if test="@float">
       <xsl:attribute name="style">float: <xsl:value-of select="@float"/></xsl:attribute>
     </xsl:if>
-    <xsl:if test="title"><figcaption><xsl:apply-templates select="title"/></figcaption></xsl:if>
     <img>
       <xsl:call-template name="fig-attrs"/>
     </img>
+    <xsl:if test="title"><figcaption><xsl:apply-templates select="title"/></figcaption></xsl:if>
   </figure>
 </xsl:template>
 
@@ -693,10 +693,10 @@ BLOCKS
   <xsl:if test="@float">
       <xsl:attribute name="style">float: <xsl:value-of select="@float"/></xsl:attribute>
   </xsl:if>
-  <figcaption/>
     <img>
       <xsl:call-template name="fig-attrs"/>
     </img>
+    <figcaption/>
   </figure>
 </xsl:template>
 
