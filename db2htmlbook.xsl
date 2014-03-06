@@ -1025,7 +1025,14 @@ INLINES
 <!-- Added 'select' to apply-templates below to fix https://github.com/oreillymedia/docbook2htmlbook/issues/26 -->
 <xsl:template match="ulink">
   <a href="{@url}">
-    <xsl:apply-templates select="@*|node()"/>
+    <xsl:choose>
+      <xsl:when test="text()">
+        <xsl:apply-templates/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="@*|node()"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </a>
 </xsl:template>
   
