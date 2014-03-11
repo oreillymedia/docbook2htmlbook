@@ -29,8 +29,7 @@ Output warning and all elements not handled by this stylesheet yet.
   <xsl:message terminate="no">WARNING: Unmatched element: <xsl:value-of select="name()"/>: <xsl:value-of select="."/></xsl:message>
   <xsl:apply-templates/>
 </xsl:template>
-  
-  
+
 <!-- 
 *******************************
 BLOCKS
@@ -150,10 +149,12 @@ BLOCKS
 <!-- END FILE CHUNKING -->
   
 <xsl:template match="part">
+  <xsl:variable name="part-number"><xsl:number level="any" count="part"/></xsl:variable>
   <div>
     <xsl:call-template name="process-id"/>
     <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">part</xsl:attribute>
+    <xsl:if test="$part-number = '1'"><xsl:attribute name="class">pagenumrestart</xsl:attribute></xsl:if>
     <h1>
       <xsl:apply-templates select="title"/>
     </h1>
@@ -170,7 +171,11 @@ BLOCKS
     <xsl:call-template name="process-id"/>
     <xsl:call-template name="process-role"/>
     <xsl:choose>
-      <xsl:when test="self::chapter"><xsl:attribute name="data-type">chapter</xsl:attribute></xsl:when>
+      <xsl:when test="self::chapter">
+          <xsl:variable name="chapter-number"><xsl:number level="any" count="chapter"/></xsl:variable>
+          <xsl:attribute name="data-type">chapter</xsl:attribute>
+          <xsl:if test="$chapter-number = '1' and not(parent::part)"><xsl:attribute name="class">pagenumrestart</xsl:attribute></xsl:if>
+      </xsl:when>
       <xsl:when test="self::preface[contains(@id,'foreword')]">
         <xsl:attribute name="data-type">foreword</xsl:attribute>
       </xsl:when>
