@@ -925,7 +925,6 @@ INLINES
 <xsl:template match="replaceable"><em><code><xsl:apply-templates/></code></em></xsl:template>
 <xsl:template match="userinput"><strong><code><xsl:apply-templates/></code></strong></xsl:template>
 <xsl:template match="firstterm"><span data-type="firstterm"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="email"><em data-type="email"><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="filename"><code data-type="filename"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="citetitle"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="acronym"><span data-type="acronym"><xsl:apply-templates/></span></xsl:template>
@@ -1050,6 +1049,15 @@ INLINES
         </em>
       </xsl:otherwise>
     </xsl:choose>
+  </a>
+</xsl:template>
+
+<xsl:template match="email">
+  <a>
+    <xsl:attribute name="class">email</xsl:attribute>
+    <xsl:call-template name="process-role"/>
+    <xsl:attribute name="href">mailto:<xsl:value-of select="text()"/></xsl:attribute>
+      <xsl:apply-templates/>
   </a>
 </xsl:template>
   
