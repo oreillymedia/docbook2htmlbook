@@ -355,18 +355,22 @@ BLOCKS
   <div>
     <xsl:call-template name="process-id"/>
     <xsl:call-template name="process-role"/>
-    <xsl:attribute name="data-type">
-      <xsl:choose>
-        <xsl:when test="self::note">note</xsl:when>
-        <xsl:when test="self::tip">tip</xsl:when>
-        <xsl:when test="self::warning">warning</xsl:when>
-        <xsl:when test="self::caution">caution</xsl:when>
-        <xsl:when test="self::important">important</xsl:when>
-      </xsl:choose>
-    </xsl:attribute>
-    <xsl:if test="@role='safarienabled'">
-      <xsl:attribute name="class">safarienabled</xsl:attribute>
-    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="@role='safarienabled'">
+        <xsl:attribute name="class">safarienabled</xsl:attribute>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:attribute name="data-type">
+          <xsl:choose>
+            <xsl:when test="self::note">note</xsl:when>
+            <xsl:when test="self::tip">tip</xsl:when>
+            <xsl:when test="self::warning">warning</xsl:when>
+            <xsl:when test="self::caution">caution</xsl:when>
+            <xsl:when test="self::important">important</xsl:when>
+          </xsl:choose>
+        </xsl:attribute>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:if test="title"><h1><xsl:apply-templates select="title"/></h1></xsl:if>
     <xsl:apply-templates select="node()[not(self::title)]"/>
   </div>
@@ -831,7 +835,12 @@ BLOCKS
 <xsl:template match="col"/>
 
 <!-- Suppress the index -->
-<xsl:template match="index"/>
+<xsl:template match="index">
+  <section>
+    <xsl:attribute name="data-type">index</xsl:attribute>
+    <xsl:apply-templates/>
+  </section>
+</xsl:template>
   
 <!-- Indexterms -->
 <xsl:template match="indexterm">
