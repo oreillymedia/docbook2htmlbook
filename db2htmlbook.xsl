@@ -1033,10 +1033,12 @@ INLINES
     <xsl:call-template name="process-role"/>
     <xsl:choose>
       <xsl:when test="text()">
-        <xsl:apply-templates/>
+          <xsl:apply-templates/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates select="@*|node()"/>
+        <em class="hyperlink">
+            <xsl:apply-templates select="@*|node()"/>
+        </em>
       </xsl:otherwise>
     </xsl:choose>
   </a>
