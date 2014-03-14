@@ -203,10 +203,19 @@
 
   <!-- Store a global list of glossterm IDs not in glossary -->
   <xsl:variable name="globaltermlist">
-    <xsl:for-each select="//d:glossterm[not(ancestor::d:glossary)]/text()">
-    <xsl:call-template name="processid">
-        <xsl:with-param name="string" select="."/>
-    </xsl:call-template>
+    <xsl:for-each select="//d:glossterm[not(ancestor::d:glossary)]">
+    <xsl:choose>
+      <xsl:when test="self::d:glossterm[not(@baseform)]">
+        <xsl:call-template name="processid">
+            <xsl:with-param name="string" select="text()"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="processid">
+            <xsl:with-param name="string" select="@baseform"/>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:for-each>
   </xsl:variable>
 
@@ -214,22 +223,31 @@
   <!-- but ONLY if the linkend would match a glossentry ID -->
   <!-- otherwise drop the tag and add a remark around it -->
   <xsl:template match="d:glossterm[not(ancestor::d:glossary)]">
-    <xsl:param name="glosslinkend">
-        <xsl:call-template name="processid"/>
-    </xsl:param>
+  <xsl:variable name="glosslinkend">
     <xsl:choose>
-    <xsl:when test="contains($globalidlist, $glosslinkend)">
-      <link>
-        <xsl:attribute name="linkend"><xsl:value-of select="$glosslinkend"/></xsl:attribute>
-        <xsl:apply-templates/>
-      </link>
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:apply-templates/>
-      <remark>Warning: "<xsl:value-of select="."/>" was marked up as a glossterm but did not match any glossary entries, so the markup was removed during conversion to prevent errors.</remark>
-      <xsl:message>Warning: "<xsl:value-of select="."/>" was marked up as a glossterm but did not match any glossary entries, so the markup was removed during conversion to prevent errors.</xsl:message>
-    </xsl:otherwise>
-  </xsl:choose>
+        <xsl:when test="self::d:glossterm[not(@baseform)]">
+            <xsl:call-template name="processid"/>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:call-template name="processid">
+              <xsl:with-param name="string" select="@baseform"/>
+            </xsl:call-template>
+        </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+        <xsl:choose>
+        <xsl:when test="contains($globalidlist, $glosslinkend)">
+          <link>
+            <xsl:attribute name="linkend"><xsl:value-of select="$glosslinkend"/></xsl:attribute>
+            <xsl:apply-templates/>
+          </link>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates/>
+          <remark>Warning: "<xsl:value-of select="."/>" was marked up as a glossterm in the text but did not match any glossary entries, so the markup was removed during conversion from DocBook 5 to 4.5 in order to prevent validity errors.</remark>
+          <xsl:message>Warning: "<xsl:value-of select="."/>" was marked up as a glossterm in the text but did not match any glossary entries, so the markup was removed during conversion from DocBook 5 to 4.5 in order to prevent validity errors.</xsl:message>
+        </xsl:otherwise>
+      </xsl:choose>
   </xsl:template>
 
   <!-- Add IDs only to glossentries that match linkends not in glossary-->
