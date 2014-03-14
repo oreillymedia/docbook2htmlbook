@@ -835,12 +835,12 @@ BLOCKS
 <xsl:template match="col"/>
 
 <!-- Suppress the index -->
-<xsl:template match="index">
-  <section>
+<xsl:template match="index"/>
+<!--   <section>
     <xsl:attribute name="data-type">index</xsl:attribute>
     <xsl:apply-templates/>
   </section>
-</xsl:template>
+</xsl:template> -->
   
 <!-- Indexterms -->
 <xsl:template match="indexterm">
