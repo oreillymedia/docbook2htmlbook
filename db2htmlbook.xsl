@@ -1057,7 +1057,7 @@ INLINES
     <xsl:attribute name="class">email</xsl:attribute>
     <xsl:call-template name="process-role"/>
     <xsl:attribute name="href">mailto:<xsl:value-of select="text()"/></xsl:attribute>
-      <xsl:apply-templates/>
+      <em><xsl:apply-templates/></em>
   </a>
 </xsl:template>
   
