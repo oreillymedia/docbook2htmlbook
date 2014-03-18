@@ -581,7 +581,7 @@ BLOCKS
   </dl>
 </xsl:template>
 <xsl:template match="simplelist">
-  <ul data-type="simplelist">
+  <ul class="simplelist">
     <xsl:call-template name="process-role"/>
     <xsl:for-each select="member">
       <li><xsl:apply-templates/></li>
