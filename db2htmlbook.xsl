@@ -766,6 +766,9 @@ BLOCKS
     <xsl:if test="title">
       <caption><xsl:apply-templates select="title"/></caption>
     </xsl:if>
+    <xsl:if test="caption">
+      <xsl:apply-templates select="caption"/>
+    </xsl:if>
     <xsl:apply-templates select="node()[not(self::title|self::caption)]"/> 
   </table>
 </xsl:template>
