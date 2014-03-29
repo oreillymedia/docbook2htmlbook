@@ -858,7 +858,7 @@ BLOCKS
       <xsl:attribute name="data-secondary"><xsl:value-of select="secondary"/></xsl:attribute>
     </xsl:if>
     <xsl:if test="tertiary">
-      <xsl:attribute name="data-tertiary"><xsl:value-of select="secondary"/></xsl:attribute>
+      <xsl:attribute name="data-tertiary"><xsl:value-of select="tertiary"/></xsl:attribute>
     </xsl:if>
     <xsl:if test="primary/@sortas">
       <xsl:attribute name="data-primary-sortas"><xsl:value-of select="primary/@sortas"/></xsl:attribute>
