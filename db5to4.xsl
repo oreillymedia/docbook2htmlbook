@@ -254,7 +254,7 @@
   <xsl:template match="d:glossentry">
   <xsl:variable name="glossid">
       <xsl:call-template name="processid">
-        <xsl:with-param name="string" select="child::d:glossterm"/>
+        <xsl:with-param name="string" select="child::d:glossterm/text()"/>
       </xsl:call-template>
   </xsl:variable>
   <xsl:choose>
