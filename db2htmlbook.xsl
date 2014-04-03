@@ -901,7 +901,9 @@ BLOCKS
     <xsl:if test="@id">
       <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
     </xsl:if>
-    <xsl:attribute name="href"><xsl:value-of select="@linkends"/></xsl:attribute>
+    <xsl:if test="@href">
+      <xsl:attribute name="href"><xsl:value-of select="@linkends"/></xsl:attribute>
+    </xsl:if>
   </a>
 </xsl:template>
 <xsl:template match="calloutlist">
@@ -914,7 +916,9 @@ BLOCKS
             <xsl:if test="@id">
               <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
             </xsl:if>
-            <xsl:attribute name="href"><xsl:value-of select="@arearefs"/></xsl:attribute>
+            <xsl:if test="@href">
+              <xsl:attribute name="href"><xsl:value-of select="@arearefs"/></xsl:attribute>
+            </xsl:if>
           </a>
         </dt>
         <dd>
