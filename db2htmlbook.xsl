@@ -807,7 +807,15 @@ BLOCKS
 <xsl:template match="th">
 <th>
   <xsl:call-template name="process-role"/>
-  <xsl:apply-templates select="node()"/>
+  <!-- No p elements inside table heads -->
+  <xsl:choose>
+    <xsl:when test="para">
+      <xsl:apply-templates select="para/node()"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates select="node()"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </th>
 </xsl:template>
 <xsl:template match="td">
