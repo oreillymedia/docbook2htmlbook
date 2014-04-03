@@ -890,7 +890,9 @@ BLOCKS
 <xsl:template match="co">
   <a>
     <xsl:attribute name="class">co</xsl:attribute>
-    <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+    <xsl:if test="@id">
+      <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+    </xsl:if>
     <xsl:attribute name="href"><xsl:value-of select="@linkends"/></xsl:attribute>
   </a>
 </xsl:template>
@@ -901,7 +903,9 @@ BLOCKS
         <dt>
           <a>
             <xsl:attribute name="class">co</xsl:attribute>
-            <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+            <xsl:if test="@id">
+              <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+            </xsl:if>
             <xsl:attribute name="href"><xsl:value-of select="@arearefs"/></xsl:attribute>
           </a>
         </dt>
