@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x:description xmlns:h="http://www.w3.org/1999/xhtml" xmlns:x="http://www.jenitennison.com/xslt/xspec" stylesheet="../db2htmlbook.xsl">
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match '*">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'book">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing function process-child-content">
+        <x:call template="process-child-content"></x:call>
+        <x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'part">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'partintro">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'chapter | preface | appendix | colophon | dedication">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'prefaceinfo | chapterinfo">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'jobtitle">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'footnote">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'footnoteref">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'para | simpara">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'formalpara">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'sect1">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'sect2">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'sect3">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'sect4">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'sect5">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'sidebar">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'note | tip | warning | caution | important">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'blockquote | epigraph | quote">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'attribution">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'title">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'inlineequation">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'equation | informalequation">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'mathphrase">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'glossary">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'glossdiv">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'glossentry">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'glossterm">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'glossdef">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'itemizedlist">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'orderedlist">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'variablelist">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'simplelist">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'procedure">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'substeps">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'programlisting | screen">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'literallayout">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'example">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'figure">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'informalfigure">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing function fig-attrs">
+        <x:call template="fig-attrs"></x:call>
+        <x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'inlinemediaobject">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'table | informaltable">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'tgroup">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'caption">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'thead">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'tbody">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'row">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'tr">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'th">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'td">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'entry">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'colspec">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'col">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'index">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'indexterm">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'remark">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'co">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'calloutlist">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'literal | code">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'emphasis">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'emphasis[@role='strong']">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'emphasis[@role='bold']">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'superscript">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'subscript">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'replaceable">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'userinput">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'firstterm">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'filename">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'citetitle">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'acronym">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'command">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'application">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'computeroutput">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'parameter">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'function">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'varname">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'option">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'prompt">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'systemitem">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'uri">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'interfacename">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'optional">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'processing-instruction()">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'processing-instruction('lb')">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'phrase[@role]">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'phrase[not(@role)]">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'guimenu">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'guisubmenu">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'guibutton">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'guilabel">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'guiicon">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'guimenuitem">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'keycombo">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'keycap[parent::keycombo]">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'keycap[not(parent::keycombo)]">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'symbol">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'emphasis[@role='strikethrough'] | phrase[@role='strikethrough']">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'lineannotation">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario label="Ulink tests">
+        <x:context/>
+        
+        <x:scenario label="When a ulink has a text node">
+            <x:context>
+                <ulink url="http://oreilly.com">O'Reilly Media</ulink>
+            </x:context>
+            <x:expect label="An &lt;a&gt; element should be created, with @url propagated to @href and text node preserved">
+                <h:a href="http://oreilly.com">O'Reilly Media</h:a>  
+            </x:expect>
+        </x:scenario>
+        
+        <x:scenario label="When a ulink has no text node">
+            <x:context>
+                <ulink url="http://oreilly.com"/>
+            </x:context>
+            <x:expect label="An &lt;a&gt; element should be created with a nested &lt;em&gt;, with @url propagated to @href and text node duplicating @url">
+                <h:a href="http://oreilly.com">
+                    <h:em class="hyperlink">http://oreilly.com</h:em>
+                </h:a>  
+            </x:expect>
+        </x:scenario>
+        
+        <x:scenario label="When a ulink has a @role (no text node)">
+            <x:context>
+                <ulink role="hideurl" url="http://oreilly.com"/>
+            </x:context>
+            <x:expect label="It should be propagated to a @class attribute">
+                <h:a href="http://oreilly.com" class="hideurl">
+                    <h:em class="hyperlink">http://oreilly.com</h:em>
+                </h:a>  
+            </x:expect>
+        </x:scenario>
+        
+        <x:scenario label="When a ulink has a @role (text node)">
+            <x:context>
+                <ulink role="showurl" url="http://oreilly.com">O'Reilly Media</ulink>
+            </x:context>
+            <x:expect label="It should be propagated to a @class attribute">
+                <h:a href="http://oreilly.com" class="showurl">O'Reilly Media</h:a>  
+            </x:expect>
+        </x:scenario>
+        
+        <x:scenario label="When a ulink has inline tagging">
+            <x:context>
+                <ulink url="http://oreilly.com"><literal>O'Reilly Media</literal></ulink>
+            </x:context>
+            <x:expect label="It should be transformed as expected">
+                <h:a href="http://oreilly.com"><h:code>O'Reilly Media</h:code></h:a>  
+            </x:expect>
+        </x:scenario>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'email">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'xref | link">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing function meta">
+        <x:call template="meta"></x:call>
+        <x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing function titlepage">
+        <x:call template="titlepage"></x:call>
+        <x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing function copyrightpage">
+        <x:call template="copyrightpage"></x:call>
+        <x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing function process-id">
+        <x:call template="process-id"></x:call>
+        <x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing function process-role">
+        <x:call template="process-role"></x:call>
+        <x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'bookinfo">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+    
+    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'refentry">
+        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    </x:scenario>
+</x:description>
