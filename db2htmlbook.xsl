@@ -1059,12 +1059,12 @@ INLINES
   <a href="{@url}">
     <xsl:call-template name="process-role"/>
     <xsl:choose>
-      <xsl:when test="text()">
+      <xsl:when test="node()">
           <xsl:apply-templates/>
       </xsl:when>
       <xsl:otherwise>
         <em class="hyperlink">
-            <xsl:apply-templates select="@*|node()"/>
+            <xsl:value-of select="@url"/>
         </em>
       </xsl:otherwise>
     </xsl:choose>
