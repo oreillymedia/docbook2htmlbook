@@ -248,7 +248,7 @@ BLOCKS
   <xsl:apply-templates/>
 </xsl:template>
   
-<xsl:template match="footnote">
+<xsl:template match="footnote[not(ancestor::table or ancestor::informaltable)]">
   <span>
     <xsl:attribute name="data-type">footnote</xsl:attribute>
     <xsl:call-template name="process-id"/>
@@ -258,7 +258,51 @@ BLOCKS
       <xsl:apply-templates select="text() | *"/>
     </xsl:for-each>
   </span>
-</xsl:template> 
+</xsl:template>
+
+<xsl:template match="footnote[ancestor::table or ancestor::informaltable]">
+  <sup>
+    <xsl:attribute name="class">table-footnote-call</xsl:attribute>
+    <xsl:apply-templates select="." mode="footnote.number"/>
+  </sup>
+</xsl:template>
+
+<xsl:template match="footnote" mode="footnote.number">
+  <xsl:if test="ancestor::table or ancestor::informaltable">
+    <xsl:number level="any" from="table | informaltable" format="a"/>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="process-table-footnotes">
+  <div>
+    <xsl:attribute name="class">table-footnotes</xsl:attribute>
+    <xsl:for-each select="descendant::footnote">
+      <xsl:for-each select="para">
+        <p>
+        <xsl:if test="position() = 1">
+        <sup>
+          <xsl:attribute name="class">table-footnote-marker</xsl:attribute>
+          <xsl:apply-templates select="parent::footnote" mode="footnote.number"/>
+        </sup>
+        </xsl:if>
+          <span>
+            <xsl:attribute name="class">table-footnote-text</xsl:attribute>
+            <xsl:apply-templates select="text() | *"/>
+          </span>
+        </p>
+      </xsl:for-each>
+    </xsl:for-each>
+  </div>
+  <span>
+    <xsl:attribute name="class">table-footnote</xsl:attribute>
+    <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role"/>
+    <xsl:for-each select="para">
+      <xsl:if test="not(position() = 1 )"><br/></xsl:if>
+      <xsl:apply-templates select="text() | *"/>
+    </xsl:for-each>
+  </span>
+</xsl:template>
   
 <!-- TO DO: Check footnoteref after spec solidified -->
 <xsl:template match="footnoteref">
@@ -771,6 +815,9 @@ BLOCKS
     </xsl:if>
     <xsl:apply-templates select="node()[not(self::title|self::caption)]"/> 
   </table>
+  <xsl:if test="descendant::footnote">
+      <xsl:call-template name="process-table-footnotes"/>
+  </xsl:if>
 </xsl:template>
 <xsl:template match="tgroup">
   <xsl:apply-templates/>
