@@ -946,13 +946,16 @@ BLOCKS
   <a>
     <xsl:attribute name="class">co</xsl:attribute>
     <xsl:if test="@id">
-      <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+      <xsl:attribute name="id">co_<xsl:value-of select="@id"/></xsl:attribute>
+      <xsl:attribute name="href">#callout_<xsl:value-of select="@id"/></xsl:attribute>
     </xsl:if>
-    <xsl:if test="@href">
-      <xsl:attribute name="href"><xsl:value-of select="@linkends"/></xsl:attribute>
-    </xsl:if>
+   <img>
+    <xsl:attribute name="src">callouts/<xsl:apply-templates select="." mode="callout.number"/>.png</xsl:attribute>
+    <xsl:attribute name="alt"><xsl:apply-templates select="." mode="callout.number"/></xsl:attribute>
+   </img>
   </a>
 </xsl:template>
+
 <xsl:template match="calloutlist">
     <dl>
       <xsl:attribute name="class">calloutlist</xsl:attribute>
@@ -960,12 +963,14 @@ BLOCKS
         <dt>
           <a>
             <xsl:attribute name="class">co</xsl:attribute>
-            <xsl:if test="@id">
-              <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+            <xsl:if test="@arearefs">
+              <xsl:attribute name="id">callout_<xsl:value-of select="@arearefs"/></xsl:attribute>
+              <xsl:attribute name="href">#co_<xsl:value-of select="@arearefs"/></xsl:attribute>
             </xsl:if>
-            <xsl:if test="@href">
-              <xsl:attribute name="href"><xsl:value-of select="@arearefs"/></xsl:attribute>
-            </xsl:if>
+             <img>
+              <xsl:attribute name="src">callouts/<xsl:apply-templates select="." mode="calloutlist.number"/>.png</xsl:attribute>
+              <xsl:attribute name="alt"><xsl:apply-templates select="." mode="calloutlist.number"/></xsl:attribute>
+             </img>
           </a>
         </dt>
         <dd>
@@ -974,7 +979,14 @@ BLOCKS
       </xsl:for-each>
     </dl>
 </xsl:template>
-  
+
+<xsl:template match="co" mode="callout.number">
+    <xsl:number level="any" from="programlisting" format="1"/>
+</xsl:template>
+
+<xsl:template match="callout" mode="calloutlist.number">
+    <xsl:number level="any" from="calloutlist" format="1"/>
+</xsl:template>
   
 <!-- 
 *******************************
@@ -1227,6 +1239,9 @@ INLINES
       </xsl:when>
       <xsl:otherwise/>
     </xsl:choose>
+    <xsl:if test="@xrefstyle">
+      <xsl:attribute name="data-xrefstyle"><xsl:apply-templates select="@xrefstyle"/></xsl:attribute>
+    </xsl:if>
   </a>
 </xsl:template>
   
