@@ -581,6 +581,37 @@ BLOCKS
     <xsl:apply-templates/>
   </dd>
 </xsl:template>
+
+<!-- Template for calculating continuation on <orderedlist> (see #58) -->
+<!-- Adapted from DocBook stylesheets common.xsl -->
+<xsl:template name="output-orderedlist-starting-number">
+  <xsl:param name="list"/>
+  <xsl:choose>
+    <xsl:when test="not($list/@continuation = 'continues')">
+      <xsl:choose>
+        <xsl:when test="$list/@startingnumber">
+          <xsl:value-of select="$list/@startingnumber"/>
+        </xsl:when>
+        <xsl:otherwise>1</xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="prevlist" select="$list/preceding::orderedlist[1]"/>
+      <xsl:choose>
+        <xsl:when test="count($prevlist) = 0">2</xsl:when>
+        <xsl:otherwise>
+          <xsl:variable name="prevlength" select="count($prevlist/listitem)"/>
+          <xsl:variable name="prevstart">
+            <xsl:call-template name="output-orderedlist-starting-number">
+              <xsl:with-param name="list" select="$prevlist"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:value-of select="$prevstart + $prevlength"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
   
 <!-- Lists -->
 <xsl:template match="itemizedlist">
@@ -604,6 +635,16 @@ BLOCKS
     </xsl:if>
     <xsl:if test="@numeration='upperroman'">
       <xsl:attribute name="type">I</xsl:attribute>
+    </xsl:if>
+    <xsl:if test="@continuation">
+      <xsl:if test="@continuation='continues'">
+        <xsl:attribute name="start">
+          <xsl:call-template name="output-orderedlist-starting-number">
+            <xsl:with-param name="list" select="."/>
+          </xsl:call-template>
+        </xsl:attribute>
+      </xsl:if>
+      <!-- If @continuation='restarts', do nothing -->
     </xsl:if>
     <xsl:call-template name="process-role"/>
     <xsl:for-each select="listitem">
