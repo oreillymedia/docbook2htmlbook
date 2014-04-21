@@ -447,10 +447,10 @@
         
         <x:scenario label="When a ulink has inline tagging">
             <x:context>
-                <ulink url="http://oreilly.com"><literal>O'Reilly Media</literal></ulink>
+                <ulink url="http://oreilly.com"><emphasis>O'Reilly Media</emphasis></ulink>
             </x:context>
             <x:expect label="It should be transformed as expected">
-                <h:a href="http://oreilly.com"><h:code>O'Reilly Media</h:code></h:a>  
+                <h:a href="http://oreilly.com"><h:em>O'Reilly Media</h:em></h:a>  
             </x:expect>
         </x:scenario>
     </x:scenario>
