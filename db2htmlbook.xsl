@@ -411,7 +411,7 @@ BLOCKS
   </div>
 </xsl:template>
 
-<xsl:template match="blockquote | epigraph | quote">
+<xsl:template match="blockquote | epigraph">
   <blockquote>
     <xsl:call-template name="process-id"/>
     <xsl:call-template name="process-role"/>
@@ -1030,6 +1030,7 @@ INLINES
 <xsl:template match="emphasis"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="emphasis[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
 <xsl:template match="emphasis[@role='bold']"><strong><xsl:apply-templates/></strong></xsl:template>
+<xsl:template match="quote"><q><xsl:apply-templates/></q></xsl:template>
 <xsl:template match="superscript"><sup><xsl:apply-templates/></sup></xsl:template>
 <xsl:template match="subscript"><sub><xsl:apply-templates/></sub></xsl:template>
 <xsl:template match="replaceable"><em><code><xsl:apply-templates/></code></em></xsl:template>
