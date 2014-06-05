@@ -1152,7 +1152,14 @@ INLINES
     <xsl:call-template name="process-role"/>
     <xsl:choose>
       <xsl:when test="node()">
-          <xsl:apply-templates/>
+          <xsl:choose>
+            <xsl:when test="@role='orm:hideurl:ital'">
+               <em class="hyperlink"><xsl:apply-templates/></em>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:apply-templates/>
+            </xsl:otherwise>
+          </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
         <em class="hyperlink">
