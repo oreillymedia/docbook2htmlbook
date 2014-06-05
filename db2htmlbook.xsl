@@ -909,7 +909,14 @@ BLOCKS
     <!-- No p elements inside table heads -->
     <th>
       <xsl:call-template name="process-role"/>
-      <xsl:apply-templates select="para/node()"/>
+      <xsl:choose>
+        <xsl:when test="para">
+          <xsl:apply-templates select="para/node()"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="node()"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </th>
   </xsl:when>
   <xsl:otherwise>
