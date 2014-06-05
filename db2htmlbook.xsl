@@ -197,9 +197,9 @@ BLOCKS
 <!-- TO DO: Check prefacinfo byline output after spec solidified -->
 <xsl:template match="prefaceinfo | chapterinfo">
   <div>
-    <xsl:attribute name="data-class">byline</xsl:attribute>
+    <xsl:attribute name="data-type">byline</xsl:attribute>
     <p>
-      <xsl:attribute name="data-class">author</xsl:attribute>
+      <xsl:attribute name="data-type">author</xsl:attribute>
     <xsl:choose>
       <xsl:when test="author">
         <xsl:for-each select="author">
@@ -229,7 +229,7 @@ BLOCKS
     <xsl:if test="author/affiliation">
       <xsl:for-each select="author/affiliation">
         <p>
-          <xsl:attribute name="data-class">affiliation</xsl:attribute>
+          <xsl:attribute name="data-type">affiliation</xsl:attribute>
           <xsl:apply-templates select="jobtitle"/>
         </p>
       </xsl:for-each>
@@ -237,7 +237,7 @@ BLOCKS
     <xsl:if test="affiliation">
       <xsl:for-each select="affiliation">
         <p>
-          <xsl:attribute name="data-class">affiliation</xsl:attribute>
+          <xsl:attribute name="data-type">affiliation</xsl:attribute>
           <xsl:apply-templates select="jobtitle"/>
         </p>
       </xsl:for-each>
@@ -427,7 +427,7 @@ BLOCKS
 
 <xsl:template match="attribution">
   <p>
-  <xsl:attribute name="data-class">author</xsl:attribute>
+  <xsl:attribute name="data-type">attribution</xsl:attribute>
   <xsl:choose>
       <xsl:when test="author">
         <xsl:for-each select="author">
