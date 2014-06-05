@@ -1445,6 +1445,14 @@ TO DO
 <!-- Drop everything from the bookinfo except the author bios -->
 <xsl:template match="bookinfo">
   <section data-type="colophon" class="abouttheauthor">
+    <xsl:choose>
+      <xsl:when test="count(descendant::authorblurb) > 1">
+        <h1>About the Authors</h1>
+      </xsl:when>
+      <xsl:otherwise>
+        <h1>About the Author</h1>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:apply-templates select="descendant::authorblurb/*"/>
   </section>
 </xsl:template>
