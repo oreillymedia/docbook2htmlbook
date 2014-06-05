@@ -194,6 +194,7 @@ BLOCKS
   </section>
 </xsl:template>
 
+
 <!-- TO DO: Check prefacinfo byline output after spec solidified -->
 <xsl:template match="prefaceinfo | chapterinfo">
   <div>
@@ -1441,7 +1442,13 @@ TO DO
 ******************************* 
 -->
   
-<xsl:template match="bookinfo"/>  
+<!-- Drop everything from the bookinfo except the author bios -->
+<xsl:template match="bookinfo">
+  <section data-type="colophon" class="abouttheauthor">
+    <xsl:apply-templates select="descendant::authorblurb/*"/>
+  </section>
+</xsl:template>
+
 <xsl:template match="refentry"/>
   
 </xsl:stylesheet>
