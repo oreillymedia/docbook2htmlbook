@@ -1461,10 +1461,10 @@ TO DO
 <!-- REFERENCE SECTION HANDLING IS STILL UNDER CONSTRUCTION -->
 <xsl:template match="refentry">
   <div>
-    <xsl:attribute name="class">refentry</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="local-name(.)"/></xsl:attribute>
     <xsl:call-template name="process-id"/>
     <xsl:call-template name="process-role">
-       <xsl:with-param name="append-class">refentry&#x20;</xsl:with-param>
+       <xsl:with-param name="append-class"><xsl:value-of select="local-name(.)"/><xsl:text>&#x20;</xsl:text></xsl:with-param>
     </xsl:call-template>
     <header>
       <xsl:apply-templates select="refmeta"/>
@@ -1577,9 +1577,11 @@ TO DO
     
 <xsl:template match="synopsis">
   <pre>
-    <xsl:attribute name="class">synopsis</xsl:attribute>
+    <xsl:attribute name="class"><xsl:value-of select="local-name(.)"/></xsl:attribute>
     <xsl:call-template name="process-id"/>
-    <xsl:call-template name="process-role"/>
+    <xsl:call-template name="process-role">
+       <xsl:with-param name="append-class"><xsl:value-of select="local-name(.)"/><xsl:text>&#x20;</xsl:text></xsl:with-param>
+    </xsl:call-template>
     <xsl:apply-templates/>
   </pre>
 </xsl:template>
