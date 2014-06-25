@@ -203,6 +203,12 @@ BLOCKS
   </section>
 </xsl:template>
 
+<xsl:template match="subtitle">
+<p>
+<xsl:attribute name="data-type">subtitle</xsl:attribute>
+<xsl:apply-templates/>
+</p>
+</xsl:template>
 
 <!-- TO DO: Check prefacinfo byline output after spec solidified -->
 <xsl:template match="prefaceinfo | chapterinfo">
