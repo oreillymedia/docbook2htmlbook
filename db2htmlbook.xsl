@@ -18,6 +18,15 @@ PARAMETERS:
 <xsl:param name="chunk-output">false</xsl:param>
 <xsl:param name="include-html-wrapper">true</xsl:param>
 <xsl:param name="include-toc">true</xsl:param>
+
+<!--UNDER CONSTRUCTION: parameters for refentry header positional attributes-->
+<!-- Supply one of four values: top-left, top-right, bottom-left, bottom-right -->
+<xsl:param name="refname"/>
+<xsl:param name="refpurpose"/>
+<!-- TODO: Have to accommodate different classes -->
+<!-- <xsl:param name="refclass"/>
+<xsl:param name="refmiscinfo"/> -->
+
 <!-- 
 *******************************
 DEVELOPMENT:
@@ -154,7 +163,7 @@ BLOCKS
     <xsl:call-template name="process-id"/>
     <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">part</xsl:attribute>
-    <xsl:if test="$part-number = '1'"><xsl:attribute name="class">pagenumrestart</xsl:attribute></xsl:if>
+    <!-- <xsl:if test="$part-number = '1'"><xsl:attribute name="class">pagenumrestart</xsl:attribute></xsl:if> -->
     <h1>
       <xsl:apply-templates select="title"/>
     </h1>
@@ -174,7 +183,7 @@ BLOCKS
       <xsl:when test="self::chapter">
           <xsl:variable name="chapter-number"><xsl:number level="any" count="chapter"/></xsl:variable>
           <xsl:attribute name="data-type">chapter</xsl:attribute>
-          <xsl:if test="$chapter-number = '1' and not(parent::part)"><xsl:attribute name="class">pagenumrestart</xsl:attribute></xsl:if>
+          <!-- <xsl:if test="$chapter-number = '1' and not(parent::part)"><xsl:attribute name="class">pagenumrestart</xsl:attribute></xsl:if> -->
       </xsl:when>
       <xsl:when test="self::preface[contains(@id,'foreword')]">
         <xsl:attribute name="data-type">foreword</xsl:attribute>
@@ -194,6 +203,12 @@ BLOCKS
   </section>
 </xsl:template>
 
+<xsl:template match="subtitle">
+<p>
+<xsl:attribute name="data-type">subtitle</xsl:attribute>
+<xsl:apply-templates/>
+</p>
+</xsl:template>
 
 <!-- TO DO: Check prefacinfo byline output after spec solidified -->
 <xsl:template match="prefaceinfo | chapterinfo">
@@ -261,14 +276,14 @@ BLOCKS
   </span>
 </xsl:template>
 
-<xsl:template match="footnote[ancestor::table or ancestor::informaltable]">
+<xsl:template match="footnote[ancestor::table or ancestor::informaltable]|tfoot">
   <sup>
     <xsl:attribute name="class">table-footnote-call</xsl:attribute>
     <xsl:apply-templates select="." mode="footnote.number"/>
   </sup>
 </xsl:template>
 
-<xsl:template match="footnote" mode="footnote.number">
+<xsl:template match="footnote|tfoot" mode="footnote.number">
   <xsl:if test="ancestor::table or ancestor::informaltable">
     <xsl:number level="any" from="table | informaltable" format="a"/>
   </xsl:if>
@@ -277,13 +292,13 @@ BLOCKS
 <xsl:template name="process-table-footnotes">
   <div>
     <xsl:attribute name="class">table-footnotes</xsl:attribute>
-    <xsl:for-each select="descendant::footnote">
-      <xsl:for-each select="para">
+    <xsl:for-each select="descendant::footnote|descendant::tfoot">
+      <xsl:for-each select="descendant::para">
         <p>
         <xsl:if test="position() = 1">
         <sup>
           <xsl:attribute name="class">table-footnote-marker</xsl:attribute>
-          <xsl:apply-templates select="parent::footnote" mode="footnote.number"/>
+          <xsl:apply-templates select="ancestor::footnote|ancestor::tfoot" mode="footnote.number"/>
         </sup>
         </xsl:if>
           <span>
@@ -317,12 +332,14 @@ BLOCKS
   <!-- TO DO: Check formalpara heading level after spec solidified -->
 <xsl:template match="formalpara">
   <div>
-    <xsl:attribute name="data-type">formalpara</xsl:attribute>
+    <xsl:attribute name="class">formalpara</xsl:attribute>
+      <xsl:call-template name="process-id"/>
+      <xsl:call-template name="process-role">
+        <xsl:with-param name="append-class">formalpara&#x20;</xsl:with-param>
+      </xsl:call-template>
     <h5>
       <xsl:apply-templates select="title"/>
     </h5> 
-      <xsl:call-template name="process-id"/>
-      <xsl:call-template name="process-role"/>
       <xsl:apply-templates select="node()[not(self::title)]"/>
   </div>
 </xsl:template>
@@ -757,7 +774,7 @@ BLOCKS
     <xsl:apply-templates select="node()[not(self::title)]"/>
   </div>
 </xsl:template>
-  
+
 <!-- Figures -->
 <xsl:template match="figure">
   <figure>
@@ -848,7 +865,7 @@ BLOCKS
     </xsl:if>
     <xsl:apply-templates select="node()[not(self::title|self::caption)]"/> 
   </table>
-  <xsl:if test="descendant::footnote">
+  <xsl:if test="descendant::footnote|descendant::tfoot">
       <xsl:call-template name="process-table-footnotes"/>
   </xsl:if>
 </xsl:template>
@@ -1046,6 +1063,7 @@ INLINES
 <xsl:template match="firstterm"><span data-type="firstterm"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="filename"><code data-type="filename"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="citetitle"><em><xsl:apply-templates/></em></xsl:template>
+<xsl:template match="citation"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="acronym"><span data-type="acronym"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="command"><span data-type="command"><em><xsl:apply-templates/></em></span></xsl:template>
 <xsl:template match="application"><span data-type="application"><xsl:apply-templates/></span></xsl:template>
@@ -1423,18 +1441,6 @@ NAMED TEMPLATES
       </p>
   </section>
 </xsl:template>
-
-<xsl:template name="process-id">
-  <xsl:if test="@id">
-    <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-  </xsl:if>
-</xsl:template>
-
-<xsl:template name="process-role">
-  <xsl:if test="@role">
-    <xsl:attribute name="class"><xsl:value-of select="@role"/></xsl:attribute>
-  </xsl:if>
-</xsl:template>
   
 <!-- 
 *******************************
@@ -1457,6 +1463,153 @@ TO DO
   </section>
 </xsl:template>
 
-<xsl:template match="refentry"/>
-  
+
+<!-- REFERENCE SECTION HANDLING IS STILL UNDER CONSTRUCTION -->
+<xsl:template match="refentry">
+  <div>
+    <xsl:attribute name="class"><xsl:value-of select="local-name(.)"/></xsl:attribute>
+    <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role">
+       <xsl:with-param name="append-class"><xsl:value-of select="local-name(.)"/><xsl:text>&#x20;</xsl:text></xsl:with-param>
+    </xsl:call-template>
+    <header>
+      <xsl:apply-templates select="refmeta"/>
+      <xsl:apply-templates select="refnamediv"/>
+    </header>
+    <xsl:apply-templates select="*[not(self::refmeta or self::refnamediv)]"/>
+  </div>
+</xsl:template>
+
+<xsl:template match="refnamediv">
+  <!-- must contain refname, and may contain refpurpose and refclass-->
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="refname|refpurpose">
+  <xsl:if test="text()!=''">
+  <p>
+    <xsl:attribute name="class">
+      <xsl:value-of select="local-name(.)"/>
+      <!-- can be given a header positional param -->
+      <xsl:variable name="position">
+        <xsl:if test="$refname!='' and local-name(.)='refname'"><xsl:value-of select="$refname"/></xsl:if>
+        <xsl:if test="$refpurpose!='' and local-name(.)='refpurpose'"><xsl:value-of select="$refpurpose"/></xsl:if>
+      </xsl:variable>
+      <xsl:if test="$position!=''">
+        <xsl:text>&#x20;</xsl:text><xsl:value-of select="$position"/>
+      </xsl:if>
+    </xsl:attribute>
+    <xsl:apply-templates/>
+  </p>
+</xsl:if>
+</xsl:template>
+
+<xsl:template match="refclass">
+  <xsl:if test="text()!=''">
+  <p>
+    <xsl:attribute name="class">
+      <xsl:choose>
+        <xsl:when test="@class">
+          <xsl:value-of select="replace(@class, 'orm:', '')"/>
+        </xsl:when>
+        <xsl:when test="@role">
+          <xsl:value-of select="replace(@role, 'orm:', '')"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="local-name(.)"/>
+        </xsl:otherwise>
+      </xsl:choose>
+      <!-- TODO: Can be given a header positional param (have to accommodate different classes) -->
+<!--       <xsl:variable name="position">
+        <xsl:if test="$refclass!='' and local-name(.)='refclass'"><xsl:value-of select="$refclass"/></xsl:if>
+      </xsl:variable>
+      <xsl:if test="$position!=''">
+        <xsl:text>&#x20;</xsl:text><xsl:value-of select="$position"/>
+      </xsl:if> -->
+    </xsl:attribute>
+    <xsl:apply-templates/>
+  </p>
+</xsl:if>
+</xsl:template>
+
+<xsl:template match="refmeta">
+    <!-- only preserve refmeta/refentrytitle if it's different from refnamediv/refname-->
+    <xsl:if test="refentrytitle/text()!=following-sibling::refnamediv/refname/text()">
+      <p class="refentrytitle"><xsl:value-of select="refentrytitle"/></p>
+    </xsl:if>
+    <!-- preserve other child elements -->
+    <xsl:if test="refmiscinfo">
+      <xsl:for-each select="refmiscinfo">
+       <p>
+        <xsl:attribute name="class">
+          <xsl:choose>
+            <xsl:when test="@class">
+              <xsl:value-of select="replace(@class, 'orm:', '')"/>
+            </xsl:when>
+            <xsl:when test="@role">
+              <xsl:value-of select="replace(@role, 'orm:', '')"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="local-name(.)"/>
+            </xsl:otherwise>
+          </xsl:choose>
+          <!-- TODO: Can be given a header positional param (have to accommodate different classes) -->
+<!--           <xsl:variable name="position">
+            <xsl:if test="$refmiscinfo!=''"><xsl:value-of select="$refmiscinfo"/></xsl:if>
+          </xsl:variable>
+          <xsl:if test="$position!=''">
+            <xsl:text>&#x20;</xsl:text><xsl:value-of select="$position"/>
+          </xsl:if> -->
+        </xsl:attribute>
+        <xsl:value-of select="."/>
+      </p>
+      </xsl:for-each>
+    </xsl:if>
+</xsl:template>
+
+<xsl:template match="refsynopsisdiv|refsect1|refsect2|refsect3|refsection">
+  <div>
+    <xsl:attribute name="class"><xsl:value-of select="local-name(.)"/></xsl:attribute>
+    <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role">
+       <xsl:with-param name="append-class"><xsl:value-of select="local-name(.)"/><xsl:text>&#x20;</xsl:text></xsl:with-param>
+    </xsl:call-template>
+    <xsl:if test="title">
+      <h6><xsl:apply-templates select="title"/></h6>
+    </xsl:if>
+    <xsl:apply-templates select="node()[not(self::title)]"/>
+  </div>
+</xsl:template>
+    
+<xsl:template match="synopsis">
+  <pre>
+    <xsl:attribute name="class"><xsl:value-of select="local-name(.)"/></xsl:attribute>
+    <xsl:call-template name="process-id"/>
+    <xsl:call-template name="process-role">
+       <xsl:with-param name="append-class"><xsl:value-of select="local-name(.)"/><xsl:text>&#x20;</xsl:text></xsl:with-param>
+    </xsl:call-template>
+    <xsl:apply-templates/>
+  </pre>
+</xsl:template>
+
+<!-- 
+*******************************
+UTILITY TEMPLATES
+******************************* 
+-->
+
+<xsl:template name="process-id">
+  <xsl:if test="@id">
+    <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="process-role">
+<xsl:param name="append-class"/>
+<xsl:if test="@role!=''">
+  <xsl:attribute name="class"><xsl:value-of select="$append-class"/><xsl:value-of select="@role"/>
+  </xsl:attribute>
+</xsl:if>
+</xsl:template>
+
 </xsl:stylesheet>
