@@ -1612,4 +1612,7 @@ UTILITY TEMPLATES
 </xsl:if>
 </xsl:template>
 
+<!--For use with asciidoctor-htmlbook-->
+<xsl:template match="root"/>
+
 </xsl:stylesheet>
