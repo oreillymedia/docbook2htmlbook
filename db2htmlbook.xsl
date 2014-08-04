@@ -1613,6 +1613,10 @@ UTILITY TEMPLATES
 </xsl:template>
 
 <!--For use with asciidoctor-htmlbook-->
-<xsl:template match="root"/>
+<xsl:template match="root">
+  <xsl:copy>
+    <xsl:apply-templates select="@*|node()"/>
+  </xsl:copy>
+</xsl:template>
 
 </xsl:stylesheet>
