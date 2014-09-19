@@ -7,7 +7,6 @@
   xmlns="http://www.w3.org/1999/xhtml"
   exclude-result-prefixes="xsi mml">
 <xsl:output method="xml" omit-xml-declaration="yes"/>
-  
 <!-- 
 *******************************
 PARAMETERS:
@@ -212,10 +211,8 @@ BLOCKS
 
 <!-- TO DO: Check prefacinfo byline output after spec solidified -->
 <xsl:template match="prefaceinfo | chapterinfo">
-  <div>
-    <xsl:attribute name="data-type">byline</xsl:attribute>
-    <p>
-      <xsl:attribute name="data-type">author</xsl:attribute>
+  <p>
+    <xsl:attribute name="class">byline</xsl:attribute>
     <xsl:choose>
       <xsl:when test="author">
         <xsl:for-each select="author">
@@ -245,7 +242,7 @@ BLOCKS
     <xsl:if test="author/affiliation">
       <xsl:for-each select="author/affiliation">
         <p>
-          <xsl:attribute name="data-type">affiliation</xsl:attribute>
+          <xsl:attribute name="class">byline</xsl:attribute>
           <xsl:apply-templates select="jobtitle"/>
         </p>
       </xsl:for-each>
@@ -253,12 +250,11 @@ BLOCKS
     <xsl:if test="affiliation">
       <xsl:for-each select="affiliation">
         <p>
-          <xsl:attribute name="data-type">affiliation</xsl:attribute>
+          <xsl:attribute name="class">byline</xsl:attribute>
           <xsl:apply-templates select="jobtitle"/>
         </p>
       </xsl:for-each>
     </xsl:if>
-  </div>
 </xsl:template>
 <xsl:template match="jobtitle">
   <xsl:apply-templates/>
@@ -507,43 +503,35 @@ BLOCKS
   </xsl:template>
   <!-- Block Equations -->
   <xsl:template match="equation | informalequation">
+    <div>
+      <xsl:call-template name="process-id"/>
+      <xsl:call-template name="process-role"/>
+      <xsl:attribute name="data-type">equation</xsl:attribute>
+      <xsl:if test="title"><h5><xsl:apply-templates select="title"/></h5></xsl:if>
       <xsl:choose>
         <!-- Latex -->
         <xsl:when test="mathphrase[@role='tex']">
-          <xsl:call-template name="process-id"/>
-          <xsl:call-template name="process-role"/>
-          <xsl:if test="title"><h5><xsl:apply-templates select="title"/></h5></xsl:if>
           <p>
-            <xsl:attribute name="data-type">latex</xsl:attribute>
+            <xsl:attribute name="data-type">tex</xsl:attribute>
             <xsl:copy-of select="mathphrase/text() | mathphrase/*"/>
           </p>
         </xsl:when>
         <!-- MathML -->
         <xsl:when test="mml:*">
-          <div>
-            <xsl:call-template name="process-id"/>
-            <xsl:call-template name="process-role"/>
-            <xsl:attribute name="data-type">equation</xsl:attribute>
-            <xsl:if test="title"><h5><xsl:apply-templates select="title"/></h5></xsl:if>
             <math xmlns="http://www.w3.org/1998/Math/MathML">
               <xsl:copy-of select="mml:math/node()"/>
             </math>
-          </div>
         </xsl:when>
         <!-- Regular mathphrase equation -->
         <xsl:when test="mathphrase[not(@role='tex')]">
-          <div>
-            <xsl:call-template name="process-id"/>
-            <xsl:call-template name="process-role"/>
-            <xsl:attribute name="data-type">equation</xsl:attribute>
-            <xsl:if test="title"><h5><xsl:apply-templates select="title"/></h5></xsl:if>
             <p>
               <xsl:apply-templates select="mathphrase"/>
             </p>
-          </div>
         </xsl:when>
       </xsl:choose>
+    </div>
 </xsl:template>
+
 <xsl:template match="mathphrase">
   <xsl:apply-templates/>
 </xsl:template>
@@ -1179,19 +1167,13 @@ INLINES
     <xsl:choose>
       <xsl:when test="node()">
           <xsl:choose>
-            <xsl:when test="@role='orm:hideurl:ital'">
-               <em class="hyperlink"><xsl:apply-templates/></em>
-            </xsl:when>
+            <xsl:when test="@role='orm:hideurl:ital'"><em class="hyperlink"><xsl:apply-templates/></em></xsl:when>
             <xsl:otherwise>
               <xsl:apply-templates/>
             </xsl:otherwise>
           </xsl:choose>
       </xsl:when>
-      <xsl:otherwise>
-        <em class="hyperlink">
-            <xsl:value-of select="@url"/>
-        </em>
-      </xsl:otherwise>
+      <xsl:otherwise><em class="hyperlink"><xsl:value-of select="@url"/></em></xsl:otherwise>
     </xsl:choose>
   </a>
 </xsl:template>
