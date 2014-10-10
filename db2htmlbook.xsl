@@ -1058,6 +1058,7 @@ INLINES
 <xsl:template match="computeroutput"><code data-type="computeroutput"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="parameter"><code data-type="parameter"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="function"><code data-type="function"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="classname"><code data-type="classname"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="varname"><code data-type="varname"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="option"><code data-type="option"><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="prompt"><code data-type="prompt"><xsl:apply-templates/></code></xsl:template>
