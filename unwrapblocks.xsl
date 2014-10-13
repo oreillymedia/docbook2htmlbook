@@ -15,18 +15,18 @@
 <!-- Run this script before db2htmlbook.xsl to remove any block elements nested inside para elements 
      that would cause invalid HTMLBook output. -->
 
-<xsl:variable name="blocks">itemizedlist screen blockquote example figure 
-informalfigure table informaltable warning caution tip note orderedlist 
-programlisting equation informalequation simplelist variablelist</xsl:variable>
+<xsl:variable name="blocks"> itemizedlist screen blockquote example figure 
+ informalfigure table informaltable warning caution tip note orderedlist 
+ programlisting equation informalequation simplelist variablelist </xsl:variable>
 
 <xsl:template match="para">
 
-<xsl:for-each-group select="*|node()" group-starting-with="*[contains($blocks, name())]">
+<xsl:for-each-group select="*|node()" group-starting-with="*[matches($blocks, concat(' ', name(), ' '))]">
   <xsl:choose>
-    <xsl:when test="current-group()[1]/self::*[contains($blocks, name())]">
-          <xsl:for-each-group select="current-group()" group-ending-with="*[not(*[contains($blocks, name())])]">
+    <xsl:when test="current-group()[1]/self::*[matches($blocks, concat(' ', name(), ' '))]">
+          <xsl:for-each-group select="current-group()" group-ending-with="*[not(*[matches($blocks, concat(' ', name(), ' '))])]">
             <xsl:choose>
-              <xsl:when test="current-group()[1]/self::*[contains($blocks, name())]">
+              <xsl:when test="current-group()[1]/self::*[matches($blocks, concat(' ', name(), ' '))]">
                 <xsl:apply-templates select="current-group()"/>
               </xsl:when>
               <xsl:otherwise>
