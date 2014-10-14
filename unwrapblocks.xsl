@@ -16,7 +16,7 @@
      that would cause invalid HTMLBook output. -->
 
 <xsl:variable name="blocks"> itemizedlist screen blockquote example figure 
- informalfigure table informaltable warning caution tip note orderedlist 
+ informalfigure table informaltable warning caution tip note orderedlist calloutlist 
  programlisting equation informalequation simplelist variablelist </xsl:variable>
 
 <xsl:template match="para">
