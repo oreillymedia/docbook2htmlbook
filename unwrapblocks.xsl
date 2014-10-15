@@ -20,9 +20,6 @@
  programlisting equation informalequation simplelist variablelist </xsl:variable>
 
 <xsl:template match="para">
-<xsl:if test="*[matches($blocks, concat(' ', name(), ' '))]">
-  <xsl:message>block: <xsl:value-of select="name()"/></xsl:message>
-</xsl:if>
 
 <xsl:for-each-group select="*|node()" group-starting-with="*[matches($blocks, concat(' ', name(), ' '))]">
   <xsl:choose>
