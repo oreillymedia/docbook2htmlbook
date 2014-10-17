@@ -749,7 +749,7 @@ BLOCKS
   <pre>
   <xsl:call-template name="process-id"/>
   <xsl:call-template name="process-role"/>
-  <xsl:attribute name="data-type">literallayout</xsl:attribute>
+  <xsl:attribute name="class">literallayout</xsl:attribute>
   <xsl:apply-templates/>
 </pre>
 </xsl:template>
@@ -1048,24 +1048,24 @@ INLINES
 <xsl:template match="subscript"><sub><xsl:apply-templates/></sub></xsl:template>
 <xsl:template match="replaceable"><em><code><xsl:apply-templates/></code></em></xsl:template>
 <xsl:template match="userinput"><strong><code><xsl:apply-templates/></code></strong></xsl:template>
-<xsl:template match="firstterm"><span data-type="firstterm"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="filename"><code data-type="filename"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="firstterm"><span class="firstterm"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="filename"><em class="filename"><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="citetitle"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="citation"><em><xsl:apply-templates/></em></xsl:template>
-<xsl:template match="acronym"><span data-type="acronym"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="command"><span data-type="command"><em><xsl:apply-templates/></em></span></xsl:template>
-<xsl:template match="application"><span data-type="application"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="computeroutput"><code data-type="computeroutput"><xsl:apply-templates/></code></xsl:template>
-<xsl:template match="parameter"><code data-type="parameter"><xsl:apply-templates/></code></xsl:template>
-<xsl:template match="function"><code data-type="function"><xsl:apply-templates/></code></xsl:template>
-<xsl:template match="classname"><code data-type="classname"><xsl:apply-templates/></code></xsl:template>
-<xsl:template match="varname"><code data-type="varname"><xsl:apply-templates/></code></xsl:template>
-<xsl:template match="option"><code data-type="option"><xsl:apply-templates/></code></xsl:template>
-<xsl:template match="prompt"><code data-type="prompt"><xsl:apply-templates/></code></xsl:template>
-<xsl:template match="systemitem"><code data-type="systemitem"><xsl:apply-templates/></code></xsl:template>
-<xsl:template match="uri"><code data-type="uri"><xsl:apply-templates/></code></xsl:template>
-<xsl:template match="interfacename"><span data-type="interfacename"><em><xsl:apply-templates/></em></span></xsl:template>
-<xsl:template match="optional"><span data-type="optional"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="acronym"><span class="acronym"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="command"><span class="command"><em><xsl:apply-templates/></em></span></xsl:template>
+<xsl:template match="application"><span class="application"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="computeroutput"><code class="computeroutput"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="parameter"><code class="parameter"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="function"><code class="function"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="classname"><code class="classname"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="varname"><code class="varname"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="option"><code class="option"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="prompt"><code class="prompt"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="systemitem"><code class="systemitem"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="uri"><code class="uri"><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="interfacename"><span class="interfacename"><em><xsl:apply-templates/></em></span></xsl:template>
+<xsl:template match="optional"><span class="optional"><xsl:apply-templates/></span></xsl:template>
 <xsl:template match="processing-instruction()"><xsl:copy/></xsl:template>
 <xsl:template match="processing-instruction('lb')"><br /></xsl:template>
 
@@ -1106,12 +1106,12 @@ INLINES
   
 <!-- TO DO: Output should insert the proper arrow character between elements. Need example books to test. -->
 <!-- <xsl:template match="menuchoice"><xsl:apply-templates/></xsl:template> -->
-<xsl:template match="guimenu"><span data-type="guimenu"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="guisubmenu"><span data-type="guisubmenu"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="guibutton"><span data-type="guibutton"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="guilabel"><span data-type="guilabel"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="guiicon"><span data-type="guiicon"><xsl:apply-templates/></span></xsl:template>
-<xsl:template match="guimenuitem"><span data-type="guimenuitem"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="guimenu"><span class="guimenu"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="guisubmenu"><span class="guisubmenu"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="guibutton"><span class="guibutton"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="guilabel"><span class="guilabel"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="guiicon"><span class="guiicon"><xsl:apply-templates/></span></xsl:template>
+<xsl:template match="guimenuitem"><span class="guimenuitem"><xsl:apply-templates/></span></xsl:template>
   
 <!-- TO DO: Output should insert the proper plus character between elements. Need example books to test.-->
 <xsl:template match="keycombo">
@@ -1129,7 +1129,7 @@ INLINES
   </xsl:variable>
   <xsl:for-each select="keycap">
     <xsl:if test="position()&gt;1"><xsl:value-of select="$joinchar"/></xsl:if>
-    <span data-type="keycap"><xsl:apply-templates select="."/></span>
+    <span class="keycap"><xsl:apply-templates select="."/></span>
   </xsl:for-each>
 </xsl:template>
 
@@ -1138,25 +1138,25 @@ INLINES
 </xsl:template>
 
 <xsl:template match="keycap[not(parent::keycombo)]">
-      <span data-type="keycap"><xsl:apply-templates/></span>
+      <span class="keycap"><xsl:apply-templates/></span>
 </xsl:template>
 
 <xsl:template match="symbol">
   <span>
-    <xsl:attribute name="data-type">symbol</xsl:attribute>
+    <xsl:attribute name="class">symbol</xsl:attribute>
     <xsl:attribute name="data-remap"><xsl:value-of select="@remap"/></xsl:attribute>
     <xsl:apply-templates/>
   </span>
 </xsl:template>
   
 <xsl:template match="emphasis[@role='strikethrough'] | phrase[@role='strikethrough']">
-  <span data-type="strikethrough"><xsl:apply-templates/></span>
+  <span class="strikethrough"><xsl:apply-templates/></span>
 </xsl:template>
   
 <!-- TO DO: Check lineannotation after spec solidified -->
 <xsl:template match="lineannotation">
   <code>
-    <xsl:attribute name="data-type">lineannotation</xsl:attribute>
+    <xsl:attribute name="class">lineannotation</xsl:attribute>
     <xsl:apply-templates/>
   </code>
 </xsl:template>
@@ -1318,9 +1318,48 @@ NAMED TEMPLATES
   <section>
     <xsl:attribute name="data-type">titlepage</xsl:attribute>
     <h1><xsl:apply-templates select="title"/></h1>
-    <h2>
-      <xsl:attribute name="data-type">author</xsl:attribute>
-      <xsl:text>by </xsl:text>
+    <xsl:choose>
+      <xsl:when test="bookinfo/edition = 1"/>
+      <xsl:when test="bookinfo/edition = 2">
+        <p>
+        <xsl:attribute name="class">edition</xsl:attribute>
+        <xsl:text>Second Edition</xsl:text>
+        </p>
+      </xsl:when>
+      <xsl:when test="bookinfo/edition = 3">
+        <p>
+        <xsl:attribute name="class">edition</xsl:attribute>
+        <xsl:text>Third Edition</xsl:text>
+        </p>
+      </xsl:when>
+      <xsl:when test="bookinfo/edition = 4">
+        <p>
+        <xsl:attribute name="class">edition</xsl:attribute>
+        <xsl:text>Fourth Edition</xsl:text>
+        </p>
+      </xsl:when>
+      <xsl:when test="bookinfo/edition = 5">
+        <p>
+        <xsl:attribute name="class">edition</xsl:attribute>
+        <xsl:text>Fifth Edition</xsl:text>
+        </p>
+      </xsl:when>
+      <xsl:when test="bookinfo/edition = 6">
+        <p>
+        <xsl:attribute name="class">edition</xsl:attribute>
+        <xsl:text>Sixth Edition</xsl:text>
+        </p>
+      </xsl:when>
+      <xsl:otherwise>
+        <!-- TODO: Add support for more editions -->
+        <p>
+        <xsl:attribute name="class">edition</xsl:attribute>
+        <xsl:value-of select="bookinfo/edition"/><xsl:text>th Edition</xsl:text>
+        </p>
+      </xsl:otherwise>
+    </xsl:choose>
+    <p>
+      <xsl:attribute name="class">author</xsl:attribute>
       <xsl:choose>
         <xsl:when test="bookinfo/authorgroup">
           <xsl:for-each select="bookinfo/authorgroup/author">
@@ -1366,7 +1405,7 @@ NAMED TEMPLATES
         </xsl:otherwise>
       </xsl:choose>
       
-    </h2>
+    </p>
   </section>
 </xsl:template>
   
