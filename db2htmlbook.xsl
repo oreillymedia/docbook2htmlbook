@@ -1597,7 +1597,12 @@ TO DO
        <xsl:with-param name="append-class"><xsl:value-of select="local-name(.)"/><xsl:text>&#x20;</xsl:text></xsl:with-param>
     </xsl:call-template>
     <xsl:if test="title">
-      <h6><xsl:apply-templates select="title"/></h6>
+      <h6>
+        <xsl:if test="title/@role!=''">
+        <xsl:attribute name="class"><xsl:value-of select="title/@role"/></xsl:attribute>
+        </xsl:if>
+        <xsl:apply-templates select="title"/>
+      </h6>
     </xsl:if>
     <xsl:apply-templates select="node()[not(self::title)]"/>
   </div>
