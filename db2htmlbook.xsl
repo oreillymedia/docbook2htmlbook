@@ -827,6 +827,7 @@ BLOCKS
   
 <!-- Handle CALS or HTML Tables -->
 <xsl:template match="table | informaltable">
+  <xsl:variable name="table-markup">
   <table>
     <xsl:call-template name="process-id"/>
     <xsl:choose>
@@ -856,7 +857,19 @@ BLOCKS
   <xsl:if test="descendant::footnote|descendant::tfoot">
       <xsl:call-template name="process-table-footnotes"/>
   </xsl:if>
+  </xsl:variable>
+  <xsl:choose>
+  <xsl:when test="@tabstyle='landscape' or @orient='land'">
+  <div class="landscape">
+    <xsl:copy-of select="$table-markup"/>
+  </div>
+  </xsl:when>
+  <xsl:otherwise>
+    <xsl:copy-of select="$table-markup"/>
+  </xsl:otherwise>
+</xsl:choose>
 </xsl:template>
+
 <xsl:template match="tgroup">
   <xsl:apply-templates/>
 </xsl:template>
