@@ -826,7 +826,7 @@ BLOCKS
   </xsl:template>
   
 <!-- Handle CALS or HTML Tables -->
-<xsl:template match="table | informaltable">
+<xsl:template match="table | informaltable | entrytbl">
   <xsl:variable name="table-markup">
   <table>
     <xsl:call-template name="process-id"/>
