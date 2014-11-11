@@ -847,9 +847,16 @@ BLOCKS
     <xsl:otherwise/>
     </xsl:choose>
     <xsl:if test="title">
-      <caption><xsl:apply-templates select="title"/></caption>
+      <caption>
+      <xsl:if test="title/@role">
+        <xsl:attribute name="class"><xsl:value-of select="title/@role"/></xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates select="title"/></caption>
     </xsl:if>
     <xsl:if test="caption">
+      <xsl:if test="caption/@role">
+        <xsl:attribute name="class"><xsl:value-of select="caption/@role"/></xsl:attribute>
+      </xsl:if>
       <xsl:apply-templates select="caption"/>
     </xsl:if>
     <xsl:apply-templates select="node()[not(self::title|self::caption)]"/> 
