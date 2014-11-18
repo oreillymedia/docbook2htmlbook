@@ -912,6 +912,9 @@ BLOCKS
 <xsl:template match="th">
 <th>
   <xsl:call-template name="process-role"/>
+  <xsl:if test="@width!=''">
+    <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
+  </xsl:if>
   <!-- No p elements inside table heads -->
   <xsl:choose>
     <xsl:when test="para">
@@ -935,6 +938,9 @@ BLOCKS
     <!-- No p elements inside table heads -->
     <th>
       <xsl:call-template name="process-role"/>
+      <xsl:if test="@width!=''">
+        <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
+      </xsl:if>
       <xsl:choose>
         <xsl:when test="para">
           <xsl:apply-templates select="para/node()"/>
