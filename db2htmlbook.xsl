@@ -1052,10 +1052,15 @@ BLOCKS
       <xsl:with-param name="text" select="$num-of-spaces"/>
     </xsl:call-template>
   </xsl:variable>
+  <dt>
   <xsl:call-template name="tokenize-arearefs">
     <xsl:with-param name="current" select="concat(@arearefs, ' ')"/>
     <xsl:with-param name="callout-incremented"><xsl:value-of select="1 + count(preceding-sibling::callout) + $total-num-of-arearef-strings"/></xsl:with-param>
   </xsl:call-template>
+  </dt>
+  <dd>
+    <xsl:apply-templates/>
+  </dd>
 </xsl:template>
 
 <xsl:template name="sum-numbers">
@@ -1083,7 +1088,6 @@ BLOCKS
 <xsl:param name="callout-incremented"/>
   <xsl:if test="string-length($current)">
     <xsl:variable name="currentref" select="substring-before($current, ' ')"/>
-    <dt>
     <a>
       <xsl:attribute name="class">co</xsl:attribute>
         <xsl:attribute name="id">callout_<xsl:value-of select="$currentref"/></xsl:attribute>
@@ -1097,10 +1101,6 @@ BLOCKS
       <xsl:with-param name="current" select="substring-after($current, ' ')"/>
       <xsl:with-param name="callout-incremented" select="$callout-incremented +1"/>
     </xsl:call-template>
-    </dt>
-    <dd>
-      <xsl:apply-templates/>
-    </dd>
   </xsl:if>
 </xsl:template>
 
