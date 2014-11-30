@@ -1004,6 +1004,7 @@ BLOCKS
     <xsl:if test="@class='endofrange'">
       <xsl:attribute name="data-startref"><xsl:value-of select="@startref"/></xsl:attribute>
     </xsl:if>
+  <xsl:text>&#xa0;</xsl:text>
   </a>
 </xsl:template>
   
@@ -1027,38 +1028,82 @@ BLOCKS
   </a>
 </xsl:template>
 
-<xsl:template match="calloutlist">
-    <dl>
-      <xsl:attribute name="class">calloutlist</xsl:attribute>
-      <xsl:for-each select="callout">
-        <dt>
-          <a>
-            <xsl:attribute name="class">co</xsl:attribute>
-            <xsl:if test="@arearefs">
-              <xsl:attribute name="id">callout_<xsl:value-of select="@arearefs"/></xsl:attribute>
-              <xsl:attribute name="href">#co_<xsl:value-of select="@arearefs"/></xsl:attribute>
-            </xsl:if>
-             <img>
-              <xsl:attribute name="src">callouts/<xsl:apply-templates select="." mode="calloutlist.number"/>.png</xsl:attribute>
-              <xsl:attribute name="alt"><xsl:apply-templates select="." mode="calloutlist.number"/></xsl:attribute>
-             </img>
-          </a>
-        </dt>
-        <dd>
-          <xsl:apply-templates/>
-        </dd>
-      </xsl:for-each>
-    </dl>
-</xsl:template>
-
 <xsl:template match="co" mode="callout.number">
     <xsl:number level="any" from="programlisting" format="1"/>
 </xsl:template>
 
-<xsl:template match="callout" mode="calloutlist.number">
-    <xsl:number level="any" from="calloutlist" format="1"/>
+<xsl:template match="calloutlist">
+    <dl>
+      <xsl:attribute name="class">calloutlist</xsl:attribute>
+      <xsl:apply-templates/>
+    </dl>
 </xsl:template>
-  
+
+<!-- Need to call utility templates to properly increment callout numbers when there are multiple strings in @arearefs -->
+<xsl:template match="callout">
+  <xsl:variable name="total-num-of-arearef-strings">
+    <xsl:variable name="num-of-spaces">
+      <xsl:for-each select="preceding-sibling::*">
+        <xsl:value-of select="string-length(@arearefs) - string-length(translate(@arearefs,' ',''))"/>
+        <xsl:if test="position() != last()"><xsl:text>+</xsl:text></xsl:if>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:call-template name="sum-numbers">
+      <xsl:with-param name="text" select="$num-of-spaces"/>
+    </xsl:call-template>
+  </xsl:variable>
+  <xsl:call-template name="tokenize-arearefs">
+    <xsl:with-param name="current" select="concat(@arearefs, ' ')"/>
+    <xsl:with-param name="callout-incremented"><xsl:value-of select="1 + count(preceding-sibling::callout) + $total-num-of-arearef-strings"/></xsl:with-param>
+  </xsl:call-template>
+</xsl:template>
+
+<xsl:template name="sum-numbers">
+  <xsl:param name="text" select="."/>
+  <xsl:param name="sum" select="0"/>
+  <xsl:param name="delim" select="'+'"/>
+  <xsl:choose>
+    <xsl:when test="not(string-length($text) >0)">
+      <xsl:value-of select="$sum"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:variable name="newlist" select="concat($text,$delim)"/>
+      <xsl:variable name="head" select="substring-before($newlist, $delim)"/>
+      <xsl:call-template name="sum-numbers">
+        <xsl:with-param name="text" select="substring-after($text, $delim)"/>
+        <xsl:with-param name="sum" select="$sum+$head"/>
+        <xsl:with-param name="delim" select="$delim"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+ </xsl:template>
+
+<xsl:template name="tokenize-arearefs">
+<xsl:param name="current"/>
+<xsl:param name="callout-incremented"/>
+  <xsl:if test="string-length($current)">
+    <xsl:variable name="currentref" select="substring-before($current, ' ')"/>
+    <dt>
+    <a>
+      <xsl:attribute name="class">co</xsl:attribute>
+        <xsl:attribute name="id">callout_<xsl:value-of select="$currentref"/></xsl:attribute>
+        <xsl:attribute name="href">#co_<xsl:value-of select="$currentref"/></xsl:attribute>
+       <img>
+          <xsl:attribute name="src">callouts/<xsl:value-of select="$callout-incremented"/>.png</xsl:attribute>
+          <xsl:attribute name="alt"><xsl:value-of select="$callout-incremented"/></xsl:attribute>
+       </img>
+    </a>
+    <xsl:call-template name="tokenize-arearefs">
+      <xsl:with-param name="current" select="substring-after($current, ' ')"/>
+      <xsl:with-param name="callout-incremented" select="$callout-incremented +1"/>
+    </xsl:call-template>
+    </dt>
+    <dd>
+      <xsl:apply-templates/>
+    </dd>
+  </xsl:if>
+</xsl:template>
+
 <!-- 
 *******************************
 INLINES
@@ -1317,6 +1362,7 @@ INLINES
     <xsl:if test="@xrefstyle">
       <xsl:attribute name="data-xrefstyle"><xsl:apply-templates select="@xrefstyle"/></xsl:attribute>
     </xsl:if>
+    <xsl:text>#</xsl:text><xsl:value-of select="@linkend"/>
   </a>
 </xsl:template>
   
