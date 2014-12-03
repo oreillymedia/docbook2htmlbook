@@ -1362,7 +1362,9 @@ INLINES
     <xsl:if test="@xrefstyle">
       <xsl:attribute name="data-xrefstyle"><xsl:apply-templates select="@xrefstyle"/></xsl:attribute>
     </xsl:if>
-    <xsl:text>#</xsl:text><xsl:value-of select="@linkend"/>
+    <xsl:if test="self::xref">
+      <xsl:text>#</xsl:text><xsl:value-of select="@linkend"/>
+    </xsl:if>
   </a>
 </xsl:template>
   
