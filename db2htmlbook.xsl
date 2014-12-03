@@ -1035,6 +1035,9 @@ BLOCKS
 <xsl:template match="calloutlist">
     <dl>
       <xsl:attribute name="class">calloutlist</xsl:attribute>
+      <xsl:call-template name="process-role">
+        <xsl:with-param name="append-class"><xsl:value-of select="local-name(.)"/><xsl:text>&#x20;</xsl:text></xsl:with-param>
+      </xsl:call-template>
       <xsl:apply-templates/>
     </dl>
 </xsl:template>
