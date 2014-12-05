@@ -822,6 +822,9 @@ BLOCKS
         <xsl:otherwise><xsl:value-of select="imageobject/imagedata/@fileref"/></xsl:otherwise>
       </xsl:choose>
       </xsl:attribute>
+      <xsl:if test="alt">
+        <xsl:attribute name="alt"><xsl:value-of select="alt//text()"/></xsl:attribute>
+      </xsl:if>
     </img>
   </xsl:template>
   
