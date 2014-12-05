@@ -653,11 +653,29 @@ BLOCKS
   <dl>
     <xsl:call-template name="process-role"/>
     <xsl:for-each select="varlistentry">
-      <xsl:for-each select="term">
-        <dt><xsl:apply-templates/></dt>
-      </xsl:for-each>
+        <xsl:choose>
+          <xsl:when test="@role!=''">
+            <xsl:for-each select="term[1]">
+              <dt>
+                <xsl:attribute name="class"><xsl:value-of select="parent::varlistentry/@role"/></xsl:attribute>
+                <xsl:apply-templates/>
+              </dt>
+            </xsl:for-each>
+            <xsl:for-each select="term[position()>1]">
+              <dt><xsl:apply-templates/></dt>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:for-each select="term">
+              <dt><xsl:apply-templates/></dt>
+            </xsl:for-each>
+          </xsl:otherwise>
+        </xsl:choose>
       <xsl:for-each select="listitem">
-        <dd><xsl:apply-templates/></dd>
+        <dd>
+          <xsl:call-template name="process-role"/>
+          <xsl:apply-templates/>
+        </dd>
       </xsl:for-each>
     </xsl:for-each>
   </dl>
