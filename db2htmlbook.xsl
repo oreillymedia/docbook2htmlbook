@@ -958,6 +958,7 @@ BLOCKS
   <xsl:when test="ancestor::thead">
     <!-- No p elements inside table heads -->
     <th>
+      <xsl:call-template name="process-id"/>
       <xsl:call-template name="process-role"/>
       <xsl:if test="@width!=''">
         <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
@@ -974,6 +975,7 @@ BLOCKS
   </xsl:when>
   <xsl:otherwise>
     <td>
+      <xsl:call-template name="process-id"/>
       <xsl:call-template name="process-role"/>
       <xsl:apply-templates/>
     </td>
