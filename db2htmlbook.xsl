@@ -892,6 +892,11 @@ BLOCKS
     <xsl:copy-of select="$table-markup"/>
   </div>
   </xsl:when>
+  <xsl:when test="self::entrytbl">
+  <td>
+    <xsl:copy-of select="$table-markup"/>
+  </td>
+  </xsl:when>
   <xsl:otherwise>
     <xsl:copy-of select="$table-markup"/>
   </xsl:otherwise>
