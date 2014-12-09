@@ -615,7 +615,10 @@ BLOCKS
   <ul>
     <xsl:call-template name="process-role"/>
     <xsl:for-each select="listitem">
-      <li><xsl:apply-templates/></li>
+      <li>
+        <xsl:call-template name="process-role"/>
+        <xsl:apply-templates/>
+      </li>
     </xsl:for-each>
   </ul>
 </xsl:template>
