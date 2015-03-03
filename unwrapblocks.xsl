@@ -21,7 +21,7 @@
 
 <xsl:template match="para">
 
-<xsl:for-each-group select="*|node()" group-starting-with="*[matches($blocks, concat(' ', name(), ' '))]">
+<xsl:for-each-group select="@*|node()" group-starting-with="*[matches($blocks, concat(' ', name(), ' '))]">
   <xsl:choose>
     <xsl:when test="current-group()[1]/self::*[matches($blocks, concat(' ', name(), ' '))]">
           <xsl:for-each-group select="current-group()" group-ending-with="*[matches($blocks, concat(' ', name(), ' '))]">
