@@ -275,6 +275,7 @@ BLOCKS
 <xsl:template match="footnote[ancestor::table or ancestor::informaltable]|tfoot">
   <sup>
     <xsl:attribute name="class">table-footnote-call</xsl:attribute>
+    <xsl:call-template name="process-id"/>
     <xsl:apply-templates select="." mode="footnote.number"/>
   </sup>
 </xsl:template>
