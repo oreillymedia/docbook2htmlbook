@@ -1145,7 +1145,16 @@ INLINES
 ******************************* 
 -->
 
-<xsl:template match="literal | code"><code><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="literal | code">
+  <code>
+    <!--propegate role attributes on code/literal tags to class attributes if they exist ; RT # 187250-->
+    <xsl:if test="@role">
+    <xsl:attribute name="class"><xsl:value-of select="@role"/></xsl:attribute>
+    </xsl:if>
+    <xsl:apply-templates/>
+  </code>
+</xsl:template>
+
 <xsl:template match="emphasis"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="emphasis[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
 <xsl:template match="emphasis[@role='bold']"><strong><xsl:apply-templates/></strong></xsl:template>
