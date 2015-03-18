@@ -260,7 +260,7 @@ BLOCKS
   <xsl:apply-templates/>
 </xsl:template>
   
-<xsl:template match="footnote[not(ancestor::table or ancestor::informaltable)]">
+<xsl:template match="footnote">
   <span>
     <xsl:attribute name="data-type">footnote</xsl:attribute>
     <xsl:call-template name="process-id"/>
@@ -271,46 +271,9 @@ BLOCKS
     </xsl:for-each>
   </span>
 </xsl:template>
-
-<xsl:template match="footnote[ancestor::table or ancestor::informaltable]|tfoot">
-  <sup>
-    <xsl:attribute name="class">table-footnote-call</xsl:attribute>
-    <xsl:call-template name="process-id"/>
-    <xsl:apply-templates select="." mode="footnote.number"/>
-  </sup>
-</xsl:template>
-
-<xsl:template match="footnote|tfoot" mode="footnote.number">
-  <xsl:if test="ancestor::table or ancestor::informaltable">
-    <xsl:number level="any" from="table | informaltable" format="a"/>
-  </xsl:if>
-</xsl:template>
-
-<xsl:template name="process-table-footnotes">
-  <div>
-    <xsl:attribute name="class">table-footnotes</xsl:attribute>
-    <xsl:for-each select="descendant::footnote|descendant::tfoot">
-      <xsl:for-each select="descendant::para">
-        <p>
-        <xsl:if test="position() = 1">
-        <sup>
-          <xsl:attribute name="class">table-footnote-marker</xsl:attribute>
-          <xsl:apply-templates select="ancestor::footnote|ancestor::tfoot" mode="footnote.number"/>
-        </sup>
-        </xsl:if>
-          <span>
-            <xsl:attribute name="class">table-footnote-text</xsl:attribute>
-            <xsl:apply-templates select="text() | *"/>
-          </span>
-        </p>
-      </xsl:for-each>
-    </xsl:for-each>
-  </div>
-</xsl:template>
   
-<!-- TO DO: Check footnoteref after spec solidified -->
 <xsl:template match="footnoteref">
-  <a href="{@linkend}">
+  <a href="#{@linkend}">
     <xsl:attribute name="data-type">footnoteref</xsl:attribute>
   </a>
 </xsl:template>
@@ -886,9 +849,6 @@ BLOCKS
     </xsl:if>
     <xsl:apply-templates select="node()[not(self::title|self::caption)]"/> 
   </table>
-  <xsl:if test="descendant::footnote|descendant::tfoot">
-      <xsl:call-template name="process-table-footnotes"/>
-  </xsl:if>
   </xsl:variable>
   <xsl:choose>
   <xsl:when test="@tabstyle='landscape' or @orient='land'">
