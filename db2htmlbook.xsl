@@ -178,6 +178,9 @@ BLOCKS
   <section>
     <xsl:call-template name="process-id"/>
     <xsl:call-template name="process-role"/>
+    <xsl:if test="@data-nutshell-tab">
+      <xsl:attribute name="data-nutshell-tab"><xsl:value-of select="@data-nutshell-tab"/></xsl:attribute>
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="self::chapter">
           <xsl:variable name="chapter-number"><xsl:number level="any" count="chapter"/></xsl:variable>
