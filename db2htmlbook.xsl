@@ -772,6 +772,18 @@ BLOCKS
   <xsl:if test="@float">
       <xsl:attribute name="style">float: <xsl:value-of select="@float"/></xsl:attribute>
   </xsl:if>
+  <!-- informalfigures should always receive class="informal" when in htmlbook -->
+  <xsl:choose>
+    <!-- if informalfigure already has a role attribute -->
+    <xsl:when test="@role">
+      <!-- add "informal" to class attribute value -->
+      <xsl:attribute name="class"><xsl:value-of select="@role"/> informal</xsl:attribute>
+    </xsl:when>
+    <!-- otherwise, add class attribute with value "informal" -->
+    <xsl:otherwise>
+      <xsl:attribute name="class">informal</xsl:attribute>
+    </xsl:otherwise>
+  </xsl:choose>
     <img>
       <xsl:call-template name="fig-attrs"/>
     </img>
