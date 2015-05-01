@@ -1036,7 +1036,7 @@ BLOCKS
 </xsl:template>
 
 <xsl:template match="co" mode="callout.number">
-    <xsl:number level="any" from="programlisting" format="1"/>
+    <xsl:number level="any" from="programlisting | screen" format="1"/>
 </xsl:template>
 
 <xsl:template match="calloutlist">
