@@ -1130,6 +1130,8 @@ INLINES
   </code>
 </xsl:template>
 
+<xsl:template match="package"><code><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="methodname"><code><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="emphasis"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="emphasis[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
 <xsl:template match="emphasis[@role='bold']"><strong><xsl:apply-templates/></strong></xsl:template>
