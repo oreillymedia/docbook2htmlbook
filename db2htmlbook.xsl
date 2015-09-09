@@ -1611,6 +1611,9 @@ TO DO
         <xsl:text>&#x20;</xsl:text><xsl:value-of select="$position"/>
       </xsl:if>
     </xsl:attribute>
+    <xsl:call-template name="process-role">
+       <xsl:with-param name="append-class"><xsl:value-of select="local-name(.)"/><xsl:text>&#x20;</xsl:text></xsl:with-param>
+    </xsl:call-template>
     <xsl:apply-templates/>
   </p>
 </xsl:if>
