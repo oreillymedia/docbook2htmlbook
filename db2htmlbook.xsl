@@ -503,13 +503,15 @@ BLOCKS
     <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">glossary</xsl:attribute>
     <h1><xsl:apply-templates select="title"/></h1>
-    <xsl:apply-templates select="child::para"/>
+    <!-- targets all children that are not 1) a title and 2) a glossentry. All other glossary related nodes should be embedded in glossentry, so no need to specify all the glossary tags to ignore here. This previously only targetted child::para. -->
+    <xsl:apply-templates select="child::node()[not(self::glossentry) and not(self::title)]"/>
     <!-- Per AW, all glossary items should be wrapped in one single <dl> -->
     <!-- See https://github.com/oreillymedia/docbook2htmlbook/issues/20 -->
     <dl>
       <xsl:attribute name="data-type">glossary</xsl:attribute>
       <xsl:call-template name="process-role"/>
-      <xsl:apply-templates select="node()[not(self::title) and not(self::para)]"/>
+      <!--This only selects nodes related to glossaries. This previously grabbed anything that wasn't a para or title. --> 
+      <xsl:apply-templates select="node()[self::glossdiv or self::glossentry or self::glossterm]"/>
     </dl>
   </section>
 </xsl:template>
@@ -1123,6 +1125,8 @@ INLINES
   </code>
 </xsl:template>
 
+<xsl:template match="package"><code><xsl:apply-templates/></code></xsl:template>
+<xsl:template match="methodname"><code><xsl:apply-templates/></code></xsl:template>
 <xsl:template match="emphasis"><em><xsl:apply-templates/></em></xsl:template>
 <xsl:template match="emphasis[@role='strong']"><strong><xsl:apply-templates/></strong></xsl:template>
 <xsl:template match="emphasis[@role='bold']"><strong><xsl:apply-templates/></strong></xsl:template>
@@ -1607,6 +1611,9 @@ TO DO
         <xsl:text>&#x20;</xsl:text><xsl:value-of select="$position"/>
       </xsl:if>
     </xsl:attribute>
+    <xsl:call-template name="process-role">
+       <xsl:with-param name="append-class"><xsl:value-of select="local-name(.)"/><xsl:text>&#x20;</xsl:text></xsl:with-param>
+    </xsl:call-template>
     <xsl:apply-templates/>
   </p>
 </xsl:if>
