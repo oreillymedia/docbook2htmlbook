@@ -447,10 +447,8 @@ BLOCKS
         </span>
       </xsl:when>
       <!-- MathML -->
-      <xsl:when test="mml:*">
-        <math xmlns="http://www.w3.org/1998/Math/MathML">
-          <xsl:copy-of select="mml:math/node()"/>
-        </math>
+      <xsl:when test="mml:math">
+	<xsl:copy-of select="mml:math"/>
       </xsl:when>
       <!-- Regular mathphrase equation -->
       <!-- To Do: Test regular inline equations -->
@@ -477,11 +475,9 @@ BLOCKS
           </p>
         </xsl:when>
         <!-- MathML -->
-        <xsl:when test="mml:*">
-            <math xmlns="http://www.w3.org/1998/Math/MathML">
-              <xsl:copy-of select="mml:math/node()"/>
-            </math>
-        </xsl:when>
+	<xsl:when test="mml:math">
+	  <xsl:copy-of select="mml:math"/>
+	</xsl:when>
         <!-- Regular mathphrase equation -->
         <xsl:when test="mathphrase[not(@role='tex')]">
             <p>
