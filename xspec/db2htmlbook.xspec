@@ -213,7 +213,137 @@
     <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'entry">
         <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
     </x:scenario>
+
+    <!-- BEGIN namest and nameend attribute tests -->
+
+    <!-- in thead -->
+    <x:scenario label="When attributes namest and nameend in a thead are on entries with no block children">
+    <x:context>
+        <thead>
+          <row>
+            <entry nameend="col2" namest="col1">Regular expression</entry>
+            <entry>Meaning</entry>
+          </row>
+        <row>
+            <entry>PlainA second paragraph in the entry</entry>
+            <entry nameend="col5" namest="col3">Extended</entry>
+          </row>
+        </thead>
+        </x:context>
+
+        <x:expect label="they propegate to colspan attribute on the th (with values of 2 and 3 in this case)">
+        <h:thead>
+        <h:tr>
+                <h:th colspan="2">Regular expression</h:th>
+                <h:th>Meaning</h:th>
+        </h:tr>
+        <h:tr>
+                <h:th>PlainA second paragraph in the entry</h:th>
+                <h:th colspan="3">Extended</h:th>
+        </h:tr>
+        </h:thead>
+        </x:expect>
+
+
+    </x:scenario>
+
+    <x:scenario label="When attributes namest and nameend in a thead are on entries with block children">
+    <x:context>
+        <thead>
+          <row>
+            <entry nameend="col2" namest="col1"><para>Regular expression</para></entry>
+            <entry><para>Meaning</para></entry>
+          </row>
+
+           <row>
+            <entry><para>Meaning</para></entry>
+            <entry nameend="col3" namest="col2"><para>Regular expression</para></entry>
+           </row>
+
+        </thead>
+        </x:context>
+
+        <x:expect label="they propegate to colspan attribute on the th (with values of 2 and 2 in this case)">
+        <h:thead>
+        <h:tr>
+                <h:th colspan="2">...</h:th>
+                <h:th>...</h:th>
+        </h:tr>
+        <h:tr>
+                <h:th>...</h:th>
+                <h:th colspan="2">...</h:th>
+        </h:tr>
+        </h:thead>
+        </x:expect>
+
+    </x:scenario>
     
+    <!-- in tbody-->
+
+        <x:scenario label="When attributes namest and nameend in a tbody are on entries with no block children">
+    <x:context>
+        <tbody>
+          <row>
+            <entry nameend="col3" namest="col2">Regular expression</entry>
+            <entry>Meaning</entry>
+          </row>
+        <row>
+            <entry>PlainA second paragraph in the entry</entry>
+            <entry nameend="col6" namest="col3">Extended</entry>
+          </row>
+        </tbody>
+        </x:context>
+
+        <x:expect label="they propegate to colspan attribute on the td (with values of 2 and 4 in this case)">
+        <h:tbody>
+        <h:tr>
+                <h:td colspan="2">Regular expression</h:td>
+                <h:td>Meaning</h:td>
+        </h:tr>
+        <h:tr>
+                <h:td>PlainA second paragraph in the entry</h:td>
+                <h:td colspan="4">Extended</h:td>
+        </h:tr>
+        </h:tbody>
+        </x:expect>
+
+
+    </x:scenario>
+
+    <x:scenario label="When attributes namest and nameend in a thead are on entries with block children">
+    <x:context>
+        <tbody>
+          <row>
+            <entry nameend="col6" namest="col1"><para>Regular expression</para></entry>
+            <entry><para>Meaning</para></entry>
+          </row>
+
+           <row>
+            <entry><para>Meaning</para></entry>
+            <entry nameend="col3" namest="col1"><para>Regular expression</para></entry>
+           </row>
+
+        </tbody>
+        </x:context>
+
+        <x:expect label="they propegate to colspan attribute on the td (with values of 6 and 3 in this case)">
+        <h:tbody>
+        <h:tr>
+                <h:td colspan="6">...</h:td>
+                <h:td>...</h:td>
+        </h:tr>
+        <h:tr>
+                <h:td>...</h:td>
+                <h:td colspan="3">...</h:td>
+        </h:tr>
+        </h:tbody>
+        </x:expect>
+
+    </x:scenario>
+
+    
+    <!-- END namest and nameend attribute tests -->
+
     <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'colspec">
         <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
     </x:scenario>

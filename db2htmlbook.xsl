@@ -935,6 +935,7 @@ BLOCKS
     <th>
       <xsl:call-template name="process-id"/>
       <xsl:call-template name="process-role"/>
+      <xsl:call-template name="process-colspan"/>
       <xsl:if test="@width!=''">
         <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
       </xsl:if>
@@ -952,6 +953,7 @@ BLOCKS
     <td>
       <xsl:call-template name="process-id"/>
       <xsl:call-template name="process-role"/>
+      <xsl:call-template name="process-colspan"/>
       <xsl:apply-templates/>
     </td>
   </xsl:otherwise>
@@ -1726,6 +1728,23 @@ UTILITY TEMPLATES
   <xsl:attribute name="class"><xsl:value-of select="$append-class"/><xsl:value-of select="@role"/>
   </xsl:attribute>
 </xsl:if>
+</xsl:template>
+
+<xsl:template name="process-colspan">
+  <!--If there are nameend and namest attributes-->
+  <xsl:if test="@nameend and @namest">
+  <!--Calculate colspan-->
+  <!--nameend and namest attributes look like "col1" "col6" "col12", so grab the 4th character on from these attribute values-->
+  <!--alternate method i could try instead: slice out the "col" and keep the rest?-->
+  <xsl:variable name="nameend_value" select="number(substring(@nameend,4))"/>
+  <xsl:variable name="namest_value" select="number(substring(@namest,4))"/>
+  <!--colspan value is = to "(nameend minus namest) plus 1)-->
+  <xsl:variable name="colspan_value" select="($nameend_value - $namest_value) + 1"/>
+
+    <!--Add attribute named colspan with value we calculated using nameend and namest values-->
+    <xsl:attribute name="colspan"><xsl:value-of select="$colspan_value"/></xsl:attribute>
+  </xsl:if>
+   
 </xsl:template>
 
 <!--For use with asciidoctor-htmlbook-->
