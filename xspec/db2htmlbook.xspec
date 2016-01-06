@@ -218,17 +218,25 @@
 
     <!-- in thead -->
     <x:scenario label="When attributes namest and nameend in a thead are on entries with no block children">
-    <x:context>
-        <thead>
-          <row>
-            <entry nameend="col2" namest="col1">Regular expression</entry>
-            <entry>Meaning</entry>
-          </row>
-        <row>
-            <entry>PlainA second paragraph in the entry</entry>
-            <entry nameend="col5" namest="col3">Extended</entry>
-          </row>
-        </thead>
+        <x:context>
+            <tgroup cols="6">
+                <colspec colname="my_column" colnum="1"/>
+                <colspec colname="frenchfries" colnum="2"/>
+                <colspec colname="rainbow" colnum="3"/>
+                <colspec colname="baseball" colnum="4"/>
+                <colspec colname="sigfried" colnum="5"/>
+                <colspec colname="seto_kaiba" colnum="6"/>
+                <thead>
+                  <row>
+                    <entry nameend="frenchfries" namest="my_column">Regular expression</entry>
+                    <entry>Meaning</entry>
+                  </row>
+                <row>
+                    <entry>PlainA second paragraph in the entry</entry>
+                    <entry nameend="sigfried" namest="rainbow">Extended</entry>
+                  </row>
+                </thead>
+            </tgroup>
         </x:context>
 
         <x:expect label="they propegate to colspan attribute on the th (with values of 2 and 3 in this case)">
@@ -249,18 +257,26 @@
 
     <x:scenario label="When attributes namest and nameend in a thead are on entries with block children">
     <x:context>
-        <thead>
-          <row>
-            <entry nameend="col2" namest="col1"><para>Regular expression</para></entry>
-            <entry><para>Meaning</para></entry>
-          </row>
+        <tgroup cols="6">
+            <colspec colname="my_column" colnum="1"/>
+            <colspec colname="frenchfries" colnum="2"/>
+            <colspec colname="rainbow" colnum="3"/>
+            <colspec colname="baseball" colnum="4"/>
+            <colspec colname="sigfried" colnum="5"/>
+            <colspec colname="seto_kaiba" colnum="6"/>
+            <thead>
+              <row>
+                <entry nameend="frenchfries" namest="my_column"><para>Regular expression</para></entry>
+                <entry><para>Meaning</para></entry>
+              </row>
 
-           <row>
-            <entry><para>Meaning</para></entry>
-            <entry nameend="col3" namest="col2"><para>Regular expression</para></entry>
-           </row>
+               <row>
+                <entry><para>Meaning</para></entry>
+                <entry nameend="rainbow" namest="frenchfries"><para>Regular expression</para></entry>
+               </row>
 
-        </thead>
+            </thead>
+        </tgroup>
         </x:context>
 
         <x:expect label="they propegate to colspan attribute on the th (with values of 2 and 2 in this case)">
@@ -282,16 +298,24 @@
 
         <x:scenario label="When attributes namest and nameend in a tbody are on entries with no block children">
     <x:context>
-        <tbody>
-          <row>
-            <entry nameend="col3" namest="col2">Regular expression</entry>
-            <entry>Meaning</entry>
-          </row>
-        <row>
-            <entry>PlainA second paragraph in the entry</entry>
-            <entry nameend="col6" namest="col3">Extended</entry>
-          </row>
-        </tbody>
+        <tgroup cols="6">
+            <colspec colname="my_column" colnum="1"/>
+            <colspec colname="frenchfries" colnum="2"/>
+            <colspec colname="rainbow" colnum="3"/>
+            <colspec colname="baseball" colnum="4"/>
+            <colspec colname="sigfried" colnum="5"/>
+            <colspec colname="seto_kaiba" colnum="6"/>
+            <tbody>
+              <row>
+                <entry nameend="rainbow" namest="frenchfries">Regular expression</entry>
+                <entry>Meaning</entry>
+              </row>
+            <row>
+                <entry>PlainA second paragraph in the entry</entry>
+                <entry nameend="seto_kaiba" namest="rainbow">Extended</entry>
+              </row>
+            </tbody>
+        </tgroup>
         </x:context>
 
         <x:expect label="they propegate to colspan attribute on the td (with values of 2 and 4 in this case)">
@@ -312,18 +336,26 @@
 
     <x:scenario label="When attributes namest and nameend in a thead are on entries with block children">
     <x:context>
-        <tbody>
-          <row>
-            <entry nameend="col6" namest="col1"><para>Regular expression</para></entry>
-            <entry><para>Meaning</para></entry>
-          </row>
+        <tgroup cols="6">
+            <colspec colname="my_column" colnum="1"/>
+            <colspec colname="frenchfries" colnum="2"/>
+            <colspec colname="rainbow" colnum="3"/>
+            <colspec colname="baseball" colnum="4"/>
+            <colspec colname="sigfried" colnum="5"/>
+            <colspec colname="seto_kaiba" colnum="6"/>
+            <tbody>
+              <row>
+                <entry nameend="seto_kaiba" namest="my_column"><para>Regular expression</para></entry>
+                <entry><para>Meaning</para></entry>
+              </row>
 
-           <row>
-            <entry><para>Meaning</para></entry>
-            <entry nameend="col3" namest="col1"><para>Regular expression</para></entry>
-           </row>
+               <row>
+                <entry><para>Meaning</para></entry>
+                <entry nameend="rainbow" namest="my_column"><para>Regular expression</para></entry>
+               </row>
 
-        </tbody>
+            </tbody>
+        </tgroup>
         </x:context>
 
         <x:expect label="they propegate to colspan attribute on the td (with values of 6 and 3 in this case)">
