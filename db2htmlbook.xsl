@@ -935,6 +935,7 @@ BLOCKS
     <th>
       <xsl:call-template name="process-id"/>
       <xsl:call-template name="process-role"/>
+      <xsl:call-template name="process-colspan"/>
       <xsl:if test="@width!=''">
         <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
       </xsl:if>
@@ -952,6 +953,7 @@ BLOCKS
     <td>
       <xsl:call-template name="process-id"/>
       <xsl:call-template name="process-role"/>
+      <xsl:call-template name="process-colspan"/>
       <xsl:apply-templates/>
     </td>
   </xsl:otherwise>
@@ -1726,6 +1728,34 @@ UTILITY TEMPLATES
   <xsl:attribute name="class"><xsl:value-of select="$append-class"/><xsl:value-of select="@role"/>
   </xsl:attribute>
 </xsl:if>
+</xsl:template>
+
+<!--For Calculating colspan-->
+<xsl:template name="process-colspan">
+  <!--Only if there are nameend and namest attributes-->
+  <xsl:if test="@nameend and @namest">
+    
+    <!--Get value of nameend and namest attributes-->
+    <xsl:variable name="nameend_var_name" select="@nameend"/>
+    <xsl:variable name="namest_var_name" select="@namest"/>
+
+    <!--Only calculate colspan if nameend and namest reference <colspec> elements that actually have colnum attributes-->
+    <xsl:if test="ancestor::tgroup/colspec[@colname = $nameend_var_name and @colnum] and ancestor::tgroup/colspec[@colname = $namest_var_name and @colnum]">
+
+      <!--Find the colnum associated with the names of the nameend and namest attribute values-->
+      <!--Look up the tree at the <colspec>s in the table, and if there is one that has a colname attribute
+      that matches the value of nameend (or namest), then grab the colnum value, which will be used to calculate colspan-->
+      <xsl:variable name="nameend_value" select="ancestor::tgroup/colspec[@colname = $nameend_var_name and @colnum]/@colnum"/>
+      <xsl:variable name="namest_value" select="ancestor::tgroup/colspec[@colname = $namest_var_name and @colnum]/@colnum"/>
+
+      <!--colspan value is = to "(nameend minus namest) plus 1)"-->
+      <xsl:variable name="colspan_value" select="($nameend_value - $namest_value) + 1"/>
+
+      <!--Add attribute named colspan with value we calculated using nameend and namest values-->
+      <xsl:attribute name="colspan"><xsl:value-of select="$colspan_value"/></xsl:attribute>
+    </xsl:if>
+  </xsl:if>
+   
 </xsl:template>
 
 <!--For use with asciidoctor-htmlbook-->
