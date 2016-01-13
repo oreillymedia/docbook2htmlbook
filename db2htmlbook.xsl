@@ -442,7 +442,7 @@ BLOCKS
       <!-- To Do: Test inline latex equations -->
       <xsl:when test="mathphrase[@role='tex']">
         <span>
-          <xsl:attribute name="data-type">latex</xsl:attribute>
+          <xsl:attribute name="data-type">tex</xsl:attribute>
           <xsl:copy-of select="mathphrase/text() | mathphrase/*"/>
         </span>
       </xsl:when>
