@@ -500,7 +500,8 @@ BLOCKS
     <xsl:attribute name="data-type">glossary</xsl:attribute>
     <h1><xsl:apply-templates select="title"/></h1>
     <!-- targets all children that are not 1) a title and 2) a glossentry. All other glossary related nodes should be embedded in glossentry, so no need to specify all the glossary tags to ignore here. This previously only targetted child::para. -->
-    <xsl:apply-templates select="child::node()[not(self::glossentry) and not(self::title)]"/>
+    <xsl:apply-templates select="child::node()[not(self::glossentry) and not(self::title) and not(self::glossdiv)]"/>
+  
     <!-- Per AW, all glossary items should be wrapped in one single <dl> -->
     <!-- See https://github.com/oreillymedia/docbook2htmlbook/issues/20 -->
     <dl>
@@ -511,30 +512,60 @@ BLOCKS
     </dl>
   </section>
 </xsl:template>
-<xsl:template match="glossdiv">
-    <xsl:apply-templates select="node()/*"/>
+
+<!-- Drop glossdiv tags -->
+<xsl:template match="glossdiv" >
+  <xsl:apply-templates />
 </xsl:template>
-    <!-- Removing h2 per AW -->
-<xsl:template match="glossentry">
-    <xsl:call-template name="process-role"/>
-    <xsl:apply-templates/>
-</xsl:template>
-<xsl:template match="glossterm">
+
+<!-- Removing h2 per AW (THIS IS A LEGACY COMMENT, Chris)-->
+<xsl:template match="glossentry" >
+  <!-- Each glossentry should have a dt and dd -->
   <dt>
     <xsl:attribute name="data-type">glossterm</xsl:attribute>
-    <xsl:if test="parent::glossentry/@id">
-      <xsl:attribute name="id"><xsl:value-of select="parent::glossentry/@id"/></xsl:attribute>
+    <xsl:if test="@id">
+      <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
     </xsl:if>
-    <xsl:call-template name="process-role"/>
-    <dfn><xsl:apply-templates/></dfn>
+    <xsl:apply-templates select="glossterm"/>
   </dt>
-</xsl:template>
-<xsl:template match="glossdef">
   <dd>
     <xsl:attribute name="data-type">glossdef</xsl:attribute>
-    <xsl:call-template name="process-role"/>
-    <xsl:apply-templates/>
+    <xsl:apply-templates select="glossdef | glosssee | glossseealso"/>
   </dd>
+</xsl:template>
+
+<xsl:template match="glossterm" >
+  <dfn><xsl:apply-templates/></dfn>
+</xsl:template>
+
+<xsl:template match="glossdef" >
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="glosssee" >
+  <xsl:variable name="reference" select="./@otherterm"/>
+  <xsl:variable name="term_text" select="//glossentry[@id=$reference]/glossterm"/>
+  <p>
+    <xsl:attribute name="class">glosssee</xsl:attribute>
+    <xsl:text>See </xsl:text>
+    <a>
+      <xsl:attribute name="href">#<xsl:value-of select="$reference"/></xsl:attribute>
+      <xsl:value-of select="$term_text"/>
+    </a>
+  </p>
+</xsl:template>
+
+<xsl:template match="glossseealso" >
+  <xsl:variable name="reference" select="./@otherterm"/>
+  <xsl:variable name="term_text" select="//glossentry[@id=$reference]/glossterm"/>
+  <p>
+    <xsl:attribute name="class">glossseealso</xsl:attribute>
+    <xsl:text>See </xsl:text>
+    <a>
+      <xsl:attribute name="href">#<xsl:value-of select="$reference"/></xsl:attribute>
+      <xsl:value-of select="$term_text"/>
+    </a>
+  </p>
 </xsl:template>
 
 <!-- Template for calculating continuation on <orderedlist> (see #58) -->

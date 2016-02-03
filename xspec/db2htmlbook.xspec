@@ -101,25 +101,209 @@
         <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'glossary">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <!-- GLOSSARY SCENARIOS BEGIN -->
+    <x:scenario label="When glossary tag only has title before glossary terms">
+        <x:context><glossary id="glossary">
+            <title>...</title>
+        </glossary>
+        </x:context>
+        
+        <x:expect label="it turns into section tag with h1'">
+            <h:section id="glossary" data-type="glossary">
+                <h:h1>...</h:h1>
+            <h:dl data-type="glossary"/>
+
+        </h:section>
+        </x:expect>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'glossdiv">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When glossary tag only has more elements preceding glossary terms">
+        <x:context><glossary id="glossary">
+            <title>...</title>
+            <para>Here's a para!</para>
+            <programlisting>...</programlisting>
+            
+        </glossary>
+        </x:context>
+        
+        <x:expect label="convert those tags to htmlbook too'">
+            <h:section id="glossary" data-type="glossary"><h:h1>...</h:h1>
+            <h:p>Here's a para!</h:p>
+            <h:pre data-type="programlisting">...</h:pre>
+            <h:dl data-type="glossary"/>
+            
+        </h:section>
+        </x:expect>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'glossentry">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a glossdiv">
+        <x:context><glossdiv>
+            <para>...</para>
+        </glossdiv></x:context>
+        
+        <x:expect label="drop the glossdiv tags and continue processing from there."><h:p>...</h:p></x:expect>
+
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'glossterm">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a glossdiv with a glossentry inside of it">
+        <x:context><glossdiv>
+            <para>...</para>
+            <glossentry/>
+        </glossdiv></x:context>
+        
+        <x:expect label="the glossentry is also processed.">
+            <h:p>...</h:p>
+            <h:dt data-type="glossterm"/>
+            <h:dd data-type="glossdef"/>
+        </x:expect>
+        
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'glossdef">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a glossentry">
+        <x:context>
+
+            <glossentry id="glossary_Ansible">
+                <glossterm>...</glossterm>
+                
+            </glossentry>
+
+        </x:context>
+        
+        <x:expect label="create dt and dd elements, progegating the glossentry's id onto the dt">
+            <h:dt data-type="glossterm" id="glossary_Ansible"><h:dfn>...</h:dfn></h:dt>
+        <h:dd data-type="glossdef">...</h:dd>
+        </x:expect>
     </x:scenario>
+    
+    <x:scenario label="When there is a glossterm">
+        <x:context>
+                <glossterm>API</glossterm>
+        </x:context>
+        
+        <x:expect label="it turns into a dt with a dfn tag wrapping the text">
+            <h:dfn>API</h:dfn>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When there is a glossterm with inline markup">
+        <x:context>
+            <glossterm><literal>API</literal></glossterm>
+        </x:context>
+        
+        <x:expect label="it turns into a dt with a dfn tag wrapping the text, with inline tags present">
+            <h:dfn><h:code>API</h:code></h:dfn>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario  label="When there is a glossdef with no other glossary tags inside of it">
+        <x:context>
+            <glossdef><para>...</para></glossdef>
+        </x:context>
+        
+        <x:expect label="process those tags" ><h:p>...</h:p></x:expect>
+    </x:scenario>
+    
+    <x:scenario  label="When there is a glossdef with glossseealso and glosssee in it">
+        <x:context>
+            <glossdef>
+                <para>Hello. How are you?</para>
+                <glosssee otherterm="glossary_XML1"/>
+                <glossseealso otherterm="glossary_XML2"/>
+                
+            </glossdef>
+        </x:context>
+        
+        <x:expect label="process all the tags inside of the glossdef" >
+            <h:p>Hello. How are you?</h:p>
+            <h:p class="glosssee">See <h:a href="#glossary_XML1"/></h:p>
+            <h:p class="glossseealso">See <h:a href="#glossary_XML2"/></h:p>
+        </x:expect>
+    </x:scenario>
+    
+    
+    <x:scenario label="When there is a glosssee">
+        <x:context>
+            <glosssee otherterm="glossary_XML"/>
+            
+            <glossentry id="glossary_XML">
+                <glossterm>XML</glossterm>
+            </glossentry>
+        </x:context>
+        
+        <x:expect label="it turns into a p with a link to the referenced term, with gen text the same as the referenced glossterm.">
+            
+            <h:p class="glosssee">See <h:a href="#glossary_XML">XML</h:a></h:p>
+            
+            <h:dt data-type="glossterm" id="glossary_XML"><h:dfn>XML</h:dfn></h:dt>
+            <h:dd data-type="glossdef">...</h:dd>
+        </x:expect>
+        
+    </x:scenario>
+    
+    <x:scenario label="When there is a glossseealso">
+        <x:context>
+            <glossseealso otherterm="glossary_PERL"/>
+            
+            <glossentry id="glossary_PERL">
+                <glossterm>PERL</glossterm>
+            </glossentry>
+        </x:context>
+        <x:expect label="it turns into a p with a link to the referenced term, with gen text the same as the referenced glossterm.">
+            <h:p class="glossseealso">See <h:a href="#glossary_PERL">PERL</h:a></h:p>
+            <h:dt data-type="glossterm" id="glossary_PERL"><h:dfn>PERL</h:dfn></h:dt>
+            <h:dd data-type="glossdef"/>
+        </x:expect>
+        
+    </x:scenario>
+    
+    <x:scenario label="When there is a full fledged, yet short, glossary">
+        <x:context>
+            <glossary>
+                <title>Chris's Glossary</title>
+                <para>This is an introductory paragraph!</para>
+                <glossdiv>
+                    <glossentry id="glossary_API_short">
+                        <glossterm>API</glossterm>
+                        
+                        <glosssee otherterm="glossary_API"/>
+                    </glossentry>
+                    
+                    <glossentry id="glossary_API">
+                        <glossterm>Application Programming Interface</glossterm>
+                        
+                        <glossdef>
+                            <para>Some text. Some inline <literal>RPCs</literal> text.</para>
+                            
+                            <glossseealso otherterm="glossary_API_short"/>
+                        </glossdef>
+                    </glossentry>
+                </glossdiv>
+            </glossary>
+        </x:context>
+        <x:expect label="pray everything works correctly.">
+            <h:section data-type="glossary">
+                <h:h1>Chris's Glossary</h:h1>
+                <h:p>This is an introductory paragraph!</h:p>
+                <h:dl data-type="glossary">
+                    <h:dt data-type="glossterm" id="glossary_API_short"><h:dfn>API</h:dfn></h:dt>
+                    <h:dd data-type="glossdef"><h:p class="glosssee">See <h:a href="#glossary_API">Application Programming Interface</h:a></h:p></h:dd>
+                    
+                    <h:dt data-type="glossterm" id="glossary_API"><h:dfn>Application Programming Interface</h:dfn></h:dt>
+                    <h:dd data-type="glossdef">
+                        <h:p>Some text. Some inline <h:code>RPCs</h:code> text.</h:p>
+                        
+                        <h:p class="glossseealso">See <h:a href="#glossary_API_short">API</h:a></h:p>
+                    </h:dd>
+                </h:dl>
+                
+            </h:section>
+        </x:expect>
+        
+    </x:scenario>
+    
+    
+    
+    <!-- GLOSSARY SCENARIOS END -->
     
     <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'itemizedlist">
         <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
