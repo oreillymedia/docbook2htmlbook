@@ -553,7 +553,7 @@ When there is a tr
         </x:expect>
     </x:scenario>
     
-    <x:scenario label="When there is a tgroup with a thead tbody and tfoot (with tfoot before tbody)">
+    <x:scenario label="When there is a tgroup with a thead tbody and tfoot (with tfoot between thead and tbody)">
         <x:context>
             <tgroup cols="1">
                 
@@ -577,7 +577,7 @@ When there is a tr
                 
             </tgroup>
         </x:context>
-        <x:expect label="the thead and tbody and tfoot come through (in the right order)">
+        <x:expect label="they all come through, with tfoot before thead">
             <h:thead>
                 <h:tr>
                     <h:th>THEAD THING</h:th>
@@ -586,7 +586,52 @@ When there is a tr
             
             <h:tfoot>
                 <h:tr>
+                    <h:td>TFOOT THING</h:td>
+                </h:tr>
+            </h:tfoot>
+            
+            <h:tbody>
+                <h:tr>
                     <h:td>TBODY THING</h:td>
+                </h:tr>
+            </h:tbody>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When there is a tgroup with a thead tbody and tfoot (with tfoot last)">
+        <x:context>
+            <tgroup cols="1">
+                
+                <thead>
+                    <row>
+                        <entry>THEAD THING</entry>
+                    </row>
+                </thead>
+                
+                <tbody>
+                    <row>
+                        <entry>TBODY THING</entry>
+                    </row>
+                </tbody>
+                
+                <tfoot>
+                    <row>
+                        <entry>TFOOT THING</entry>
+                    </row>
+                </tfoot>
+                
+            </tgroup>
+        </x:context>
+        <x:expect label="they all come through with tfoot after thead">
+            <h:thead>
+                <h:tr>
+                    <h:th>THEAD THING</h:th>
+                </h:tr>
+            </h:thead>
+            
+            <h:tfoot>
+                <h:tr>
+                    <h:td>TFOOT THING</h:td>
                 </h:tr>
             </h:tfoot>
             
@@ -617,17 +662,18 @@ When there is a tr
             </tgroup>
         </x:context>
         <x:expect label="the tbody and tfoot come through (in the right order)">
+            
+            <h:tfoot>
+                <h:tr>
+                    <h:td>TFOOT THING</h:td>
+                </h:tr>
+            </h:tfoot>
+            
             <h:tbody>
                 <h:tr>
                     <h:td>TBODY THING</h:td>
                 </h:tr>
             </h:tbody>
-            
-            <h:tfoot>
-                <h:tr>
-                    <h:td>TBODY THING</h:td>
-                </h:tr>
-            </h:tfoot>
             
         </x:expect>
     </x:scenario>
