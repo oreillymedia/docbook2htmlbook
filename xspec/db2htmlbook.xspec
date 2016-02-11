@@ -402,7 +402,7 @@ When there is a tr
             <table id="my_table"><title>This is made of cherry wood!</title></table>
         </x:context>
         <x:expect label="it turns into a table with a caption">
-            <table id="my_table" xmlns="http://www.w3.org/1999/xhtml"><caption xmlns="http://www.w3.org/1999/xhtml">This is made of cherry wood!</caption></table>
+            <table id="my_table" xmlns="http://www.w3.org/1999/xhtml"><caption>This is made of cherry wood!</caption></table>
         </x:expect>
     </x:scenario>
     
@@ -440,14 +440,12 @@ When there is a tr
         <x:context>
             <table orient="land">
                 <title role="for_dinner">This is made of cherry wood!</title>
-                ...
             </table>
         </x:context>
         <x:expect label="the orient attribute becomes a class">
             <h:div class="landscape">
                 <h:table class="landscape">
                     <h:caption class="for_dinner">This is made of cherry wood!</h:caption>
-                    ...
                 </h:table>
             </h:div>
         </x:expect>
@@ -457,14 +455,12 @@ When there is a tr
         <x:context>
             <table role="my_table" orient="land">
                 <title role="for_dinner">This is made of cherry wood!</title>
-                ...
             </table>
         </x:context>
         <x:expect label="the orient and role attribute become a class">
             <h:div class="landscape">
                 <h:table class="landscape my_table">
                     <h:caption class="for_dinner">This is made of cherry wood!</h:caption>
-                    ...
                 </h:table>
             </h:div>
         </x:expect>
@@ -472,16 +468,14 @@ When there is a tr
     
     <x:scenario label="When there is a table with tabstyle that is = 'landscape'">
         <x:context>
-            <table role="my_table" tabstyle="landscape">
+            <table tabstyle="landscape">
                 <title role="for_dinner">This is made of cherry wood!</title>
-                ...
             </table>
         </x:context>
         <x:expect label="the tabstyle attribute becomes a class">
             <h:div class="landscape">
-                <h:table class="landscape">
+                <h:table class="landscape" >
                     <h:caption class="for_dinner">This is made of cherry wood!</h:caption>
-                    ...
                 </h:table>
             </h:div>
         </x:expect>
@@ -490,12 +484,10 @@ When there is a tr
     <x:scenario label="When there is an informaltable">
         <x:context>
             <informaltable role="my_table_without_title">
-                ...
             </informaltable>
         </x:context>
         <x:expect label="it turns into a table with no title element.">
             <h:table class="my_table_without_title">
-                ...
             </h:table>
             
         </x:expect>
@@ -748,40 +740,65 @@ When there is a tr
     </x:scenario>
     
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match informaltable">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
-    </x:scenario>
-    
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'entrytbl ">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a caption ">
+        <x:context><caption>...</caption></x:context>
+        <x:expect label="keep it a caption"><h:caption>...</h:caption></x:expect>
     </x:scenario>
     
     
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'caption">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is an entrytbl">
+        <x:context>
+            <row>
+                <entrytbl></entrytbl>
+            </row>
+        </x:context>
+        <x:expect label="It becomes a table wrapped within a td">
+            <h:tr>
+                <h:td>
+                    <h:table></h:table>
+                </h:td>
+            </h:tr>
+        </x:expect>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'colspec">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a colspec">
+        <x:context><colspec colname="acid" /></x:context>
+        <x:expect label="it gets dropped."  />
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'col">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a col">
+        <x:context><col/></x:context>
+        <x:expect label="it gets dropped."  />
     </x:scenario>
     
     
     <!-- BEGIN HTML table elements-->
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'tr">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a tr">
+        <x:context>
+            <tr>...</tr>
+        </x:context>
+        <x:expect label="keep it a tr.">
+            <h:tr>...</h:tr>
+        </x:expect>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'th">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario  label="When there is a th">
+        <x:context>
+            <th>...</th>
+        </x:context>
+        <x:expect label="keep it a th.">
+            <h:th>...</h:th>
+        </x:expect>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'td">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a td">
+        <x:context>
+            <td>...</td>
+        </x:context>
+        <x:expect label="keep it a td.">
+            <h:td>...</h:td>
+        </x:expect>
     </x:scenario>
     <!-- END HTML table elements -->
 
