@@ -849,93 +849,110 @@ BLOCKS
       </xsl:if>
     </img>
   </xsl:template>
-  
-<!-- Handle CALS or HTML Tables -->
+ 
+ <!-- Handle CALS or HTML Tables -->
+ <xsl:template match="table | informaltable | entrytbl" mode="tablegen">
+   <table>
+     <xsl:call-template name="process-id"/>
+     <xsl:choose>
+       <xsl:when test="@tabstyle='landscape' or @orient='land'">
+         <xsl:choose>
+           <xsl:when test="@role">
+             <xsl:attribute name="class"><xsl:value-of select="concat('landscape ', @role)"/></xsl:attribute>
+           </xsl:when>
+           <xsl:otherwise>
+             <xsl:attribute name="class">landscape</xsl:attribute>
+           </xsl:otherwise>
+         </xsl:choose>
+       </xsl:when>
+       <xsl:when test="@role">
+         <xsl:attribute name="class"><xsl:value-of select="@role"/></xsl:attribute>
+       </xsl:when>
+       <xsl:otherwise/>
+     </xsl:choose>
+     <xsl:if test="title">
+       <caption>
+         <xsl:if test="title/@role">
+           <xsl:attribute name="class"><xsl:value-of select="title/@role"/></xsl:attribute>
+         </xsl:if>
+         <xsl:apply-templates select="title"/></caption>
+     </xsl:if>
+     <xsl:if test="caption">
+       <xsl:if test="caption/@role">
+         <xsl:attribute name="class"><xsl:value-of select="caption/@role"/></xsl:attribute>
+       </xsl:if>
+       <xsl:apply-templates select="caption"/>
+     </xsl:if>
+     <xsl:apply-templates select="node()[not(self::title|self::caption)]"/> 
+   </table>
+ </xsl:template>
+
 <xsl:template match="table | informaltable | entrytbl">
-  <xsl:variable name="table-markup">
-  <table>
-    <xsl:call-template name="process-id"/>
-    <xsl:choose>
-    <xsl:when test="@tabstyle='landscape' or @orient='land'">
-      <xsl:choose>
-      <xsl:when test="@role">
-         <xsl:attribute name="class"><xsl:value-of select="concat('landscape ', @role)"/></xsl:attribute>
-      </xsl:when>
-      <xsl:otherwise>
-         <xsl:attribute name="class">landscape</xsl:attribute>
-      </xsl:otherwise>
-      </xsl:choose>
-    </xsl:when>
-    <xsl:when test="@role">
-      <xsl:attribute name="class"><xsl:value-of select="@role"/></xsl:attribute>
-    </xsl:when>
-    <xsl:otherwise/>
-    </xsl:choose>
-    <xsl:if test="title">
-      <caption>
-      <xsl:if test="title/@role">
-        <xsl:attribute name="class"><xsl:value-of select="title/@role"/></xsl:attribute>
-      </xsl:if>
-      <xsl:apply-templates select="title"/></caption>
-    </xsl:if>
-    <xsl:if test="caption">
-      <xsl:if test="caption/@role">
-        <xsl:attribute name="class"><xsl:value-of select="caption/@role"/></xsl:attribute>
-      </xsl:if>
-      <xsl:apply-templates select="caption"/>
-    </xsl:if>
-    <xsl:apply-templates select="node()[not(self::title|self::caption)]"/> 
-  </table>
-  </xsl:variable>
   <xsl:choose>
   <xsl:when test="@tabstyle='landscape' or @orient='land'">
   <div class="landscape">
-    <xsl:copy-of select="$table-markup"/>
+    <xsl:apply-templates select="." mode="tablegen"/>
   </div>
   </xsl:when>
   <xsl:when test="self::entrytbl">
   <td>
-    <xsl:copy-of select="$table-markup"/>
+    <xsl:apply-templates select="." mode="tablegen"/>
   </td>
   </xsl:when>
   <xsl:otherwise>
-    <xsl:copy-of select="$table-markup"/>
+    <xsl:apply-templates select="." mode="tablegen"/>
   </xsl:otherwise>
 </xsl:choose>
-</xsl:template>
-
+</xsl:template>  
+  
 <xsl:template match="tgroup">
-  <xsl:apply-templates/>
+  <xsl:apply-templates select="colspec"/>
+  <xsl:apply-templates select="thead"/>
+  <xsl:apply-templates select="tfoot"/>
+  <xsl:apply-templates select="tbody"/>
 </xsl:template>
+  
 <xsl:template match="caption">
 <caption>
   <xsl:apply-templates select="node()"/>
 </caption>
 </xsl:template>
+  
 <xsl:template match="thead">
 <thead>
   <xsl:call-template name="process-role"/>
   <xsl:apply-templates/>
 </thead>
 </xsl:template>
+  
   <xsl:template match="tbody">
 <tbody>
   <xsl:call-template name="process-role"/>
   <xsl:apply-templates/>
 </tbody>
 </xsl:template>
+  
+  <xsl:template match="tfoot">
+    <tfoot>
+      <xsl:call-template name="process-role"/>
+      <xsl:apply-templates/>
+    </tfoot>
+  </xsl:template>
+  
   <xsl:template match="row">
 <tr>
   <xsl:call-template name="process-role"/>
   <xsl:apply-templates/>
 </tr>
 </xsl:template>
+  
 <xsl:template match="tr">
 <tr>
   <xsl:call-template name="process-role"/>
   <xsl:apply-templates select="node()"/>
 </tr>
 </xsl:template>
+  
 <xsl:template match="th">
 <th>
   <xsl:call-template name="process-role"/>
