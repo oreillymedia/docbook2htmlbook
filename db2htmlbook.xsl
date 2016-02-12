@@ -849,109 +849,125 @@ BLOCKS
       </xsl:if>
     </img>
   </xsl:template>
-  
-<!-- Handle CALS or HTML Tables -->
-<xsl:template match="table | informaltable | entrytbl">
-  <xsl:variable name="table-markup">
-  <table>
-    <xsl:call-template name="process-id"/>
-    <xsl:choose>
-    <xsl:when test="@tabstyle='landscape' or @orient='land'">
-      <xsl:choose>
-      <xsl:when test="@role">
-         <xsl:attribute name="class"><xsl:value-of select="concat('landscape ', @role)"/></xsl:attribute>
-      </xsl:when>
-      <xsl:otherwise>
-         <xsl:attribute name="class">landscape</xsl:attribute>
-      </xsl:otherwise>
-      </xsl:choose>
-    </xsl:when>
-    <xsl:when test="@role">
-      <xsl:attribute name="class"><xsl:value-of select="@role"/></xsl:attribute>
-    </xsl:when>
-    <xsl:otherwise/>
-    </xsl:choose>
-    <xsl:if test="title">
-      <caption>
-      <xsl:if test="title/@role">
-        <xsl:attribute name="class"><xsl:value-of select="title/@role"/></xsl:attribute>
-      </xsl:if>
-      <xsl:apply-templates select="title"/></caption>
-    </xsl:if>
-    <xsl:if test="caption">
-      <xsl:if test="caption/@role">
-        <xsl:attribute name="class"><xsl:value-of select="caption/@role"/></xsl:attribute>
-      </xsl:if>
-      <xsl:apply-templates select="caption"/>
-    </xsl:if>
-    <xsl:apply-templates select="node()[not(self::title|self::caption)]"/> 
-  </table>
-  </xsl:variable>
-  <xsl:choose>
-  <xsl:when test="@tabstyle='landscape' or @orient='land'">
-  <div class="landscape">
-    <xsl:copy-of select="$table-markup"/>
-  </div>
-  </xsl:when>
-  <xsl:when test="self::entrytbl">
-  <td>
-    <xsl:copy-of select="$table-markup"/>
-  </td>
-  </xsl:when>
-  <xsl:otherwise>
-    <xsl:copy-of select="$table-markup"/>
-  </xsl:otherwise>
-</xsl:choose>
-</xsl:template>
+ 
+ <!-- Handle CALS or HTML Tables -->
+ <xsl:template match="table | informaltable | entrytbl" mode="tablegen">
+   <table>
+     <xsl:call-template name="process-id"/>
+     <xsl:choose>
+       <xsl:when test="@tabstyle='landscape' or @orient='land'">
+         <xsl:choose>
+           <xsl:when test="@role">
+             <xsl:attribute name="class"><xsl:value-of select="concat('landscape ', @role)"/></xsl:attribute>
+           </xsl:when>
+           <xsl:otherwise>
+             <xsl:attribute name="class">landscape</xsl:attribute>
+           </xsl:otherwise>
+         </xsl:choose>
+       </xsl:when>
+       <xsl:when test="@role">
+         <xsl:attribute name="class"><xsl:value-of select="@role"/></xsl:attribute>
+       </xsl:when>
+     </xsl:choose>
+     <xsl:if test="title">
+       <caption>
+         <xsl:if test="title/@role">
+           <xsl:attribute name="class"><xsl:value-of select="title/@role"/></xsl:attribute>
+         </xsl:if>
+         <xsl:apply-templates select="title"/></caption>
+     </xsl:if>
+     <xsl:if test="caption">
+       <xsl:if test="caption/@role">
+         <xsl:attribute name="class"><xsl:value-of select="caption/@role"/></xsl:attribute>
+       </xsl:if>
+       <xsl:apply-templates select="caption"/>
+     </xsl:if>
+     <xsl:apply-templates select="node()[not(self::title|self::caption)]"/> 
+   </table>
+ </xsl:template>
 
-<xsl:template match="tgroup">
-  <xsl:apply-templates/>
-</xsl:template>
-<xsl:template match="caption">
-<caption>
-  <xsl:apply-templates select="node()"/>
-</caption>
-</xsl:template>
-<xsl:template match="thead">
-<thead>
-  <xsl:call-template name="process-role"/>
-  <xsl:apply-templates/>
-</thead>
-</xsl:template>
-  <xsl:template match="tbody">
-<tbody>
-  <xsl:call-template name="process-role"/>
-  <xsl:apply-templates/>
-</tbody>
-</xsl:template>
-  <xsl:template match="row">
-<tr>
-  <xsl:call-template name="process-role"/>
-  <xsl:apply-templates/>
-</tr>
-</xsl:template>
-<xsl:template match="tr">
-<tr>
-  <xsl:call-template name="process-role"/>
-  <xsl:apply-templates select="node()"/>
-</tr>
-</xsl:template>
-<xsl:template match="th">
-<th>
-  <xsl:call-template name="process-role"/>
-  <xsl:if test="@width!=''">
-    <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
-  </xsl:if>
-  <!-- No p elements inside table heads -->
+<xsl:template match="table | informaltable | entrytbl">
   <xsl:choose>
-    <xsl:when test="para">
-      <xsl:apply-templates select="para/node()"/>
+    <xsl:when test="@tabstyle='landscape' or @orient='land'">
+      <div class="landscape">
+       <xsl:apply-templates select="." mode="tablegen"/>
+      </div>
+    </xsl:when>
+    <xsl:when test="self::entrytbl">
+    <td>
+      <xsl:apply-templates select="." mode="tablegen"/>
+    </td>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:apply-templates select="node()"/>
+      <xsl:apply-templates select="." mode="tablegen"/>
     </xsl:otherwise>
   </xsl:choose>
-</th>
+</xsl:template>  
+  
+<xsl:template match="tgroup">
+  <xsl:apply-templates select="colspec"/>
+  <xsl:apply-templates select="thead"/>
+  <xsl:apply-templates select="tfoot"/>
+  <xsl:apply-templates select="tbody"/>
+</xsl:template>
+  
+<xsl:template match="caption">
+  <caption>
+    <xsl:apply-templates select="node()"/>
+  </caption>
+</xsl:template>
+  
+<xsl:template match="thead">
+  <thead>
+    <xsl:call-template name="process-role"/>
+    <xsl:apply-templates/>
+  </thead>
+</xsl:template>
+  
+<xsl:template match="tbody">
+  <tbody>
+    <xsl:call-template name="process-role"/>
+    <xsl:apply-templates/>
+  </tbody>
+</xsl:template>
+  
+<xsl:template match="tfoot">
+  <tfoot>
+    <xsl:call-template name="process-role"/>
+    <xsl:apply-templates/>
+  </tfoot>
+</xsl:template>
+  
+<xsl:template match="row">
+  <tr>
+    <xsl:call-template name="process-role"/>
+    <xsl:apply-templates/>
+  </tr>
+</xsl:template>
+  
+<xsl:template match="tr">
+  <tr>
+    <xsl:call-template name="process-role"/>
+    <xsl:apply-templates select="node()"/>
+  </tr>
+</xsl:template>
+  
+<xsl:template match="th">
+  <th>
+    <xsl:call-template name="process-role"/>
+    <xsl:if test="@width!=''">
+      <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
+    </xsl:if>
+    <!-- No p elements inside table heads -->
+    <xsl:choose>
+      <xsl:when test="para">
+        <xsl:apply-templates select="para/node()"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="node()"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </th>
 </xsl:template>
 <xsl:template match="td">
 <td>
@@ -959,37 +975,39 @@ BLOCKS
   <xsl:apply-templates select="node()"/>
 </td>
 </xsl:template>
+
 <xsl:template match="entry">
-<xsl:choose>
-  <xsl:when test="ancestor::thead">
-    <!-- No p elements inside table heads -->
-    <th>
-      <xsl:call-template name="process-id"/>
-      <xsl:call-template name="process-role"/>
-      <xsl:call-template name="process-colspan"/>
-      <xsl:if test="@width!=''">
-        <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
-      </xsl:if>
-      <xsl:choose>
-        <xsl:when test="para">
-          <xsl:apply-templates select="para/node()"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:apply-templates select="node()"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </th>
-  </xsl:when>
-  <xsl:otherwise>
-    <td>
-      <xsl:call-template name="process-id"/>
-      <xsl:call-template name="process-role"/>
-      <xsl:call-template name="process-colspan"/>
-      <xsl:apply-templates/>
-    </td>
-  </xsl:otherwise>
-</xsl:choose>
+  <xsl:choose>
+    <xsl:when test="ancestor::thead">
+      <!-- No p elements inside table heads -->
+      <th>
+        <xsl:call-template name="process-id"/>
+        <xsl:call-template name="process-role"/>
+        <xsl:call-template name="process-colspan"/>
+        <xsl:if test="@width!=''">
+          <xsl:attribute name="width"><xsl:value-of select="@width"/></xsl:attribute>
+        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="para">
+            <xsl:apply-templates select="para/node()"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select="node()"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </th>
+    </xsl:when>
+    <xsl:otherwise>
+      <td>
+        <xsl:call-template name="process-id"/>
+        <xsl:call-template name="process-role"/>
+        <xsl:call-template name="process-colspan"/>
+        <xsl:apply-templates/>
+      </td>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
+
 <!-- Column widths should be handled in the CSS -->
 <xsl:template match="colspec"/>
 <xsl:template match="col"/>

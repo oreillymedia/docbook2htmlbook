@@ -358,45 +358,495 @@
         <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'table | informaltable">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <!-- Table Handling Here 
+    
+    
+When there is a table with title
+When there is a table title that has a role
+
+
+When there is a table with role attibutes
+When there is a table with orient attibutes
+When there is a table with tabstyle attibutes
+
+
+When there is a table with no title
+
+When there is a tgroup with a thead and tbody
+When there is a tgroup with a thead tbody and tfoot
+When there is a tgroup with a tbody and tfoot
+When there is a tgroup with a tbody
+
+When there is a row
+
+When there is a entry in a thead
+When there is a entry in a tbody
+When there is a entry in a tfoot
+
+When an entry has inline content
+When an entry has block markup
+
+When there is a colspec
+When there is a col
+
+FOR HTML TABLES:
+
+When there is a th
+When there is a td
+When there is a tr
+    
+    -->
+    
+    <x:scenario label="When there is a table with title">
+        <x:context>
+            <table id="my_table"><title>This is made of cherry wood!</title></table>
+        </x:context>
+        <x:expect label="it turns into a table with a caption">
+            <table id="my_table" xmlns="http://www.w3.org/1999/xhtml"><caption>This is made of cherry wood!</caption></table>
+        </x:expect>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'tgroup">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a table with a title that has a role">
+        <x:context>
+            <table id="my_table">
+                <title role="for_dinner">This is made of cherry wood!</title>
+                ...
+            </table>
+        </x:context>
+        <x:expect label="the title's role ends up as a class on the caption">
+            <h:table id="my_table">
+                <h:caption class="for_dinner">This is made of cherry wood!</h:caption>
+                ...
+            </h:table>
+        </x:expect>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'caption">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a table with a role attibute">
+        <x:context>
+            <table role="ethan_allen">
+                <title role="for_dinner">This is made of cherry wood!</title>
+                ...
+            </table>
+        </x:context>
+        <x:expect label="the role turns into a class">
+            <h:table class="ethan_allen">
+                <h:caption class="for_dinner">This is made of cherry wood!</h:caption>
+                ...
+            </h:table>
+        </x:expect>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'thead">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a table with orient attibute that is = 'land'">
+        <x:context>
+            <table orient="land">
+                <title role="for_dinner">This is made of cherry wood!</title>
+            </table>
+        </x:context>
+        <x:expect label="the orient attribute becomes a class">
+            <h:div class="landscape">
+                <h:table class="landscape">
+                    <h:caption class="for_dinner">This is made of cherry wood!</h:caption>
+                </h:table>
+            </h:div>
+        </x:expect>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'tbody">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a table with orient attibute that is = 'land' AND another role on the table tag">
+        <x:context>
+            <table role="my_table" orient="land">
+                <title role="for_dinner">This is made of cherry wood!</title>
+            </table>
+        </x:context>
+        <x:expect label="the orient and role attribute become a class">
+            <h:div class="landscape">
+                <h:table class="landscape my_table">
+                    <h:caption class="for_dinner">This is made of cherry wood!</h:caption>
+                </h:table>
+            </h:div>
+        </x:expect>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'row">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a table with tabstyle that is = 'landscape'">
+        <x:context>
+            <table tabstyle="landscape">
+                <title role="for_dinner">This is made of cherry wood!</title>
+            </table>
+        </x:context>
+        <x:expect label="the tabstyle attribute becomes a class">
+            <h:div class="landscape">
+                <h:table class="landscape" >
+                    <h:caption class="for_dinner">This is made of cherry wood!</h:caption>
+                </h:table>
+            </h:div>
+        </x:expect>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'tr">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is an informaltable">
+        <x:context>
+            <informaltable role="my_table_without_title">
+            </informaltable>
+        </x:context>
+        <x:expect label="it turns into a table with no title element.">
+            <h:table class="my_table_without_title">
+            </h:table>
+            
+        </x:expect>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'th">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    
+    <x:scenario label="When there is a thead">
+        <x:context>
+            <thead>...</thead>
+        </x:context>
+        <x:expect label="it is also a thead in htmlbook">
+            <h:thead>...</h:thead>
+        </x:expect>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'td">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a tbody">
+        <x:context>
+            <tbody>...</tbody>
+        </x:context>
+        <x:expect label="it is also a tbody in htmlbook">
+            <h:tbody>...</h:tbody>
+        </x:expect>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'entry">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When there is a tfoot">
+        <x:context>
+            <tfoot>...</tfoot>
+        </x:context>
+        <x:expect label="it is also a tfoot in htmlbook">
+            <h:tfoot>...</h:tfoot>
+        </x:expect>
     </x:scenario>
+    
+    
+    <x:scenario label="When there is a tgroup with a thead and tbody">
+        <x:context>
+            <tgroup cols="1">
+                <thead>
+                    <row>
+                        <entry>THEAD THING</entry>
+                    </row>
+                </thead>
+                
+                <tbody>
+                    <row>
+                        <entry>TBODY THING</entry>
+                    </row>
+                </tbody>
+            </tgroup>
+        </x:context>
+        <x:expect label="the thead and tbody come through (in the right order)">
+            <h:thead>
+                <h:tr>
+                    <h:th>THEAD THING</h:th>
+                </h:tr>
+            </h:thead>
+            
+            <h:tbody>
+                <h:tr>
+                    <h:td>TBODY THING</h:td>
+                </h:tr>
+            </h:tbody>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When there is a tgroup with a thead tbody and tfoot (with tfoot between thead and tbody)">
+        <x:context>
+            <tgroup cols="1">
+                
+                <thead>
+                    <row>
+                        <entry>THEAD THING</entry>
+                    </row>
+                </thead>
+                
+                <tfoot>
+                    <row>
+                        <entry>TFOOT THING</entry>
+                    </row>
+                </tfoot>
+                
+                <tbody>
+                    <row>
+                        <entry>TBODY THING</entry>
+                    </row>
+                </tbody>
+                
+            </tgroup>
+        </x:context>
+        <x:expect label="they all come through, with tfoot before thead">
+            <h:thead>
+                <h:tr>
+                    <h:th>THEAD THING</h:th>
+                </h:tr>
+            </h:thead>
+            
+            <h:tfoot>
+                <h:tr>
+                    <h:td>TFOOT THING</h:td>
+                </h:tr>
+            </h:tfoot>
+            
+            <h:tbody>
+                <h:tr>
+                    <h:td>TBODY THING</h:td>
+                </h:tr>
+            </h:tbody>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When there is a tgroup with a thead tbody and tfoot (with tfoot last)">
+        <x:context>
+            <tgroup cols="1">
+                
+                <thead>
+                    <row>
+                        <entry>THEAD THING</entry>
+                    </row>
+                </thead>
+                
+                <tbody>
+                    <row>
+                        <entry>TBODY THING</entry>
+                    </row>
+                </tbody>
+                
+                <tfoot>
+                    <row>
+                        <entry>TFOOT THING</entry>
+                    </row>
+                </tfoot>
+                
+            </tgroup>
+        </x:context>
+        <x:expect label="they all come through with tfoot after thead">
+            <h:thead>
+                <h:tr>
+                    <h:th>THEAD THING</h:th>
+                </h:tr>
+            </h:thead>
+            
+            <h:tfoot>
+                <h:tr>
+                    <h:td>TFOOT THING</h:td>
+                </h:tr>
+            </h:tfoot>
+            
+            <h:tbody>
+                <h:tr>
+                    <h:td>TBODY THING</h:td>
+                </h:tr>
+            </h:tbody>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When there is a tgroup with a tbody and tfoot">
+        <x:context>
+            <tgroup cols="1">
+                
+                <tbody>
+                    <row>
+                        <entry>TBODY THING</entry>
+                    </row>
+                </tbody>
+                
+                <tfoot>
+                    <row>
+                        <entry>TFOOT THING</entry>
+                    </row>
+                </tfoot>
+                
+            </tgroup>
+        </x:context>
+        <x:expect label="the tbody and tfoot come through (in the right order)">
+            
+            <h:tfoot>
+                <h:tr>
+                    <h:td>TFOOT THING</h:td>
+                </h:tr>
+            </h:tfoot>
+            
+            <h:tbody>
+                <h:tr>
+                    <h:td>TBODY THING</h:td>
+                </h:tr>
+            </h:tbody>
+            
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When there is a tgroup with a tbody">
+        <x:context>
+            <tgroup cols="1">
+                
+                <tbody>
+                    <row>
+                        <entry>TBODY THING</entry>
+                    </row>
+                </tbody>
+                
+            </tgroup>
+        </x:context>
+        <x:expect label="the tbody comes through ">
+            <h:tbody>
+                <h:tr>
+                    <h:td>TBODY THING</h:td>
+                </h:tr>
+            </h:tbody>
+        </x:expect>
+    </x:scenario>
+    
+    
+    <x:scenario label="When there is a row">
+        <x:context>
+            <row>...</row>
+        </x:context>
+        <x:expect label="it turns into a tr">
+            <h:tr>...</h:tr>
+        </x:expect>
+    </x:scenario>
+    
+    
+    <x:scenario label="When there is an entry in a thead">
+        <x:context>
+            <thead>
+                <row>
+                    <entry>THEAD THING</entry>
+                </row>
+            </thead>
+        </x:context>
+        <x:expect label="the entry comes through as a th">
+            <h:thead>
+                <h:tr>
+                    <h:th>THEAD THING</h:th>
+                </h:tr>
+            </h:thead>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When there is an entry in a tbody">
+        <x:context>
+            <tbody>
+                <row>
+                    <entry>TBODY THING</entry>
+                </row>
+            </tbody>
+        </x:context>
+        <x:expect label="the entry comes through as a td">
+            <h:tbody>
+                <h:tr>
+                    <h:td>TBODY THING</h:td>
+                </h:tr>
+            </h:tbody>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When there is an entry in a tfoot">
+        <x:context>
+            <tfoot>
+                <row>
+                    <entry>TFOOT THING</entry>
+                </row>
+            </tfoot>
+        </x:context>
+        <x:expect label="the entry comes through as a td">
+            <h:tfoot>
+                <h:tr>
+                    <h:td>TFOOT THING</h:td>
+                </h:tr>
+            </h:tfoot>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When an entry has only inline markup">
+        <x:context>
+            <entry>Some stuff here.</entry>
+        </x:context>
+        <x:expect label="just text should come through">
+            <h:td>Some stuff here.</h:td>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When an entry has block markup">
+        <x:context>
+            <entry>
+                <para>Look at this code:</para>
+                <screen>print "Hello I am code"</screen>
+            </entry>
+        </x:context>
+        <x:expect label="block elements should come through.">
+            <h:td>
+                <h:p>Look at this code:</h:p>
+                <h:pre data-type="programlisting">print "Hello I am code"</h:pre>
+            </h:td>
+        </x:expect>
+    </x:scenario>
+    
+    
+    <x:scenario label="When there is a caption ">
+        <x:context><caption>...</caption></x:context>
+        <x:expect label="keep it a caption"><h:caption>...</h:caption></x:expect>
+    </x:scenario>
+    
+    
+    
+    <x:scenario label="When there is an entrytbl">
+        <x:context>
+            <row>
+                <entrytbl></entrytbl>
+            </row>
+        </x:context>
+        <x:expect label="It becomes a table wrapped within a td">
+            <h:tr>
+                <h:td>
+                    <h:table></h:table>
+                </h:td>
+            </h:tr>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When there is a colspec">
+        <x:context><colspec colname="acid" /></x:context>
+        <x:expect label="it gets dropped."  />
+    </x:scenario>
+    
+    <x:scenario label="When there is a col">
+        <x:context><col/></x:context>
+        <x:expect label="it gets dropped."  />
+    </x:scenario>
+    
+    
+    <!-- BEGIN HTML table elements-->
+    <x:scenario label="When there is a tr">
+        <x:context>
+            <tr>...</tr>
+        </x:context>
+        <x:expect label="keep it a tr.">
+            <h:tr>...</h:tr>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario  label="When there is a th">
+        <x:context>
+            <th>...</th>
+        </x:context>
+        <x:expect label="keep it a th.">
+            <h:th>...</h:th>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When there is a td">
+        <x:context>
+            <td>...</td>
+        </x:context>
+        <x:expect label="keep it a td.">
+            <h:td>...</h:td>
+        </x:expect>
+    </x:scenario>
+    <!-- END HTML table elements -->
 
     <!-- BEGIN namest and nameend attribute tests -->
 
@@ -559,15 +1009,9 @@
 
     
     <!-- END namest and nameend attribute tests -->
-
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'colspec">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
-    </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'col">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
-    </x:scenario>
-    
+    <!-- END Table Handling -->
+   
     <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'index">
         <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
     </x:scenario>
