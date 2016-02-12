@@ -868,7 +868,6 @@ BLOCKS
        <xsl:when test="@role">
          <xsl:attribute name="class"><xsl:value-of select="@role"/></xsl:attribute>
        </xsl:when>
-       <xsl:otherwise/>
      </xsl:choose>
      <xsl:if test="title">
        <caption>
