@@ -269,7 +269,7 @@ BLOCKS
     <xsl:call-template name="process-id"/>
     <xsl:call-template name="process-role"/>
     <xsl:for-each select="para">
-      <xsl:if test="not(position() = 1 )"><br/></xsl:if>
+      <xsl:if test="not(position() = 1 )"><br/><br/></xsl:if>
       <xsl:apply-templates select="text() | *"/>
     </xsl:for-each>
   </span>
