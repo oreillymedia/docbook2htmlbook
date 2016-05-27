@@ -329,8 +329,58 @@
         <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
     </x:scenario>
     
-    <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'programlisting | screen">
-        <x:context></x:context><x:expect label="Not yet implemented"  select="'Not yet implemented'"/>
+    <x:scenario label="When we encounter a programlisting">
+        <x:context>
+            <programlisting>Hello World</programlisting>
+        </x:context>
+        <x:expect label="it becomes a pre with data-type programlisting" >
+            <h:pre data-type="programlisting">Hello World</h:pre>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When we encounter a programlisting with a syntax highlighting language specified">
+        <x:context>
+            <programlisting language="python">Hello World</programlisting>
+        </x:context>
+        <x:expect label="it becomes a pre with data-type programlisting with a data-code-language attribute" >
+            <h:pre data-type="programlisting" data-code-language="python">Hello World</h:pre>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When we encounter a screen">
+        <x:context>
+            <screen>Hello World</screen>
+        </x:context>
+        <x:expect label="it becomes a pre with data-type programlisting" >
+            <h:pre data-type="programlisting">Hello World</h:pre>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When we encounter a screen with a syntax highlighting language specified">
+        <x:context>
+            <screen language="python">Hello World</screen>
+        </x:context>
+        <x:expect label="it becomes a pre with data-type programlisting with a data-code-language attribute" >
+            <h:pre data-type="programlisting" data-code-language="python">Hello World</h:pre>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When we encounter a programlisting with a linenumbering='numbered' attribute">
+        <x:context>
+            <programlisting linenumbering="numbered">Hello World</programlisting>
+        </x:context>
+        <x:expect label="it becomes a pre with data-type programlisting" >
+            <h:pre data-type="programlisting" data-line-numbering='numbered'>Hello World</h:pre>
+        </x:expect>
+    </x:scenario>
+    
+    <x:scenario label="When we encounter a screen with a linenumbering='numbered' attribute">
+        <x:context>
+            <screen linenumbering="numbered">Hello World</screen>
+        </x:context>
+        <x:expect label="it becomes a pre with data-type programlisting" >
+            <h:pre data-type="programlisting" data-line-numbering='numbered'>Hello World</h:pre>
+        </x:expect>
     </x:scenario>
     
     <x:scenario pending="Not yet implemented" label="Scenario for testing template with match 'literallayout">
