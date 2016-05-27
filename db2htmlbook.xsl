@@ -752,6 +752,7 @@ BLOCKS
     <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">programlisting</xsl:attribute>
     <xsl:if test="@language"><xsl:attribute name="data-code-language"><xsl:value-of select="@language"/></xsl:attribute></xsl:if>
+    <xsl:if test="@linenumbering = 'numbered' "><xsl:attribute name="data-line-numbering"><xsl:value-of select="@linenumbering"/></xsl:attribute></xsl:if>
     <xsl:apply-templates/>
   </pre>
 </xsl:template>
