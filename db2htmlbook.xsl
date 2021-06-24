@@ -1039,7 +1039,7 @@ BLOCKS
     <xsl:if test="primary/@sortas">
       <xsl:attribute name="data-primary-sortas"><xsl:value-of select="primary/@sortas"/></xsl:attribute>
     </xsl:if>
-    <xsl:if test="seondary/@sortas">
+    <xsl:if test="secondary/@sortas">
       <xsl:attribute name="data-secondary-sortas"><xsl:value-of select="secondary/@sortas"/></xsl:attribute>
     </xsl:if>
     <xsl:if test="tertiary/@sortas">
