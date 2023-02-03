@@ -362,7 +362,7 @@ BLOCKS
     <xsl:call-template name="process-id"/>
     <xsl:call-template name="process-role"/>
     <xsl:attribute name="data-type">sidebar</xsl:attribute>
-    <h5><xsl:apply-templates select="title"/></h5>
+    <h1><xsl:apply-templates select="title"/></h1>
     <xsl:apply-templates select="node()[not(self::title)]"/>
   </aside>
 </xsl:template>
