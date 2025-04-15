@@ -1,6 +1,6 @@
 # docbook2htmlbook
 
-This script is currently in development and converts [DocBook XML](http://www.docbook.org/) to [HTMLBook](https://github.com/oreillymedia/HTMLBook).
+This script converts [DocBook XML](http://www.docbook.org/) to [HTMLBook](https://github.com/oreillymedia/HTMLBook).
 
 It's written in XSLT 2.0, so you'll need to run it with an XSLT 2.0 processor.
 
