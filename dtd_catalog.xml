@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+
+    <!--This ensures that we perform any requests to oasis-open via https instead of http, which can fail-->
+    <public publicId="-//OASIS//DTD DocBook XML V4.5//EN" uri="docbook-xml-4.5/docbookx.dtd"/>
+
+    <system systemId="http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" uri="docbook-xml-4.5/docbookx.dtd"/>
+
+</catalog>
